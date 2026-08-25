@@ -1,0 +1,46 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+
+# Secrets / keys
+.env
+.env.*
+*.pem
+*credentials*
+.ctl_token
+
+# Runtime state (local / server copies)
+bot_state.json
+bot_state.*.json
+positions.json
+pending_limits.json
+signals_cache.json
+trades.json
+trades_*.jsonl
+archives/
+trades_stats_epoch.txt
+*.server.json
+*.server.jsonl
+*.bak
+*.bak.*
+
+# Logs
+bot.log
+bot.log.*
+*.log
+
+# Backups (local snapshots)
+.backup/
+
+# IDE / OS
+.idea/
+.vscode/
+.claude/
+*.swp
+Thumbs.db
+Desktop.ini
