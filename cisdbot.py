@@ -93,8 +93,8 @@ SYMBOL_PROFILES: dict[str, dict] = {
         "contract_value": 0.001,   # 1 лот бота = 0.001 BTC (min Bybit linear)
         "price_tick": 0.1,
         "sweep_bucket": 10.0,
-        "maker_fee": 0.0002,
-        "taker_fee": 0.00055,
+        "maker_fee": 0.00036,  # 0.036%
+        "taker_fee": 0.001,    # 0.100%
     },
     "SOL": {
         "symbol": "SOL/USDT:USDT",
@@ -102,8 +102,8 @@ SYMBOL_PROFILES: dict[str, dict] = {
         "contract_value": 0.1,
         "price_tick": 0.01,
         "sweep_bucket": 1.0,
-        "maker_fee": 0.0002,
-        "taker_fee": 0.00055,
+        "maker_fee": 0.00036,  # 0.036%
+        "taker_fee": 0.001,    # 0.100%
     },
     "ETH": {
         "symbol": "ETH/USDT:USDT",
@@ -111,8 +111,8 @@ SYMBOL_PROFILES: dict[str, dict] = {
         "contract_value": 0.01,
         "price_tick": 0.01,
         "sweep_bucket": 1.0,
-        "maker_fee": 0.0002,
-        "taker_fee": 0.00055,
+        "maker_fee": 0.00036,  # 0.036%
+        "taker_fee": 0.001,    # 0.100%
     },
     "DOGE": {
         "symbol": "DOGE/USDT:USDT",
@@ -120,8 +120,8 @@ SYMBOL_PROFILES: dict[str, dict] = {
         "contract_value": 100.0,
         "price_tick": 0.00001,
         "sweep_bucket": 0.001,
-        "maker_fee": 0.0002,
-        "taker_fee": 0.00055,
+        "maker_fee": 0.00036,  # 0.036%
+        "taker_fee": 0.001,    # 0.100%
     },
     "KAS": {
         "symbol": "KAS/USDT:USDT",
@@ -129,8 +129,8 @@ SYMBOL_PROFILES: dict[str, dict] = {
         "contract_value": 1000.0,
         "price_tick": 0.00001,
         "sweep_bucket": 0.001,
-        "maker_fee": 0.0002,
-        "taker_fee": 0.00055,
+        "maker_fee": 0.00036,  # 0.036%
+        "taker_fee": 0.001,    # 0.100%
     },
 }
 DEFAULT_SYMBOL_KEY = "BTC"
@@ -171,8 +171,8 @@ CONFIG = {
     "quality_stop_q90": 7.535410159157014,
     "quality_stop_min_mult": 0.85,
     # ── Комиссии ────────────────────────────────────────────────
-    "maker_fee":           0.0002,   # 0.02% Bybit USDT perp VIP0 (fallback; /fee)
-    "taker_fee":           0.00055,  # 0.055%
+    "maker_fee":           0.00036,  # 0.036% Bybit account (fallback; /fee)
+    "taker_fee":           0.001,    # 0.100%
     "contract_value":      0.001,    # BTC на лот бота (Bybit linear qty в монете)
 
     # ── Тайминги ────────────────────────────────────────────────
@@ -631,6 +631,17 @@ def _persist_active_symbol_fees() -> None:
     }
 
 
+_STALE_VIP0_FEES = {"maker": 0.0002, "taker": 0.00055}
+
+
+def _migrate_stale_account_fee(kind: str, value: float, fallback: float) -> float:
+    """VIP0-фолбэк в bot_state → реальные ставки аккаунта. Кастом /fee не трогаем."""
+    stale = _STALE_VIP0_FEES.get(kind)
+    if stale is not None and abs(float(value) - stale) < 1e-12:
+        return float(fallback)
+    return float(value)
+
+
 def _apply_symbol_key(key: str) -> None:
     if key not in SYMBOL_PROFILES:
         key = DEFAULT_SYMBOL_KEY
@@ -1022,16 +1033,36 @@ def load_bot_state():
                 continue
             try:
                 cleaned_fees[k] = {
-                    "maker": float(v.get("maker", SYMBOL_PROFILES[k]["maker_fee"])),
-                    "taker": float(v.get("taker", SYMBOL_PROFILES[k]["taker_fee"])),
+                    "maker": _migrate_stale_account_fee(
+                        "maker",
+                        float(v.get("maker", SYMBOL_PROFILES[k]["maker_fee"])),
+                        SYMBOL_PROFILES[k]["maker_fee"],
+                    ),
+                    "taker": _migrate_stale_account_fee(
+                        "taker",
+                        float(v.get("taker", SYMBOL_PROFILES[k]["taker_fee"])),
+                        SYMBOL_PROFILES[k]["taker_fee"],
+                    ),
                 }
             except (TypeError, ValueError):
                 continue
         state.fees_by_symbol = cleaned_fees
     if "maker_fee" in d:
-        state.fees_by_symbol.setdefault(DEFAULT_SYMBOL_KEY, {})["maker"] = float(d["maker_fee"])
+        state.fees_by_symbol.setdefault(DEFAULT_SYMBOL_KEY, {})["maker"] = (
+            _migrate_stale_account_fee(
+                "maker",
+                float(d["maker_fee"]),
+                SYMBOL_PROFILES[DEFAULT_SYMBOL_KEY]["maker_fee"],
+            )
+        )
     if "taker_fee" in d:
-        state.fees_by_symbol.setdefault(DEFAULT_SYMBOL_KEY, {})["taker"] = float(d["taker_fee"])
+        state.fees_by_symbol.setdefault(DEFAULT_SYMBOL_KEY, {})["taker"] = (
+            _migrate_stale_account_fee(
+                "taker",
+                float(d["taker_fee"]),
+                SYMBOL_PROFILES[DEFAULT_SYMBOL_KEY]["taker_fee"],
+            )
+        )
     sym_key = d.get("active_symbol", DEFAULT_SYMBOL_KEY)
     if sym_key not in SYMBOL_PROFILES:
         sym_key = DEFAULT_SYMBOL_KEY
@@ -12739,7 +12770,7 @@ async def callback_timeout(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ============================================================
 # КОМИССИИ (/fee)
 # ============================================================
-_FEE_PRESETS_PCT = (0.0, 0.01, 0.02, 0.04, 0.06, 0.08, 0.10)
+_FEE_PRESETS_PCT = (0.0, 0.01, 0.02, 0.036, 0.04, 0.06, 0.08, 0.10)
 
 
 def _fee_type_keyboard() -> InlineKeyboardMarkup:
