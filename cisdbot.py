@@ -4036,6 +4036,18 @@ def _upsert_sweep_candidate(k: str, incoming: dict) -> None:
         )
 
 
+def _tp_1r(direction: str, entry: float, stop: float) -> Optional[float]:
+    """Тейк 1R: вход ± |вход − стоп|. ТЗ v6, не fib."""
+    entry_px = float(entry)
+    stop_px = float(stop)
+    risk = abs(entry_px - stop_px)
+    if risk <= 0:
+        return None
+    if direction == "LONG":
+        return entry_px + risk
+    return entry_px - risk
+
+
 def _levels_from_trigger(
     det: "CISDDetector",
     df: pd.DataFrame,
@@ -4063,10 +4075,9 @@ def _levels_from_trigger(
     fib_prices = det._fib_prices(base_high, base_low, is_bearish)
     entry = float(cisd_level)
     stop = float(base_low if direction == "LONG" else base_high)
-    risk = abs(entry - stop)
-    if risk <= 0:
+    tp = _tp_1r(direction, entry, stop)
+    if tp is None:
         return None
-    tp = float(entry + risk) if direction == "LONG" else float(entry - risk)
     if any(v is None or (v != v) for v in [entry, stop, tp]) or stop == 0:
         return None
     if direction == "LONG" and (entry <= stop or tp <= entry):
@@ -5029,7 +5040,7 @@ def detect_signals(
 
         entry = cisd_level
         stop  = base_low  if direction == "LONG" else base_high
-        tp    = fib_prices[1]  # 2x проекция
+        tp    = _tp_1r(direction, entry, stop)
 
         mss_on_ltf = df_mss is not df
         mss_trigger = (
@@ -5258,6 +5269,7 @@ def detect_signals(
             continue
 
         sweep5m_idx = int(sweep_close_idx)
+        # v6: fib-stretch не меняет TP и не переводит вход в MARKET.
         tp, fib_stretch_market, fib_stretch_reason, fib_market_mode = (
             _resolve_retest_geom_fib_market(
                 direction, retest_geom, mss_ok, df, sweep5m_idx,
@@ -5266,21 +5278,10 @@ def detect_signals(
             )
         )
         if fib_stretch_market:
-            logger.info(f"detect:   -> {fib_stretch_reason}")
+            logger.info(f"detect:   -> {fib_stretch_reason} (игнор, TP=1R LIMIT)")
 
-        entry_price_ref = confirm_close if mss_ok else sweep_close_close
-        if fib_stretch_market:
-            entry_kind_pre = "MARKET"
-        else:
-            entry_kind_pre = (
-                "LIMIT" if (tf4_bar3_limit or late_retest or retest_geom)
-                else ("LIMIT" if mss_ok else "STOP-LIMIT")
-            )
-        rr_entry = (
-            float(entry_price_ref)
-            if fib_stretch_market and entry_price_ref
-            else float(cisd_level)
-        )
+        entry_kind_pre = "LIMIT"
+        rr_entry = float(cisd_level)
         ok_rr, rr_val, rr_reason = _passes_min_rr(direction, rr_entry, stop, tp)
         if not ok_rr:
             skipped_bad += 1
@@ -5941,32 +5942,10 @@ def _resolve_retest_geom_fib_market(
     *,
     series_start_idx: int | None = None,
 ) -> tuple[float, bool, str, str]:
-    """retest_geom + MSS: fib1/fib2 на close-свип баре → MARKET TP или LIMIT TP.
-
-    series_start_idx: check-бар должен быть ≥ старта текущей серии (не fib-stretch
-    по чужому close-свипу до пересборки CISD после deepen).
-    """
-    tp = float(tp_default)
-    if not (retest_geom and mss_ok):
-        return tp, False, "", ""
-    if series_start_idx is not None and int(sweep_close_idx) < int(series_start_idx):
-        return tp, False, "", ""
-    chk_h, chk_l, chk_c, chk_lbl = _confirm_bar_for_retest_market(df, int(sweep_close_idx))
-    fib_stretch_market, fib_stretch_reason = _detect_fib_stretch_market_entry(
-        direction, retest_geom, chk_h, chk_l, fib_prices, bar_label=chk_lbl,
-    )
-    fib_market_mode = ""
-    if fib_stretch_market:
-        fib_market_mode = "fib1_not_fib2"
-        tp = float(fib_prices[2])
-    else:
-        fib_stretch_market, fib_stretch_reason = _detect_retest_geom_market_entry(
-            direction, retest_geom, chk_h, chk_l, chk_c,
-            float(cisd_level), fib_prices, bar_label=chk_lbl,
-        )
-        if fib_stretch_market:
-            fib_market_mode = "post_cisd_no_fib1"
-    return tp, fib_stretch_market, fib_stretch_reason, fib_market_mode
+    """v6: TP всегда 1R, fib-stretch MARKET выключен. Сигнатура сохранена."""
+    _ = (direction, retest_geom, mss_ok, df, sweep_close_idx, cisd_level,
+         fib_prices, series_start_idx)
+    return float(tp_default), False, "", ""
 
 
 def _sig_sweep_fib1_stretched(sig: dict) -> tuple[bool, str]:
@@ -8527,9 +8506,9 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
 
     fib_lines = ""
     for label, key in [
-        ("1.0x",      "fib_1x"),
-        ("2.0x ← TP", "fib_2x"),
-        ("2.5x",      "fib_2_5x"),
+        ("1.0x", "fib_1x"),
+        ("2.0x", "fib_2x"),
+        ("2.5x", "fib_2_5x"),
         ("4.0x",      "fib_4x"),
         ("4.5x",      "fib_4_5x"),
     ]:
@@ -9117,7 +9096,7 @@ def _format_signal_context(sig: dict, tf_name: str) -> str:
     fib_lines = ""
     for label, key in [
         ("1.0x", "fib_1x"),
-        ("2.0x ← TP", "fib_2x"),
+        ("2.0x", "fib_2x"),
         ("2.5x", "fib_2_5x"),
         ("4.0x", "fib_4x"),
         ("4.5x", "fib_4_5x"),
@@ -10673,16 +10652,12 @@ async def _try_arm_cisd_cross_candidates(now: datetime) -> None:
             )
         )
         if fib_stretch_market:
-            logger.info(f"cisd_cross arm: {fib_stretch_reason}")
+            logger.info(f"cisd_cross arm: {fib_stretch_reason} (игнор, TP=1R LIMIT)")
 
         sig_hash = _sig_hash_stable(direction, htf_s, sweep_lvl, entry, stop, tp)
         if sig_hash in state.processed:
             continue
-        rr_entry = (
-            float(confirm_close)
-            if fib_stretch_market and confirm_close
-            else float(entry)
-        )
+        rr_entry = float(entry)
         ok_rr, _, rr_reason = _passes_min_rr(direction, rr_entry, stop, tp)
         if not ok_rr:
             logger.info(f"cisd_cross arm SKIP min_rr: {rr_reason}")
@@ -10722,7 +10697,7 @@ async def _try_arm_cisd_cross_candidates(now: datetime) -> None:
             f"cand_tr={df.index[orig_cand_idx]} eff_tr={df.index[anchor_idx]} "
             f"close_sweep={df.index[int(sweep_close_idx)]} "
             f"confirm={df_mss.index[int(mss_confirm_idx)]} stop={stop:.1f} "
-            f"kind={'MARKET' if fib_stretch_market else 'LIMIT'} price={price:.1f}"
+            f"kind=LIMIT price={price:.1f}"
         )
         await create_pending_limit(sig, tf_name)
 
