@@ -1,26 +1,14 @@
 """
-CISD BOT v5.2-bybit — Bybit USDT linear (порт с MEXC cisdbot)
+CISD BOT v6.0-bybit — Bybit USDT linear, 10 пар × tf7+tf8, SHADOW/LIVE
 ====================================================================
-Биржа: ccxt.bybit unified v5 (не MEXC). Ключи Bybit — ниже, Telegram тот же.
-PAPER по умолчанию ON, пока не пропишешь ключи и не выключишь PAPER_TRADING.
-Не запускать вместе с MEXC-cisdbot: один TELEGRAM_TOKEN, два процесса будут драться.
-Деплой: отдельный VPS/путь /opt/cisdbotbybit, systemd cisdbotbybit.service,
-SSH-хост cisdbotbybit (не cisdbot). Торговля: /resume, не /start.
-Управление через Telegram + localhost dashboard (ctl_server):
-  /resume — запустить/возобновить + подхватить старые pending сигналы
-  /start  — no-op (системная кнопка Telegram торговлю не включает)
-  /stop   — пауза сканера или полная остановка задач (без спама в TG)
-  /paper  — переключить Paper ↔ Live режим
-  /status — текущее состояние: баланс, позиции, pending
-  /stats  — статистика сделок с выбором периода
-  /filters — detect-фильтры ATR / VOL / D / QSZ / PSL / QSTOP
-  /filter_qsz — рычаг1 quality size (×0.60…1.35)
-  /filter_psl — P(SL)-коррекция QSZ (×0.60…1.35)
-  /filter_qstop — quality-score tightening initial SL (SOL tf7)
-
-  Dashboard: http://127.0.0.1:8765 (SSH tunnel), лента = те же тексты что в TG.
-
-Вход: только после MSS confirm → STOP-LIMIT на cisd_level (tf4 bar3: LIMIT retest).
+Стратегия ТЗ v6: LIMIT-only на cisd_level, TP=1R, vwap-фильтр, 1 поз/пара, max 7.
+По умолчанию SHADOW (dry_run): реальные котировки, виртуальные сделки, ордеров нет.
+Не запускать вместе с MEXC-cisdbot: один TELEGRAM_TOKEN.
+Деплой: /opt/cisdbotbybit, systemd cisdbotbybit.service, SSH-хост cisdbotbybit.
+  /resume /start — запустить сканер
+  /stop   — пауза или полная остановка
+  /mode   — SHADOW ↔ LIVE (с подтверждением); /paper — алиас
+  /status /stats /pairs
 """
 
 import asyncio
@@ -35,6 +23,7 @@ import os
 import sys
 import time
 import uuid
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -73,7 +62,7 @@ _load_env_file(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
 # ============================================================
 # РЕЖИМ БОТА  ← начальные значения, меняются командами /resume /paper
 # ============================================================
-PAPER_TRADING = True   # Bybit-порт: сначала paper. False только с ключами Bybit
+PAPER_TRADING = True   # True = SHADOW (dry_run). False = LIVE, только с ключами Bybit
 
 # ============================================================
 # КОНФИГУРАЦИЯ
@@ -86,24 +75,25 @@ TELEGRAM_CHAT_ID = int(os.environ.get("TELEGRAM_CHAT_ID", "0") or "0")
 
 SYMBOL = "BTC/USDT:USDT"  # legacy; для скриптов — см. active_symbol()
 
+# qtyStep / tickSize сверены с Bybit GET /v5/market/instruments-info (linear) 08.09.2026
+_BYBIT_FEES = {"maker_fee": 0.00036, "taker_fee": 0.001}
+
 SYMBOL_PROFILES: dict[str, dict] = {
-    "BTC": {
-        "symbol": "BTC/USDT:USDT",
-        "label": "BTC/USDT",
-        "contract_value": 0.001,   # 1 лот бота = 0.001 BTC (min Bybit linear)
-        "price_tick": 0.1,
-        "sweep_bucket": 10.0,
-        "maker_fee": 0.00036,  # 0.036%
-        "taker_fee": 0.001,    # 0.100%
-    },
     "SOL": {
         "symbol": "SOL/USDT:USDT",
         "label": "SOL/USDT",
         "contract_value": 0.1,
         "price_tick": 0.01,
         "sweep_bucket": 1.0,
-        "maker_fee": 0.00036,  # 0.036%
-        "taker_fee": 0.001,    # 0.100%
+        **_BYBIT_FEES,
+    },
+    "BTC": {
+        "symbol": "BTC/USDT:USDT",
+        "label": "BTC/USDT",
+        "contract_value": 0.001,
+        "price_tick": 0.1,
+        "sweep_bucket": 10.0,
+        **_BYBIT_FEES,
     },
     "ETH": {
         "symbol": "ETH/USDT:USDT",
@@ -111,29 +101,69 @@ SYMBOL_PROFILES: dict[str, dict] = {
         "contract_value": 0.01,
         "price_tick": 0.01,
         "sweep_bucket": 1.0,
-        "maker_fee": 0.00036,  # 0.036%
-        "taker_fee": 0.001,    # 0.100%
+        **_BYBIT_FEES,
     },
     "DOGE": {
         "symbol": "DOGE/USDT:USDT",
         "label": "DOGE/USDT",
-        "contract_value": 100.0,
+        "contract_value": 1.0,
         "price_tick": 0.00001,
         "sweep_bucket": 0.001,
-        "maker_fee": 0.00036,  # 0.036%
-        "taker_fee": 0.001,    # 0.100%
+        **_BYBIT_FEES,
     },
     "KAS": {
         "symbol": "KAS/USDT:USDT",
         "label": "KAS/USDT",
-        "contract_value": 1000.0,
+        "contract_value": 10.0,
         "price_tick": 0.00001,
         "sweep_bucket": 0.001,
-        "maker_fee": 0.00036,  # 0.036%
-        "taker_fee": 0.001,    # 0.100%
+        **_BYBIT_FEES,
+    },
+    "ADA": {
+        "symbol": "ADA/USDT:USDT",
+        "label": "ADA/USDT",
+        "contract_value": 1.0,
+        "price_tick": 0.0001,
+        "sweep_bucket": 0.001,
+        **_BYBIT_FEES,
+    },
+    "BNB": {
+        "symbol": "BNB/USDT:USDT",
+        "label": "BNB/USDT",
+        "contract_value": 0.01,
+        "price_tick": 0.1,
+        "sweep_bucket": 0.1,
+        **_BYBIT_FEES,
+    },
+    "LINK": {
+        "symbol": "LINK/USDT:USDT",
+        "label": "LINK/USDT",
+        "contract_value": 0.1,
+        "price_tick": 0.001,
+        "sweep_bucket": 0.01,
+        **_BYBIT_FEES,
+    },
+    "LTC": {
+        "symbol": "LTC/USDT:USDT",
+        "label": "LTC/USDT",
+        "contract_value": 0.1,
+        "price_tick": 0.01,
+        "sweep_bucket": 0.1,
+        **_BYBIT_FEES,
+    },
+    "XRP": {
+        "symbol": "XRP/USDT:USDT",
+        "label": "XRP/USDT",
+        "contract_value": 0.1,
+        "price_tick": 0.0001,
+        "sweep_bucket": 0.001,
+        **_BYBIT_FEES,
     },
 }
-DEFAULT_SYMBOL_KEY = "BTC"
+DEFAULT_SYMBOL_KEY = "SOL"
+ACTIVE_SYMBOL_KEYS = (
+    "SOL", "BTC", "ETH", "DOGE", "KAS", "ADA", "BNB", "LINK", "LTC", "XRP",
+)
 _CCXT_TO_SYMBOL_KEY = {p["symbol"]: k for k, p in SYMBOL_PROFILES.items()}
 
 CONFIG = {
@@ -143,14 +173,15 @@ CONFIG = {
     #   $300  → max_positions 3, min_balance 80
     #   $500  → max_positions 4, min_balance 100
     #   $1000 → max_positions 6, min_balance 150
-    "risk_per_trade_pct":  1.0,   # % баланса на сделку (1% от $100 = $1 риска)
-    "leverage":            5,     # плечо — не поднимай выше 10 на BTC
-    "max_positions":       5,     # слотов 5, но реально ограничит проверка маржи
-    "margin_reserve_pct":  30.0,  # держать 30% баланса свободным ($30 из $100)
-    "min_balance_usdt":    50.0,   # стоп торговли если баланс упал до $50
-    "min_contracts":       1,      # минимум лотов бота (qty = лоты × contract_value)
-    "min_notional_usdt":   10.0,   # минимальный нотионал позиции в USDT
-    "hedge_mode":          True,   # Bybit hedge: long+short; False = one-way
+    "risk_per_trade_pct":  1.0,   # % текущего баланса на сделку
+    "leverage":            20,    # изолированная маржа 20x
+    "max_positions":       7,     # суммарно по всем парам и ТФ
+    "margin_reserve_pct":  5.0,   # небольшой запас свободной маржи
+    "min_balance_usdt":    20.0,
+    "min_contracts":       1,
+    "min_notional_usdt":   5.0,   # Bybit minNotional linear
+    "min_stop_pct":        0.6,   # сигналы со стопом < 0.6% не торгуем
+    "hedge_mode":          False, # one-way: 1 позиция на пару
     "emergency_stop_pct":  0.3,    # % за стоп-ценой → принудительное закрытие маркетом
     "min_rr":              0.2,    # min R:R (reward/risk); MARKET retest — от текущей цены
     "slope_ema_threshold_pct": 0.0,  # мёртвая зона slope EMA (%); 0 = выкл; /prog_ema
@@ -160,13 +191,12 @@ CONFIG = {
     "sl_tp_restore_alert_cooldown_s": 300,  # debounce TG «SL/TP переставлены»
     "sl_tp_manual_alert_cooldown_s": 60,  # debounce TG «SL/TP сдвинуты вручную»
     "sl_tp_restore_grace_s": 25,  # не restore сразу: UI MEXC при сдвиге кратко снимает stoporder
-    "size_mult":           0.125,  # множитель размера; ниже мин. нотионала — автоподъём до биржи
-    # Lever-1: size by CISD formation quality (score→~0.60…1.35), поверх size_mult
-    "quality_size_enabled": True,
+    "size_mult":           1.0,    # размер = риск$ / стоп%; без урезания
+    "quality_size_enabled": False,
     # Mild P(SL) quartile overlay поверх QSZ; frozen model, итоговый cap 0.60…1.35
-    "psl_size_enabled": True,
+    "psl_size_enabled": False,
     # Frozen continuous quality-stop: SOL tf7 score q60→q90, SL distance 1.00→0.85
-    "quality_stop_enabled": True,
+    "quality_stop_enabled": False,  # стоп фиксирован за экстремумом свипа
     "quality_stop_q60": 5.209029019106522,
     "quality_stop_q90": 7.535410159157014,
     "quality_stop_min_mult": 0.85,
@@ -280,23 +310,34 @@ CONFIG = {
     },
     "tf7": {
         "timeframe":  "5m",
-        "confirm_timeframe": "1m",  # MSS confirm по close 1m; серия/триггер — 5m
         "htf_ratio":  240,   # 4H HTF (5m×48 баров)
-        "limit_h":    5,     # 5H ожидание входа
-        "position_h": 16,    # 16H ожидание выхода
-        "ohlcv":      500,
+        "limit_h":    20 / 60,  # 20 мин = 4 бара 5m
+        "position_h": 16,       # 16 ч = 192 бара 5m
+        "ohlcv":      1000,
         "scan_s":     15,
         "scan_m":     5,
         "label":      "5m → 4H",
-        # Economic gate: off | shadow (только лог) | enforce (реальный skip).
-        # SOL validation 2020–2026: fee<=0.25R + MARKET net RR>=0.80.
         "economic_gate_mode": "off",
         "max_fee_r": 0.25,
         "market_min_net_rr": 0.80,
     },
+    "tf8": {
+        "timeframe":  "30m",
+        "confirm_timeframe": "5m",  # MSS по 5m из того же буфера
+        "htf_ratio":  480,   # 8H HTF (30m×16 баров)
+        "limit_h":    0.5,   # 30 мин = 1 бар 30m
+        "position_h": 6,     # 6 ч = 12 баров 30m
+        "ohlcv":      200,
+        "scan_s":     15,
+        "scan_m":     30,
+        "label":      "30m → 8H",
+        "economic_gate_mode": "off",
+    },
 }
 
-TF_KEYS = ("tf0", "tf1", "tf2", "tf3", "tf4", "tf5", "tf6", "tf7")
+TF_KEYS = ("tf0", "tf1", "tf2", "tf3", "tf4", "tf5", "tf6", "tf7", "tf8")
+ACTIVE_TF_KEYS = ("tf7", "tf8")
+OHLCV_5M_BARS = 1000  # один запрос 5m на пару за цикл
 # tf4 (10m→1H): особый паттерн «2 бара HTF + подтверждение баром 3»
 TF4_BAR3_PATTERN_TF = "tf4"
 
@@ -339,6 +380,29 @@ SIGNALS_CACHE  = os.path.join(BASE_DIR, "signals_cache.json")
 PENDING_FILE   = os.path.join(BASE_DIR, "pending_limits.json")
 BOT_STATE_FILE = os.path.join(BASE_DIR, "bot_state.json")
 LOG_FILE       = os.path.join(BASE_DIR, "bot.log")
+
+
+def _positions_file() -> str:
+    name = "shadow_positions.json" if state.paper else "positions.json"
+    return os.path.join(BASE_DIR, name)
+
+
+def _pending_file() -> str:
+    name = "shadow_pending.json" if state.paper else "pending_limits.json"
+    return os.path.join(BASE_DIR, name)
+
+
+def _trades_file() -> str:
+    name = "shadow_trades.json" if state.paper else "trades.json"
+    return os.path.join(BASE_DIR, name)
+
+
+def _mode_prefix() -> str:
+    return "🧪 SHADOW" if state.paper else "🔴 LIVE"
+
+
+def _mode_tag() -> str:
+    return "shadow" if state.paper else "live"
 
 # ============================================================
 # ЛОГИРОВАНИЕ
@@ -471,8 +535,8 @@ class BotState:
         self.pending_limits: list   = []
         self.positions: list        = []
         self.paper_balance: float   = CONFIG["paper_balance"]
-        self.active_tf: str         = "tf1"   # активный ТФ сканера, меняется /tf
-        self.active_symbol_key: str  = DEFAULT_SYMBOL_KEY  # /pair
+        self.active_tf: str         = "tf7"
+        self.active_symbol_key: str  = DEFAULT_SYMBOL_KEY  # для fetch/detect текущего цикла
         self.fees_by_symbol: dict[str, dict] = {}
         self._trade_counter: int    = 0
         self._counter_date: str     = ""
@@ -481,8 +545,10 @@ class BotState:
         # Key НЕ содержит trigger_idx (чтобы не пересоздавалось на соседнем триггер-баре),
         # но содержит SL/TP и HTF окно.
         self.manual_setup_bans: dict[str, float] = {}
-        self.last_ohlcv_low: Optional[float] = None   # low последнего завершённого бара
-        self.last_ohlcv_high: Optional[float] = None  # high последнего завершённого бара
+        self.last_ohlcv_low: Optional[float] = None
+        self.last_ohlcv_high: Optional[float] = None
+        self.ohlcv_closed: dict[str, dict] = {}  # f"{symbol}|{tf}" → {low, high, close}
+        self.df_cache: dict = {}  # f"{symbol}|{tf}" → DataFrame рабочего ТФ
         self.start_confirm_until_ts: float = 0.0
         self._fill_in_progress: set[str] = set()  # pending.id во время _finalize_limit_fill
         self._close_in_progress: set[str] = set()  # pos.id во время _finalize_position_close
@@ -510,11 +576,11 @@ class BotState:
         # Detect-фильтры ATR/VOL/D — persist в bot_state.json, default все ON
         self.detect_filters: dict = dict(DETECT_FILTERS_DEFAULT)
         # Lever-1 quality size — persist; default ON (как CONFIG)
-        self.quality_size_enabled: bool = bool(CONFIG.get("quality_size_enabled", True))
+        self.quality_size_enabled: bool = bool(CONFIG.get("quality_size_enabled", False))
         # P(SL) overlay поверх Lever-1 — отдельный persist toggle
-        self.psl_size_enabled: bool = bool(CONFIG.get("psl_size_enabled", True))
+        self.psl_size_enabled: bool = bool(CONFIG.get("psl_size_enabled", False))
         # Continuous quality-score tightening initial SL — отдельный persist toggle
-        self.quality_stop_enabled: bool = bool(CONFIG.get("quality_stop_enabled", True))
+        self.quality_stop_enabled: bool = bool(CONFIG.get("quality_stop_enabled", False))
         # slope отклонил HTF+sweep → cisd_cross arm запрещён (2 HTF окна)
         self.slope_cisd_arm_blocked: list[dict] = []
         self.exchange_hedge_mode: bool = False  # подтверждённый режим MEXC (fetch после set)
@@ -532,17 +598,17 @@ class BotState:
         return self._trade_counter
 
     def mode_str(self) -> str:
-        mode     = "🧪 PAPER" if self.paper else "🔴 LIVE"
+        mode     = _mode_prefix()
         if not self.tasks_live.is_set():
             run = "🛑 HALTED"
         elif self.running.is_set():
             run = "▶ RUNNING"
         else:
             run = "⏸ PAUSED"
-        tf_label = CONFIG[self.active_tf]["label"]
-        sym_lbl = symbol_profile()["label"]
+        tf_label = " + ".join(CONFIG[k]["label"] for k in ACTIVE_TF_KEYS)
+        n_pairs = len(ACTIVE_SYMBOL_KEYS)
         pos_mode = "hedge" if _allow_both_directions() else "one-way"
-        return f"{mode} | {run} | {sym_lbl} | {tf_label} | {pos_mode}"
+        return f"{mode} | {run} | {n_pairs} пар | {tf_label} | {pos_mode}"
 
 
 state = BotState()
@@ -613,7 +679,7 @@ def _contract_value(symbol_key: Optional[str] = None) -> float:
 
 
 def _tracked_symbol_keys() -> set[str]:
-    keys = {active_symbol_key()}
+    keys = set(ACTIVE_SYMBOL_KEYS)
     for p in state.positions:
         if p.status == "open":
             keys.add(_pos_symbol_key(p))
@@ -655,13 +721,36 @@ def _apply_symbol_key(key: str) -> None:
     else:
         CONFIG["maker_fee"] = p["maker_fee"]
         CONFIG["taker_fee"] = p["taker_fee"]
+
+
+@contextmanager
+def _use_symbol(symbol_key: Optional[str]):
+    """Временно переключить active_symbol_key (сканер / ордера пары)."""
+    prev = active_symbol_key()
+    if symbol_key and symbol_key in SYMBOL_PROFILES and symbol_key != prev:
+        _apply_symbol_key(symbol_key)
+        try:
+            yield
+        finally:
+            _apply_symbol_key(prev)
+    else:
+        yield
 _create_pending_lock = asyncio.Lock()
 _slope_ohlcv_cache: dict[str, dict] = {}
 
 # ============================================================
-# КЭШ ЦЕНЫ
+# КЭШ ЦЕНЫ (по символу)
 # ============================================================
-price_cache: dict = {"last": None, "bid": None, "ask": None, "ts": time.time()}
+price_cache: dict[str, dict] = {}
+
+
+def _price_slot(symbol_key: Optional[str] = None) -> dict:
+    sk = symbol_key or active_symbol_key()
+    slot = price_cache.get(sk)
+    if slot is None:
+        slot = {"last": None, "bid": None, "ask": None, "ts": 0.0}
+        price_cache[sk] = slot
+    return slot
 
 
 # ============================================================
@@ -713,6 +802,7 @@ class PendingLimit:
         self.quality_stop_original: Optional[float] = None
         self.quality_stop_mult: float = 1.0
         self.quality_stop_model: str = ""
+        self.vwap_dev: float = 0.0
 
     def to_dict(self):
         d = {
@@ -793,6 +883,7 @@ class PendingLimit:
         p.quality_stop_original = _safe_float(d.get("quality_stop_original"))
         p.quality_stop_mult = float(d.get("quality_stop_mult") or 1)
         p.quality_stop_model = str(d.get("quality_stop_model") or "")
+        p.vwap_dev = float(d.get("vwap_dev") or 0)
         if p.status == "pending":
             p.force_market = False
             p.cisd_cross_market = False
@@ -843,6 +934,8 @@ class Position:
         self.quality_stop_original: Optional[float] = None
         self.quality_stop_mult: float = 1.0
         self.quality_stop_model: str = ""
+        self.vwap_dev: float = 0.0
+        self.confirm_bar_time: str = ""
 
     def to_dict(self):
         d = {
@@ -978,11 +1071,11 @@ def save_json(path, data):
 
 
 def load_positions():
-    return [Position.from_dict(d) for d in load_json(POSITIONS_FILE, [])]
+    return [Position.from_dict(d) for d in load_json(_positions_file(), [])]
 
 
 def save_positions(positions):
-    save_json(POSITIONS_FILE, [p.to_dict() for p in positions])
+    save_json(_positions_file(), [p.to_dict() for p in positions])
 
 
 def save_bot_state():
@@ -1025,7 +1118,7 @@ def load_bot_state():
     """Загружает активный ТФ, режим и таймауты с диска."""
     d = load_json(BOT_STATE_FILE, {})
     if "active_tf" in d and d["active_tf"] in TF_KEYS:
-        state.active_tf = d["active_tf"]
+        state.active_tf = d["active_tf"] if d["active_tf"] in ACTIVE_TF_KEYS else "tf7"
     if "fees_by_symbol" in d and isinstance(d["fees_by_symbol"], dict):
         cleaned_fees: dict[str, dict] = {}
         for k, v in d["fees_by_symbol"].items():
@@ -1072,6 +1165,8 @@ def load_bot_state():
         if state.paper and not state.running.is_set():
             state.running.set()
     for tf, vals in d.get("timeouts", {}).items():
+        if tf in ACTIVE_TF_KEYS:
+            continue  # tf7/tf8 таймауты фиксированы ТЗ
         if tf in CONFIG:
             if "limit_h"    in vals: CONFIG[tf]["limit_h"]    = float(vals["limit_h"])
             if "position_h" in vals: CONFIG[tf]["position_h"] = float(vals["position_h"])
@@ -1148,11 +1243,11 @@ def load_bot_state():
 
 
 def load_pending():
-    return [PendingLimit.from_dict(d) for d in load_json(PENDING_FILE, [])]
+    return [PendingLimit.from_dict(d) for d in load_json(_pending_file(), [])]
 
 
 def save_pending(pending):
-    save_json(PENDING_FILE, [p.to_dict() for p in pending])
+    save_json(_pending_file(), [p.to_dict() for p in pending])
 
 
 def _reload_pending_merged():
@@ -1391,7 +1486,8 @@ def _bot_open_in_direction(
 
 
 def _find_open_position_for_pyramid(direction: str, tf_name: str) -> Optional["Position"]:
-    """Первая open-нога для доливки (MEXC one-way — одна биржевая нога на direction)."""
+    """Первая open-нога для доливки. v6: доливки нет (1 позиция на пару)."""
+    return None
     cands = [
         p for p in state.positions
         if (
@@ -2328,9 +2424,9 @@ def _safe_float(val) -> Optional[float]:
 
 
 def _archive_trade(pos: Position):
-    trades = load_json(TRADES_FILE, [])
+    trades = load_json(_trades_file(), [])
     trades.append(pos.to_dict())
-    save_json(TRADES_FILE, trades)
+    save_json(_trades_file(), trades)
     _journal_on_trade_closed(pos)
 
 
@@ -2393,22 +2489,8 @@ def _late_retest_entry(direction: str, cisd: float, price_ref: float) -> bool:
 
 
 def _entry_kind_for_signal(sig: dict) -> str:
-    """Тип входа по сигналу: MSS confirm (close за CISD) → LIMIT @ CISD; иначе STOP-LIMIT."""
-    if bool(sig.get("fib_stretch_market")):
-        return "MARKET"
-    if bool(sig.get("tf4_bar3_limit_retest", False)):
-        return "LIMIT"
-    direction = str(sig.get("direction") or "")
-    cisd = float(sig.get("cisd_level") or sig.get("entry") or 0)
-    sweep = float(_safe_float(sig.get("htf_sweep_level")) or 0)
-    if _sweep_cisd_retest_limit(direction, sweep, cisd):
-        return "LIMIT"
-    cc = float(_safe_float(sig.get("confirm_close")) or 0)
-    if bool(sig.get("late_retest")) or (
-        _sig_has_mss_confirm(sig) and _is_retrace_at_creation(direction, cisd, cc)
-    ):
-        return "LIMIT"
-    return "STOP-LIMIT"
+    """v6: только LIMIT на cisd_level."""
+    return "LIMIT"
 
 
 def _entry_price_for_rr(
@@ -3150,23 +3232,14 @@ _task_alert_ts: dict[str, float] = {}
 
 BOT_COMMANDS = [
     BotCommand("resume", "▶ Запустить / возобновить торговлю"),
+    BotCommand("start",  "▶ Запустить сканер"),
     BotCommand("stop",   "⏸ Пауза или полная остановка"),
-    BotCommand("paper",  "🔄 Переключить Paper ↔ Live"),
-    BotCommand("status", "📊 Статус: позиции, баланс, цена"),
-    BotCommand("stats",  "📈 Статистика сделок по периоду"),
-    BotCommand("price",  "💲 Текущая цена пары"),
-    BotCommand("pair",   "🪙 Выбрать торговую пару"),
+    BotCommand("mode",   "🔄 SHADOW ↔ LIVE"),
+    BotCommand("status", "📊 Статус: позиции, баланс"),
+    BotCommand("stats",  "📈 Статистика по парам и ТФ"),
+    BotCommand("pairs",  "🪙 Активные пары"),
     BotCommand("close",  "🔒 Закрыть позицию / отменить лимитку"),
-    BotCommand("tf",     "📐 Выбрать таймфрейм сканера"),
-    BotCommand("timeout", "⏱ Настроить таймауты входа/выхода"),
-    BotCommand("filters", "🎛 Состояние ATR / VOL / D / QSZ / PSL / QSTOP"),
-    BotCommand("filter_atr", "🎚 ATR: тап = вкл/выкл (или on|off)"),
-    BotCommand("filter_vol", "🎚 VOL: тап = вкл/выкл (или on|off)"),
-    BotCommand("filter_d", "🎚 D soft-DOW: тап = вкл/выкл (или on|off)"),
-    BotCommand("filter_qsz", "🎚 QSZ рычаг1 size: тап = вкл/выкл (или on|off)"),
-    BotCommand("filter_psl", "🎚 P(SL) overlay: тап = вкл/выкл (или on|off)"),
-    BotCommand("filter_qstop", "🎚 Quality-stop: тап = вкл/выкл (или on|off)"),
-    BotCommand("fee",     "💰 Maker / taker fee %"),
+    BotCommand("fee",    "💰 Maker / taker fee %"),
 ]
 
 
@@ -3203,15 +3276,18 @@ async def cmd_start_noop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 def _build_tg_application() -> Application:
     app = Application.builder().token(TELEGRAM_TOKEN).build()
     app.add_handler(TypeHandler(Update, _tg_gate), group=-1)
-    app.add_handler(CommandHandler("start",  cmd_start_noop))
+    app.add_handler(CommandHandler("start",  cmd_start))
     app.add_handler(CommandHandler("resume", cmd_start))
     app.add_handler(CommandHandler("stop",   cmd_stop))
     app.add_handler(CallbackQueryHandler(callback_stop, pattern=r"^stop:"))
-    app.add_handler(CommandHandler("paper",  cmd_paper))
+    app.add_handler(CommandHandler("mode",   cmd_mode))
+    app.add_handler(CommandHandler("paper",  cmd_mode))
+    app.add_handler(CallbackQueryHandler(callback_mode, pattern=r"^mode:"))
     app.add_handler(CommandHandler("status", cmd_status))
     app.add_handler(CommandHandler("stats",  cmd_stats))
     app.add_handler(CommandHandler("price",  cmd_price))
-    app.add_handler(CommandHandler("pair",   cmd_pair))
+    app.add_handler(CommandHandler("pairs",  cmd_pairs))
+    app.add_handler(CommandHandler("pair",   cmd_pairs))
     app.add_handler(CommandHandler("close",  cmd_close))
     app.add_handler(CommandHandler("tf",     cmd_tf))
     app.add_handler(CommandHandler("timeout", cmd_timeout))
@@ -3288,12 +3364,12 @@ async def telegram_connect_loop():
             _tg_online = True
             logger.info("Telegram подключён, polling запущен")
             await send_telegram(
-                f"🤖 CISD BOT v5.2 запущен\n"
-                f"Режим: {'🧪 PAPER' if state.paper else '🔴 LIVE'} | "
+                f"🤖 CISD BOT v6 запущен\n"
+                f"Режим: {_mode_prefix()} | "
                 f"{'▶ RUNNING' if state.running.is_set() else '⏸ PAUSED'}\n"
                 f"{'─' * 28}\n"
-                f"Вход: MSS → STOP-LIMIT @ CISD\n"
-                f"Команды: /resume  /stop  /paper  /status  /stats  /timeout  /filters"
+                f"10 пар × 5m→4H + 30m→8H | LIMIT TP=1R vwap\n"
+                f"Команды: /start  /stop  /mode  /status  /stats  /pairs"
             )
             # Держим задачу живой, пока polling работает
             while getattr(_tg_app.updater, "running", False):
@@ -3365,7 +3441,8 @@ async def send_telegram(text: str, reply_markup=None):
 # MEXC futures не отдаёт 10m — собираем из младшего ТФ (как на TV).
 _SYNTHETIC_OHLCV: dict[str, tuple[str, int]] = {
     "10m": ("5m", 2),
-    "2h":  ("1h", 2),   # MEXC swap не отдаёт 2h — собираем из 1h
+    "30m": ("5m", 6),  # tf8: 30m только локальный ресемпл из 5m
+    "2h":  ("1h", 2),
 }
 
 
@@ -3505,12 +3582,13 @@ async def _cisd_cross_eval_iloc(
     return None
 
 
-async def _fetch_ohlcv_exchange(timeframe: str, limit: int) -> Optional[pd.DataFrame]:
+async def _fetch_ohlcv_exchange(timeframe: str, limit: int, symbol: Optional[str] = None) -> Optional[pd.DataFrame]:
     loop = asyncio.get_event_loop()
+    sym = symbol or active_symbol()
     for retry in range(3):
         try:
             ohlcv = await loop.run_in_executor(
-                None, lambda: exchange.fetch_ohlcv(active_symbol(), timeframe, limit=limit)
+                None, lambda s=sym, tf=timeframe, n=limit: exchange.fetch_ohlcv(s, tf, limit=n)
             )
             df = pd.DataFrame(ohlcv, columns=["ts", "open", "high", "low", "close", "volume"])
             df["ts"] = pd.to_datetime(df["ts"], unit="ms", utc=True)
@@ -3518,24 +3596,24 @@ async def _fetch_ohlcv_exchange(timeframe: str, limit: int) -> Optional[pd.DataF
             df.index = df.index.tz_localize(None)
             return df
         except Exception as e:
-            logger.warning(f"OHLCV {timeframe} retry {retry + 1}: {e}")
+            logger.warning(f"OHLCV {sym} {timeframe} retry {retry + 1}: {e}")
             await asyncio.sleep(5)
     return None
 
 
-async def fetch_ohlcv(timeframe="15m", limit=500) -> Optional[pd.DataFrame]:
+async def fetch_ohlcv(timeframe="15m", limit=500, symbol: Optional[str] = None) -> Optional[pd.DataFrame]:
     synth = _SYNTHETIC_OHLCV.get(timeframe)
     if synth is not None:
         src_tf, mult = synth
         raw_limit = min(max(limit * mult + mult, 50), 1500)
-        df = await _fetch_ohlcv_exchange(src_tf, raw_limit)
+        df = await _fetch_ohlcv_exchange(src_tf, raw_limit, symbol=symbol)
         if df is None or len(df) < mult:
             return None
         df = _resample_ohlcv(df, timeframe)
         if len(df) > limit:
             df = df.iloc[-limit:]
         return df if len(df) >= 1 else None
-    return await _fetch_ohlcv_exchange(timeframe, limit)
+    return await _fetch_ohlcv_exchange(timeframe, limit, symbol=symbol)
 
 
 async def _ltf_bar_closed(
@@ -3564,8 +3642,9 @@ def _scan_interval_s(tf_cfg: dict) -> int:
 # ============================================================
 # ДЕТЕКЦИЯ СИГНАЛОВ (сразу после HTF-свипа)
 # ============================================================
-def _cand_key(tf_name: str, direction: str, htf_time: str) -> str:
-    return f"{tf_name}|{direction}|{htf_time}"
+def _cand_key(tf_name: str, direction: str, htf_time: str, symbol_key: Optional[str] = None) -> str:
+    sk = symbol_key or active_symbol_key()
+    return f"{sk}|{tf_name}|{direction}|{htf_time}"
 
 
 def _tf_has_sweep_candidates(tf_name: str) -> bool:
@@ -3627,13 +3706,17 @@ def _sync_cand_from_sweep(cand: dict, sweep: dict, df: pd.DataFrame) -> None:
     cand["trigger_extreme"] = _trigger_extreme_at(df, trigger_idx, is_bearish)
 
 
-def _drop_sweep_candidate(tf_name: str, direction: str, htf_s: str, reason: str) -> None:
-    state.sweep_candidates.pop(_cand_key(tf_name, direction, htf_s), None)
+def _drop_sweep_candidate(
+    tf_name: str, direction: str, htf_s: str, reason: str,
+    symbol_key: Optional[str] = None,
+) -> None:
+    state.sweep_candidates.pop(_cand_key(tf_name, direction, htf_s, symbol_key), None)
     logger.info(f"detect:   -> кандидат снят [{htf_s}] {direction}: {reason}")
 
 
-def _htf_sweep_validate_key(tf_name: str, htf_time: str) -> str:
-    return f"{tf_name}|{htf_time}"
+def _htf_sweep_validate_key(tf_name: str, htf_time: str, symbol_key: Optional[str] = None) -> str:
+    sk = symbol_key or active_symbol_key()
+    return f"{sk}|{tf_name}|{htf_time}"
 
 
 def _htf_closed_sweep_flags(df_htf: pd.DataFrame, closed_idx: int) -> tuple[bool, bool]:
@@ -3701,7 +3784,7 @@ async def _invalidate_pending_no_htf_inter_sweep(
     checks.setdefault(closed_htf, (True, True))
 
     cancelled = 0
-    prefix = "🧪 PAPER " if state.paper else ""
+    prefix = _mode_prefix() + " "
     tfl = tf_label(tf_name)
     htf_name = tf_htf_name(tf_name)
 
@@ -3875,11 +3958,14 @@ def _resolve_cand_trigger_idx(df: pd.DataFrame, cand: dict) -> int | None:
     return None
 
 
-def _htf_sweep_lock_key(tf_name: str, direction: str, sweep_level: float) -> str:
-    """Ключ lock по tf+direction+sweep; снятие при уходе HTF-окна — в _prune_htf_sweep_locks."""
-    sk = active_symbol_key()
+def _htf_sweep_lock_key(
+    tf_name: str, direction: str, sweep_level: float,
+    symbol_key: Optional[str] = None,
+) -> str:
+    """Ключ lock по symbol+tf+direction+sweep."""
+    sk = symbol_key or active_symbol_key()
     sweep_r = _round_sweep_level(sweep_level, sk)
-    return f"{tf_name}|{direction}|sweep={sweep_r:.0f}"
+    return f"{sk}|{tf_name}|{direction}|sweep={sweep_r:.0f}"
 
 
 def _setup_leg_lock_key(tf_name: str, direction: str, stop: float, tp: float) -> str:
@@ -3887,7 +3973,7 @@ def _setup_leg_lock_key(tf_name: str, direction: str, stop: float, tp: float) ->
     sl_r = _round_price(stop, sk)
     tp_r = _round_price(tp, sk)
     dec = _price_decimals(symbol_profile(sk)["price_tick"])
-    return f"{tf_name}|{direction}|sl={sl_r:.{dec}f}|tp={tp_r:.{dec}f}"
+    return f"{sk}|{tf_name}|{direction}|sl={sl_r:.{dec}f}|tp={tp_r:.{dec}f}"
 
 
 def _trigger_extreme_at(df: pd.DataFrame, trigger_idx: int, is_bearish: bool) -> float:
@@ -3977,7 +4063,10 @@ def _levels_from_trigger(
     fib_prices = det._fib_prices(base_high, base_low, is_bearish)
     entry = float(cisd_level)
     stop = float(base_low if direction == "LONG" else base_high)
-    tp = float(fib_prices[1])
+    risk = abs(entry - stop)
+    if risk <= 0:
+        return None
+    tp = float(entry + risk) if direction == "LONG" else float(entry - risk)
     if any(v is None or (v != v) for v in [entry, stop, tp]) or stop == 0:
         return None
     if direction == "LONG" and (entry <= stop or tp <= entry):
@@ -5419,14 +5508,21 @@ async def price_stream():
 
 
 async def _price_rest_poll():
-    """REST-поллинг цены каждые 4с — основной/резервный источник."""
-    logger.info("REST price poll: запущен")
+    """REST-поллинг цен всех активных пар каждые 4с."""
+    logger.info("REST price poll: запущен (10 пар)")
+    keys = list(ACTIVE_SYMBOL_KEYS)
+    i = 0
     while True:
-        p = await _get_price_rest()
-        if p:
-            price_cache["last"] = p
-            price_cache["ts"]   = time.time()
-        await asyncio.sleep(4)
+        # за цикл обновляем все пары, по 1 тикеру за итерацию пачки
+        batch = keys[i:i + 5] or keys[:5]
+        i = (i + 5) % len(keys)
+        for sk in batch:
+            p = await _get_price_rest(sk)
+            if p:
+                slot = _price_slot(sk)
+                slot["last"] = p
+                slot["ts"] = time.time()
+        await asyncio.sleep(2)
 
 
 async def price_stale_watchdog():
@@ -5439,7 +5535,12 @@ async def price_stale_watchdog():
 
     while True:
         await asyncio.sleep(CONFIG["price_stale_s"])
-        age = time.time() - price_cache["ts"]
+        ages = []
+        for sk in ACTIVE_SYMBOL_KEYS:
+            slot = _price_slot(sk)
+            if slot["ts"]:
+                ages.append(time.time() - slot["ts"])
+        age = max(ages) if ages else 999.0
 
         if age > CONFIG["price_stale_s"] * 3:   # алерт только после 30с
             logger.warning(f"Цена устарела {age:.0f}с")
@@ -5449,34 +5550,35 @@ async def price_stale_watchdog():
                 and now_ts - last_alert >= ALERT_INTERVAL
             ):
                 await send_telegram(
-                    f"⚠️ Цена {symbol_profile()['label']} устарела {age:.0f}с — проблема с подключением"
+                    f"⚠️ Цены устарели {age:.0f}с — проблема с подключением Bybit"
                 )
                 last_alert = now_ts
 
 
 _price_rest_errors = 0
 
-async def _get_price_rest() -> Optional[float]:
+async def _get_price_rest(symbol_key: Optional[str] = None) -> Optional[float]:
     global _price_rest_errors
     try:
         loop = asyncio.get_event_loop()
-        ticker = await loop.run_in_executor(None, lambda: exchange.fetch_ticker(active_symbol()))
+        sym = symbol_profile(symbol_key)["symbol"]
+        ticker = await loop.run_in_executor(None, lambda s=sym: exchange.fetch_ticker(s))
         _price_rest_errors = 0
         return float(ticker["last"])
     except Exception as e:
         _price_rest_errors += 1
-        # Первые 3 ошибки подряд — тихий WARNING, дальше — ERROR
         lvl = logging.WARNING if _price_rest_errors <= 3 else logging.ERROR
         logger.log(lvl, f"REST price ошибка #{_price_rest_errors}: {e}")
         return None
 
 
-def get_price() -> Optional[float]:
-    if price_cache["last"] is None:
+def get_price(symbol_key: Optional[str] = None) -> Optional[float]:
+    slot = _price_slot(symbol_key)
+    if slot["last"] is None:
         return None
-    if time.time() - price_cache["ts"] > CONFIG["price_stale_s"] * 3:
+    if time.time() - slot["ts"] > CONFIG["price_stale_s"] * 3:
         return None
-    return price_cache["last"]
+    return slot["last"]
 
 
 # ============================================================
@@ -5532,6 +5634,13 @@ async def set_leverage(symbol_key: Optional[str] = None):
         state.exchange_hedge_mode = False
     try:
         await loop.run_in_executor(
+            None, lambda: exchange.set_margin_mode("isolated", sym)
+        )
+        logger.info(f"Margin mode isolated ({sym})")
+    except Exception as e:
+        logger.warning(f"set_margin_mode isolated: {e}")
+    try:
+        await loop.run_in_executor(
             None,
             lambda: exchange.set_leverage(
                 CONFIG["leverage"],
@@ -5542,9 +5651,16 @@ async def set_leverage(symbol_key: Optional[str] = None):
                 },
             ),
         )
-        logger.info(f"Плечо {CONFIG['leverage']}x ({sym})")
+        logger.info(f"Плечо {CONFIG['leverage']}x isolated ({sym})")
     except Exception as e:
         logger.warning(f"set_leverage: {e}")
+
+
+async def set_leverage_all():
+    if state.paper:
+        return
+    for sk in ACTIVE_SYMBOL_KEYS:
+        await set_leverage(sk)
 
 
 async def get_balance() -> float:
@@ -5895,23 +6011,10 @@ def _resolve_entry_order_kind(
     force_market: bool = False,
     force_limit_retest: bool = False,
 ) -> tuple[str, dict, float]:
-    """LIMIT (ретест sweep↔CISD) / STOP-LIMIT (MSS → ждём исполнение @ CISD)."""
+    """v6: только LIMIT на cisd_level (без MARKET и STOP-LIMIT входа)."""
+    del force_market, force_limit_retest, sweep_level, price_ref, direction
     cisd = _cisd_limit_price(entry_price, cisd_level)
-    if force_market:
-        return "MARKET", {}, cisd
-    if force_limit_retest:
-        return "LIMIT", {}, cisd
-    trig = 1 if direction == "LONG" else 2
-    sweep = float(sweep_level or 0)
-    retest = _sweep_cisd_retest_limit(direction, sweep, cisd)
-
-    if retest:
-        return "LIMIT", {}, cisd
-    return "STOP-LIMIT", {
-        "triggerPrice": cisd,
-        "triggerDirection": 1 if direction == "LONG" else 2,
-        "triggerBy": "LastPrice",
-    }, cisd
+    return "LIMIT", {}, cisd
 
 
 def _trade_signal_category(
@@ -5987,12 +6090,15 @@ def _pending_journal_record(pl: "PendingLimit", event: str, **extra) -> dict:
     rec = {
         "event": event,
         "category": cat,
-        "mode": "paper" if state.paper else "live",
+        "mode": _mode_tag(),
         "id": pl.id,
         "trade_num": pl.trade_num,
         "tf": pl.tf,
+        "symbol": _pos_symbol_key(pl),
         "direction": pl.direction,
-        "signal_time": pl.htf_time or None,
+        "signal_time": getattr(pl, "confirm_bar_time", "") or pl.htf_time or None,
+        "htf_time": pl.htf_time or None,
+        "vwap_dev": float(getattr(pl, "vwap_dev", 0) or 0),
         "pending_created_at": pl.created_at.isoformat(),
         "pending_timeout_at": pl.timeout_at.isoformat(),
         "position_timeout_at": (
@@ -6036,12 +6142,15 @@ def _position_journal_record(pos: Position, event: str = "closed", **extra) -> d
     rec = {
         "event": event,
         "category": cat,
-        "mode": "paper" if state.paper else "live",
+        "mode": _mode_tag(),
         "id": pos.id,
         "trade_num": pos.trade_num,
         "tf": pos.tf,
+        "symbol": _pos_symbol_key(pos),
         "direction": pos.direction,
-        "signal_time": pos.htf_time or None,
+        "signal_time": getattr(pos, "confirm_bar_time", "") or pos.htf_time or None,
+        "htf_time": pos.htf_time or None,
+        "vwap_dev": float(getattr(pos, "vwap_dev", 0) or 0),
         "pending_created_at": (
             pos.pending_created_at.isoformat() if pos.pending_created_at else None
         ),
@@ -6092,6 +6201,8 @@ def _copy_pending_meta_to_position(pl: "PendingLimit", pos: Position) -> None:
     pos.quality_stop_original = pl.quality_stop_original
     pos.quality_stop_mult = pl.quality_stop_mult
     pos.quality_stop_model = pl.quality_stop_model
+    pos.vwap_dev = float(getattr(pl, "vwap_dev", 0) or 0)
+    pos.confirm_bar_time = str(getattr(pl, "confirm_bar_time", "") or "")
 
 
 def _journal_log_pending(pl: "PendingLimit", event: str, **extra) -> None:
@@ -6120,7 +6231,7 @@ def _journal_log_signal_skipped(
         _append_trade_journal({
             "event": "signal_skipped",
             "category": category,
-            "mode": "paper" if state.paper else "live",
+            "mode": _mode_tag(),
             "tf": tf_name,
             "direction": sig.get("direction"),
             "signal_time": sig.get("htf_time"),
@@ -6170,83 +6281,40 @@ async def place_entry_order(direction: str, entry_price: float,
                            force_market: bool = False,
                            force_limit_retest: bool = False,
                            *,
-                           external_oid: Optional[str] = None) -> Optional[dict]:
+                           external_oid: Optional[str] = None,
+                           symbol_key: Optional[str] = None) -> Optional[dict]:
+    if state.paper:
+        logger.error("place_entry_order: SHADOW — ордера на биржу запрещены")
+        return None
+    sk = symbol_key or active_symbol_key()
     side      = "buy" if direction == "LONG" else "sell"
     params    = _order_params(direction, False)
     if external_oid:
         params.setdefault("clientOrderId", external_oid)
         params.setdefault("orderLinkId", external_oid)
-    price_ref = (
-        price_at_creation if price_at_creation and price_at_creation > 0
-        else (get_price() or entry_price)
-    )
-    order_type, extra, limit_px = _resolve_entry_order_kind(
-        direction, entry_price, price_ref,
-        cisd_level=cisd_level or entry_price,
-        sweep_level=sweep_level,
-        force_market=force_market,
-        force_limit_retest=force_limit_retest,
-    )
-    params.update(extra)
-
-    if order_type == "STOP-LIMIT":
-        logger.info(
-            f"Entry type=STOP-LIMIT {direction} trigger={limit_px:.1f} "
-            f"limit={limit_px:.1f} ref={price_ref:.1f}"
-        )
-    elif order_type == "MARKET":
-        logger.info(
-            f"Entry type=MARKET {direction} ref={price_ref:.1f} "
-            f"(signal entry={entry_price:.1f})"
-        )
-    else:
-        logger.info(
-            f"Entry type={order_type} {direction} @ {limit_px:.1f} ref={price_ref:.1f}"
-        )
-
-    qty = _qty_ex(contracts)
+    cisd = _cisd_limit_price(entry_price, cisd_level or entry_price)
+    limit_px = _round_price(cisd, sk)
+    params.setdefault("timeInForce", "PostOnly")
+    qty = _qty_ex(contracts, sk)
     loop = asyncio.get_event_loop()
+    sym = symbol_profile(sk)["symbol"]
     for attempt in range(3):
         try:
-            if order_type == "MARKET":
-                order = await loop.run_in_executor(
-                    None,
-                    lambda p=params, s=side, c=qty, sym=active_symbol(): exchange.create_market_order(
-                        sym, s, c, None, p
-                    ),
-                )
-            else:
-                if order_type == "LIMIT":
-                    params.setdefault("timeInForce", "PostOnly")
-                order_type_ccxt = "limit"
-                order = await loop.run_in_executor(
-                    None,
-                    lambda p=params, ot=order_type_ccxt, s=side, c=qty, lp=limit_px, sym=active_symbol(): exchange.create_order(
-                        sym, ot, s, c, lp, p
-                    ),
-                )
+            order = await loop.run_in_executor(
+                None,
+                lambda p=params, s=side, c=qty, lp=limit_px, sy=sym: exchange.create_order(
+                    sy, "limit", s, c, lp, p
+                ),
+            )
             oid = _extract_order_id(order)
-            if order_type == "MARKET":
-                at = f" @ ~{price_ref:.1f}"
-            elif order_type == "LIMIT":
-                at = f"@{limit_px:.1f}"
-            else:
-                at = f"@trigger={limit_px:.1f} limit={limit_px:.1f}"
             logger.info(
-                f"{order_type} {direction} {side} {contracts}{at} "
-                f"stop={stop_price:.1f} tp={tp_price:.1f} → {oid}"
+                f"LIMIT {direction} {side} {contracts}@{limit_px} "
+                f"stop={stop_price} tp={tp_price} {sk} → {oid}"
             )
             return order
         except Exception as e:
-            err = str(e)
-            if "stopLossPrice" in err or "takeProfitPrice" in err:
-                # MEXC не поддерживает SL/TP в одном запросе — убираем и пробуем без них
-                logger.warning(f"SL/TP attach failed: {e}. Retrying without SL/TP...")
-                params.pop("stopLossPrice", None)
-                params.pop("takeProfitPrice", None)
-            else:
-                logger.error(f"entry_order attempt {attempt + 1}: {e}")
-                await asyncio.sleep(2 ** (attempt + 1))
+            logger.error(f"entry_order attempt {attempt + 1}: {e}")
+            await asyncio.sleep(2 ** (attempt + 1))
     return None
 
 
@@ -7562,7 +7630,7 @@ async def _notify_cancel_false_alarm_resolved(pl: "PendingLimit", reason: str) -
     if not getattr(pl, "cancel_fail_alerted", False):
         return
     pl.cancel_fail_alerted = False
-    prefix = "🧪 PAPER " if state.paper else ""
+    prefix = _mode_prefix() + " "
     tfl = tf_label(pl.tf)
     await send_telegram(
         f"{prefix}✅ ЛИМИТКА #{pl.trade_num} — ордер снят (ложный алерт) [{tfl}]\n"
@@ -8420,16 +8488,19 @@ async def _finalize_position_close(
             pos.entry_price * pos.contracts * _contract_value(_pos_symbol_key(pos))
             / CONFIG["leverage"]
         )
-        ico = {"closed_tp": "🟢", "closed_sl": "🔴", "closed_sync": "⚪"}.get(reason, "⚪")
+        ico = {"closed_tp": "🟢", "closed_sl": "🔴", "closed_sync": "⚪", "closed_time": "⏰"}.get(reason, "⚪")
         reason_str = {
             "closed_tp": "ТЕЙК ПРОФИТ",
             "closed_sl": "СТОП ЛОСС",
             "closed_sync": "ЗАКРЫТА НА БИРЖЕ",
+            "closed_time": "ТАЙМАУТ",
         }.get(reason, "ЗАКРЫТА НА БИРЖЕ")
+        sk = _pos_symbol_key(pos)
         await send_telegram(
-            f"{ico} #{pos.trade_num} {reason_str} {arrow} {pos.direction} [{tfl}]\n"
-            f"{'─' * 34}\n"
-            f"Вход:  {_fmt_px(pos.entry_price)}  |  Выход: {_fmt_px(close_price)}\n"
+            f"{_mode_prefix()} {ico} #{pos.trade_num} {reason_str} {arrow} {pos.direction}\n"
+            f"Инструмент: {symbol_profile(sk)['label']}\n"
+            f"ТФ: {tfl}\n"
+            f"Вход: {_fmt_px(pos.entry_price, sk)}  |  Выход: {_fmt_px(close_price, sk)}\n"
             f"{_format_close_pnl_lines(gross, fees, net, margin)}"
         )
     finally:
@@ -8466,22 +8537,18 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
         if v is not None:
             fib_lines += f"\n  {label}: {_fmt_px(v)}"
 
+    sk = active_symbol_key()
+    risk_usdt = abs(float(entry) - float(stop)) * 1.0
+    # риск в USDT уточнится при размере; здесь карточка лимитки
     msg = (
-        f"🧪 PAPER  {arrow} {direction} [{tfl}]  #{trade_num}\n"
-        f"{'─' * 34}\n"
-        f"🔍 Свип {htf_name} на уровне: {sweep}\n"
-        f"🔷 База серии:  H={bh}  L={bl}\n"
-        f"{'─' * 34}\n"
-        f"📥 Выставляю лимитку на: {_fmt_px(entry)}\n"
-        f"🛑 Стоп (после входа):  {_fmt_px(stop)}  ({sl_pct:.2f}%)\n"
-        f"💰 Тейк (после входа):  {_fmt_px(tp)}  ({tp_pct:.2f}%)\n"
-        f"⚖️  R:R = {rr:.2f}\n"
-        f"{'─' * 34}\n"
-        f"📊 Фибоначчи:{fib_lines}\n"
-        f"{'─' * 34}\n"
-        f"📅 Свеча: {msk(sig['timestamp']).strftime('%Y-%m-%d %H:%M')} МСК\n"
-        f"⏱ Ожидание: до {_fmt_h(tf_cfg['limit_h'])}  |  Позиция: до {_fmt_h(tf_cfg['position_h'])}\n"
-        f"⏳ Жду исполнения лимитки..."
+        f"{_mode_prefix()} {arrow} {direction} #{trade_num} — лимитка\n"
+        f"Инструмент: {symbol_profile(sk)['label']}\n"
+        f"ТФ: {tfl}\n"
+        f"Сигнал: {_utc_iso_short(sig.get('confirm_bar_time') or sig.get('timestamp'))}"
+        f" (HTF {_utc_iso_short(sig.get('htf_time'))})\n"
+        f"Вход: {_fmt_px(entry, sk)} | Стоп: {_fmt_px(stop, sk)} | Тейк: {_fmt_px(tp, sk)}\n"
+        f"vd={float(sig.get('vwap_dev') or 0):.2f}  R:R={rr:.2f}\n"
+        f"Ожидание входа: {_fmt_h(tf_cfg['limit_h'])}  |  позиция: {_fmt_h(tf_cfg['position_h'])}"
     )
     logger.info(
         f"[PAPER] {direction} [{tf_name}] sweep={sweep} entry={_fmt_px(entry)} "
@@ -8975,7 +9042,7 @@ def _sig_physical_dedup_key(sig: dict, tf_name: str) -> str:
         tr = str(pd.Timestamp(raw)) if raw else ""
     except Exception:
         tr = str(raw) if raw else ""
-    return f"{tf_name}|{direction}|{tr}"
+    return f"{active_symbol_key()}|{tf_name}|{direction}|{tr}"
 
 
 def _sig_extreme_dedup_key(
@@ -9162,9 +9229,155 @@ def _format_sig_timestamp(sig: dict) -> str:
         return str(raw)[:16]
 
 
+def _pair_busy(symbol_key: str) -> bool:
+    """У пары уже есть open-позиция или pending-лимитка (любой ТФ)."""
+    for p in state.positions:
+        if p.status == "open" and _pos_symbol_key(p) == symbol_key:
+            return True
+    for pl in state.pending_limits:
+        if pl.status == "pending" and _pos_symbol_key(pl) == symbol_key:
+            return True
+    return False
+
+
+def _open_pending_count() -> int:
+    n_open = sum(1 for p in state.positions if p.status == "open")
+    n_pend = sum(1 for p in state.pending_limits if p.status == "pending")
+    return n_open + n_pend
+
+
+def _vwap_gate(df: pd.DataFrame, sig: dict) -> tuple[bool, float, str]:
+    """Причинный vwap-фильтр на scan-баре: SHORT vd≤0, LONG vd≤−3."""
+    from backtest.vwap_filter import daily_session_vwap
+    from backtest.sweep_atr_filter import compute_atr14
+
+    scan_raw = sig.get("confirm_bar_time") or sig.get("timestamp")
+    df_cut = df
+    if scan_raw:
+        try:
+            ts = pd.Timestamp(scan_raw)
+            if getattr(ts, "tzinfo", None) is not None:
+                ts = ts.tz_localize(None) if ts.tzinfo else ts.tz_convert(None).tz_localize(None)
+            df_cut = df.loc[:ts]
+        except Exception:
+            df_cut = df.iloc[:-1] if len(df) >= 2 else df
+    elif len(df) >= 2:
+        df_cut = df.iloc[:-1]
+    if df_cut is None or len(df_cut) < 15:
+        return True, 0.0, "vwap: мало баров — фильтр не применён"
+    vwap = daily_session_vwap(df_cut)
+    atr = compute_atr14(df_cut)
+    close = float(df_cut.iloc[-1]["close"])
+    vw = float(vwap.iloc[-1])
+    at = float(atr.iloc[-1])
+    if not (at > 0) or pd.isna(vw) or pd.isna(at):
+        return True, 0.0, "vwap: ATR/VWAP недоступен"
+    vd = (close - vw) / at
+    direction = str(sig.get("direction") or "")
+    ok = (direction == "SHORT" and vd <= 0.0) or (direction == "LONG" and vd <= -3.0)
+    reason = f"vd={vd:.2f}  close={close:.6g} vwap={vw:.6g} ATR14={at:.6g}"
+    if not ok:
+        need = "≤ 0" if direction == "SHORT" else "≤ −3"
+        reason += f"  ({direction} нужно {need})"
+    return ok, vd, reason
+
+
+def _utc_iso_short(raw) -> str:
+    if not raw:
+        return "—"
+    try:
+        ts = pd.Timestamp(raw)
+        if getattr(ts, "tzinfo", None) is not None:
+            ts = ts.tz_convert("UTC").tz_localize(None)
+        return ts.strftime("%Y-%m-%d %H:%M UTC")
+    except Exception:
+        return str(raw)[:16]
+
+
+def _format_position_taken_tg(
+    direction: str,
+    trade_num: int,
+    symbol_key: str,
+    tf_name: str,
+    entry: float,
+    stop: float,
+    tp: float,
+    risk_usdt: float,
+    *,
+    signal_time: str = "",
+    htf_time: str = "",
+) -> str:
+    arrow = "📈" if direction == "LONG" else "📉"
+    sk_lbl = symbol_profile(symbol_key)["label"]
+    tfl = tf_label(tf_name)
+    risk_pct = float(CONFIG.get("risk_per_trade_pct") or 1.0)
+    sig_s = _utc_iso_short(signal_time)
+    htf_s = _utc_iso_short(htf_time)
+    htf_part = f" (HTF {htf_s})" if htf_time else ""
+    return (
+        f"{_mode_prefix()} {arrow} {direction} #{trade_num}\n"
+        f"Инструмент: {sk_lbl}\n"
+        f"ТФ: {tfl}\n"
+        f"Сигнал: {sig_s}{htf_part}\n"
+        f"Вход: {_fmt_px(entry, symbol_key)} | Стоп: {_fmt_px(stop, symbol_key)} | "
+        f"Тейк: {_fmt_px(tp, symbol_key)}\n"
+        f"Риск: {risk_usdt:.2f} USDT ({risk_pct:.1f}%)"
+    )
+
+
 async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> bool:
     tf_cfg  = CONFIG[tf_name]
     direction = str(sig.get("direction") or "")
+    sk = active_symbol_key()
+    sig.setdefault("symbol_key", sk)
+
+    if _pair_busy(sk):
+        logger.info(f"SKIP pair busy: {sk} {direction} [{tf_name}]")
+        await _notify_signal_skip(
+            sig, tf_name, "skipped_pair_busy",
+            header=f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — пара {symbol_profile(sk)['label']} занята",
+        )
+        return False
+    if _open_pending_count() >= int(CONFIG.get("max_positions") or 7):
+        logger.info(f"SKIP max positions: {direction} [{tf_name}]")
+        await _notify_signal_skip(
+            sig, tf_name, "skipped_max_positions",
+            header=f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — лимит 7 позиций",
+        )
+        return False
+
+    entry_px = float(sig.get("entry") or 0)
+    stop_px = float(sig.get("stop") or 0)
+    if entry_px > 0 and stop_px > 0:
+        stop_pct = abs(stop_px - entry_px) / entry_px * 100.0
+        min_stop = float(CONFIG.get("min_stop_pct") or 0.6)
+        if stop_pct < min_stop:
+            logger.info(f"SKIP min_stop: {stop_pct:.3f}% < {min_stop}%")
+            await _notify_signal_skip(
+                sig, tf_name, "skipped_min_stop",
+                header=f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — стоп {stop_pct:.2f}% < {min_stop}%",
+            )
+            return False
+
+    cisd = float(sig.get("cisd_level") or entry_px)
+    price_ref = _signal_entry_price_ref(sig)
+    if price_ref <= 0:
+        price_ref = get_price(sk) or 0.0
+    if cisd > 0 and price_ref > 0 and not _is_retrace_at_creation(direction, cisd, price_ref):
+        logger.info(
+            f"SKIP implicit MARKET: {direction} [{tf_name}] "
+            f"ref={price_ref} уже за cisd={cisd}"
+        )
+        await _notify_signal_skip(
+            sig, tf_name, "skipped_implicit_market",
+            header=(
+                f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — цена уже за уровнем, "
+                "неявный MARKET"
+            ),
+            detail=f"ref={_fmt_px(price_ref, sk)}  cisd={_fmt_px(cisd, sk)}",
+        )
+        return False
+
     parent_pos = _find_open_position_for_pyramid(direction, tf_name)
     is_pyramid = parent_pos is not None
 
@@ -9500,12 +9713,13 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     pl.cisd_level = float(sig.get("cisd_level") or sig["entry"])
     pl.sweep_level = _safe_float(sig.get("htf_sweep_level"))
     pl.cand_trigger_time = str(sig.get("cand_trigger_time") or "")
-    pl.force_limit_retest = entry_kind_pre == "LIMIT"
-    pl.force_market = bool(sig.get("fib_stretch_market"))
+    pl.force_limit_retest = True
+    pl.force_market = False
     pl.cisd_cross_market = False
-    pl.entry_kind = entry_kind_pre
+    pl.entry_kind = "LIMIT"
     pl.defer_entry = False
-    pl.entry_is_plan = _entry_kind_is_plan(entry_kind_pre)
+    pl.entry_is_plan = False
+    pl.vwap_dev = float(sig.get("vwap_dev") or 0)
     pl.quality_score = float(sig.get("quality_score") or 0)
     pl.quality_stop_original = _safe_float(sig.get("quality_stop_original"))
     pl.quality_stop_mult = float(sig.get("quality_stop_mult") or 1)
@@ -9743,6 +9957,7 @@ async def _try_place_pending_entry(pl: "PendingLimit") -> bool:
         force_market=bool(getattr(pl, "force_market", False)),
         force_limit_retest=bool(getattr(pl, "force_limit_retest", False)),
         external_oid=_mexc_entry_external_oid(pl),
+        symbol_key=_pos_symbol_key(pl),
     )
     if not order:
         save_pending(state.pending_limits)
@@ -9770,7 +9985,8 @@ async def _try_place_pending_entry(pl: "PendingLimit") -> bool:
 
 
 async def _try_immediate_market_entry(pl: PendingLimit) -> bool:
-    """MARKET: CISD уже пересечён — вход сразу, без limit_monitor."""
+    """v6: MARKET-вход запрещён."""
+    return False
     if pl.status != "pending" or pl.order_id is not None:
         return False
     kind = _pending_entry_kind(pl)
@@ -9835,6 +10051,7 @@ async def _try_immediate_market_entry(pl: PendingLimit) -> bool:
         force_market=bool(getattr(pl, "force_market", False)),
         force_limit_retest=bool(getattr(pl, "force_limit_retest", False)),
         external_oid=_mexc_entry_external_oid(pl),
+        symbol_key=_pos_symbol_key(pl),
     )
     if not order:
         logger.warning(
@@ -10231,16 +10448,16 @@ async def _finalize_limit_fill(pl: PendingLimit, avg_price: float,
             f"💰 Тейк: {_fmt_px(pl.tp_price, sk)} ({tp_pct:.2f}%) — ❌ НЕ выставлен!"
         )
         ek = _entry_kind_display(pl.entry_kind or _pending_entry_kind(pl))
+        cv = _contract_value(sk)
+        risk_usdt = abs(float(avg_price) - float(pl.stop_price)) * actual_ctr * cv
         await send_telegram(
-            f"✅ {arrow} ЛИМИТКА #{pl.trade_num} ИСПОЛНЕНА [{tfl}]\n"
-            f"{'─' * 34}\n"
-            f"Направление: {pl.direction}  |  {actual_ctr} контр.\n"
-            f"Тип входа: {ek}\n"
-            f"Лимит: {_fmt_px(pl.entry_price, sk)}  →  факт: {_fmt_px(avg_price, sk)}\n"
-            f"{'─' * 34}\n"
-            f"{sl_line}\n"
-            f"{tp_line}\n"
-            f"⚖️  R:R = {rr:.2f}  |  Таймаут: {pl.exit_h}ч"
+            _format_position_taken_tg(
+                pl.direction, pl.trade_num, sk, pl.tf,
+                avg_price, pl.stop_price, pl.tp_price, risk_usdt,
+                signal_time=getattr(pl, "confirm_bar_time", "") or "",
+                htf_time=pl.htf_time or "",
+            )
+            + (f"\n{sl_line}\n{tp_line}" if not (sl_ok and tp_ok) else "")
         )
         if not sl_ok:
             pos.protection_alert_sent = True
@@ -10515,36 +10732,23 @@ async def limit_monitor():
         await state.running.wait()   # пауза если /stop
 
         now = utcnow()
-        if not state.paper:
-            await _try_arm_cisd_cross_candidates(now)
 
         active = [p for p in state.pending_limits if p.status == "pending"]
         if not active:
             await asyncio.sleep(CONFIG["limit_check_s"])
             continue
 
-        for tf in {p.tf for p in active}:
-            await _invalidate_pending_no_htf_inter_sweep(tf)
-
-        # OHLC для экстремума — каждые limit_check_s, не только на минутном scanner
-        tfs = {p.tf for p in active}
-        cisd_cross_tfs = {
-            p.tf for p in active
-            if getattr(p, "cisd_cross_market", False)
-        }
-        for tf in tfs:
-            await _refresh_ohlc_extremum(tf)
         forming_by_tf: dict[str, tuple[Optional[float], Optional[float]]] = {}
-        for tf in cisd_cross_tfs:
-            forming_by_tf[tf] = await _refresh_forming_extremum(tf)
-
-        price = get_price()
-        ohlc_low  = state.last_ohlcv_low
-        ohlc_high = state.last_ohlcv_high
 
         for pl in active:
             if not state.running.is_set():
                 break
+
+            sk = _pos_symbol_key(pl)
+            price = get_price(sk)
+            cached = state.ohlcv_closed.get(f"{sk}|{pl.tf}") or {}
+            ohlc_low = cached.get("low")
+            ohlc_high = cached.get("high")
 
             # Таймаут лимитки — только если ордер уже на бирже (paper: не defer)
             armed = bool(pl.order_id) or (state.paper and not pl.defer_entry)
@@ -10563,7 +10767,7 @@ async def limit_monitor():
                 htf_name  = tf_htf_name(pl.tf)
                 limit_h   = CONFIG[pl.tf]["limit_h"]
                 elapsed_h = (now - (pl.order_placed_at or pl.created_at)).total_seconds() / 3600
-                prefix    = "🧪 PAPER " if state.paper else ""
+                prefix    = _mode_prefix() + " "
                 sk = getattr(pl, "symbol_key", None)
                 await send_telegram(
                     f"{prefix}⏰ ЛИМИТКА #{pl.trade_num} ОТМЕНЕНА — таймаут [{tfl}]\n"
@@ -10590,7 +10794,7 @@ async def limit_monitor():
                     pl.status = "cancelled_parent_closed"
                     _journal_log_pending_cancelled(pl)
                     tfl = tf_label(pl.tf)
-                    prefix = "🧪 PAPER " if state.paper else ""
+                    prefix = _mode_prefix() + " "
                     await send_telegram(
                         f"{prefix}🗑 ЛИМИТКА #{pl.trade_num} ОТМЕНЕНА — родитель закрыт [{tfl}]\n"
                         f"ID: {pl.id}  |  {pl.direction}\n"
@@ -10627,7 +10831,7 @@ async def limit_monitor():
                         pl.status = "cancelled_parent_fib1"
                         _journal_log_pending_cancelled(pl)
                         tfl = tf_label(pl.tf)
-                        prefix = "🧪 PAPER " if state.paper else ""
+                        prefix = _mode_prefix() + " "
                         await send_telegram(
                             f"{prefix}🗑 ЛИМИТКА #{pl.trade_num} ОТМЕНЕНА — fib 1.0x родителя достигнут [{tfl}]\n"
                             f"ID: {pl.id}  |  {pl.direction}\n"
@@ -10642,7 +10846,7 @@ async def limit_monitor():
             )
             if extreme_hit:
                 tfl    = tf_label(pl.tf)
-                prefix = "🧪 PAPER " if state.paper else ""
+                prefix = _mode_prefix() + " "
                 pattern_ext = _pending_pattern_extreme(pl)
                 if pl.order_id and not state.paper and not await _cancel_pending_entry(pl):
                     await _alert_cancel_fail(
@@ -10660,10 +10864,13 @@ async def limit_monitor():
                     _drop_sweep_candidate(
                         pl.tf, pl.direction, htf_t,
                         f"extreme hit {ref_price:.1f} vs ext {pattern_ext:.1f}",
+                        symbol_key=sk,
                     )
                 if float(pl.sweep_level or 0) > 0:
                     state.htf_sweep_lock.pop(
-                        _htf_sweep_lock_key(pl.tf, pl.direction, float(pl.sweep_level)),
+                        _htf_sweep_lock_key(
+                            pl.tf, pl.direction, float(pl.sweep_level), symbol_key=sk,
+                        ),
                         None,
                     )
                 state.htf_sweep_lock.pop(
@@ -10689,54 +10896,18 @@ async def limit_monitor():
 
             # ── PAPER MODE: проверяем цену вместо ордера ──────────────
             if state.paper:
-                if price is None:
-                    continue
-
-                # Защита: цена уже ушла дальше entry (пропущенное исполнение).
-                # Даём 2 минуты на случай задержки биржи; потом отменяем.
-                # Исключение: ретестовые сигналы — при создании лимитки цена уже была
-                # по «неправильную» сторону (свип + ожидание ретеста). Для них не применяем.
-                if price:
-                    stop_dist = abs(pl.entry_price - pl.stop_price)
-                    age_s     = (now - pl.created_at).total_seconds()
-                    pac       = pl.price_at_creation
-                    cisd_p    = pl.cisd_level or pl.entry_price
-
-                    is_retrace = _pending_is_limit_retest(pl)
-
-                    missed = not is_retrace and (
-                        (pl.direction == "LONG"  and
-                         price > pl.entry_price and
-                         (price - pl.entry_price) > stop_dist * 0.5) or
-                        (pl.direction == "SHORT" and
-                         price < pl.entry_price and
-                         (pl.entry_price - price) > stop_dist * 0.5)
-                    )
-                    if missed and age_s > 120:
-                        pl.status = "cancelled_missed"
-                        _journal_log_pending_cancelled(pl)
-                        tfl       = tf_label(pl.tf)
-                        prefix    = "🧪 PAPER "
-                        overshoot = abs(price - pl.entry_price)
-                        await send_telegram(
-                            f"{prefix}⚠️ ЛИМИТКА #{pl.trade_num} ОТМЕНЕНА — пропущено [{tfl}]\n"
-                            f"ID: {pl.id}  |  {pl.direction}\n"
-                            f"Цена ушла на {overshoot:.1f} от уровня {pl.entry_price:.1f}\n"
-                            f"(> 0.5× стоп-дистанции = {stop_dist*0.5:.1f})"
-                        )
-                        continue
-
                 cisd_p = pl.cisd_level or pl.entry_price
-                pac_p = pl.price_at_creation or price or pl.entry_price
-                if _pending_is_limit_retest(pl):
+                # SHADOW: fill по касанию уровня в OHLC закрытого бара (как бэктест)
+                # плюс live-цена, если тикер уже дошёл до лимитки.
+                if pl.direction == "LONG":
                     entry_hit = (
-                        (pl.direction == "LONG"  and price <= pl.entry_price) or
-                        (pl.direction == "SHORT" and price >= pl.entry_price)
+                        (ohlc_low is not None and float(ohlc_low) <= float(pl.entry_price))
+                        or (price is not None and float(price) <= float(pl.entry_price))
                     )
                 else:
                     entry_hit = (
-                        (pl.direction == "LONG"  and price >= pl.entry_price) or
-                        (pl.direction == "SHORT" and price <= pl.entry_price)
+                        (ohlc_high is not None and float(ohlc_high) >= float(pl.entry_price))
+                        or (price is not None and float(price) >= float(pl.entry_price))
                     )
                 if not entry_hit:
                     continue
@@ -10779,15 +10950,16 @@ async def limit_monitor():
                     sl_placed=True,
                     tp_placed=True,
                 )
+                sk = _pos_symbol_key(pl)
+                cv = _contract_value(sk)
+                risk_usdt = abs(float(avg_price) - float(pl.stop_price)) * actual_ctr * cv
                 await send_telegram(
-                    f"🧪 PAPER {arrow} ЛИМИТКА #{pl.trade_num} ИСПОЛНЕНА [{tfl}]\n"
-                    f"{'─' * 34}\n"
-                    f"Направление: {pl.direction}  |  {actual_ctr} контр.\n"
-                    f"Вход: {avg_price:.1f}\n"
-                    f"{'─' * 34}\n"
-                    f"🛑 Стоп выставлен: {pl.stop_price:.1f}  ({sl_pct:.2f}%)\n"
-                    f"💰 Тейк выставлен: {pl.tp_price:.1f}  ({tp_pct:.2f}%)\n"
-                    f"⚖️  R:R = {rr:.2f}  |  Таймаут позиции: {pl.exit_h}ч"
+                    _format_position_taken_tg(
+                        pl.direction, pl.trade_num, sk, pl.tf,
+                        avg_price, pl.stop_price, pl.tp_price, risk_usdt,
+                        signal_time=getattr(pl, "confirm_bar_time", "") or "",
+                        htf_time=pl.htf_time or "",
+                    )
                 )
                 continue
             # ── LIVE MODE ──────────────────────────────────────────────
@@ -11016,7 +11188,6 @@ async def position_monitor():
             await asyncio.sleep(CONFIG["position_check_s"])
             continue
 
-        price = get_price()
         now   = utcnow()
         # Факт с биржи: если позиция уже закрыта (TP/SL/ручное), снимем хвосты и уведомим
         real_open = []
@@ -11034,20 +11205,33 @@ async def position_monitor():
         for p in open_pos:
             cv   = p.contracts * _contract_value(_pos_symbol_key(p))
             sign = 1 if p.direction == "LONG" else -1
+            price = get_price(_pos_symbol_key(p))
 
             # ── PAPER MODE: проверяем цену напрямую ───────────────────
             if state.paper:
+                sk = _pos_symbol_key(p)
                 if price is None:
                     continue
                 tfl = tf_label(p.tf)
+                cached = state.ohlcv_closed.get(f"{sk}|{p.tf}") or {}
+                bar_high = cached.get("high")
+                bar_low = cached.get("low")
 
                 tp_hit = (
-                    (p.direction == "LONG"  and price >= p.tp_price) or
-                    (p.direction == "SHORT" and price <= p.tp_price)
+                    (p.direction == "LONG"  and (
+                        price >= p.tp_price or (bar_high is not None and bar_high >= p.tp_price)
+                    )) or
+                    (p.direction == "SHORT" and (
+                        price <= p.tp_price or (bar_low is not None and bar_low <= p.tp_price)
+                    ))
                 )
                 sl_hit = (
-                    (p.direction == "LONG"  and price <= p.stop_price) or
-                    (p.direction == "SHORT" and price >= p.stop_price)
+                    (p.direction == "LONG"  and (
+                        price <= p.stop_price or (bar_low is not None and bar_low <= p.stop_price)
+                    )) or
+                    (p.direction == "SHORT" and (
+                        price >= p.stop_price or (bar_high is not None and bar_high >= p.stop_price)
+                    ))
                 )
                 timeout_hit = now >= p.exit_time
 
@@ -11077,14 +11261,13 @@ async def position_monitor():
                 }
                 ico, reason_str = labels[close_reason]
 
+                sk = _pos_symbol_key(p)
                 await send_telegram(
-                    f"🧪 PAPER {ico} #{p.trade_num} {reason_str} {arrow} {p.direction} [{tfl}]\n"
-                    f"{'─' * 34}\n"
-                    f"Вход:    {p.entry_price:.1f}\n"
-                    f"Выход:   {close_price:.1f}\n"
-                    f"{'─' * 34}\n"
+                    f"{_mode_prefix()} {ico} #{p.trade_num} {reason_str} {arrow} {p.direction}\n"
+                    f"Инструмент: {symbol_profile(sk)['label']}\n"
+                    f"ТФ: {tfl}\n"
+                    f"Вход: {_fmt_px(p.entry_price, sk)}  |  Выход: {_fmt_px(close_price, sk)}\n"
                     f"{_format_close_pnl_lines(gross, fees, net, margin)}\n"
-                    f"{'─' * 34}\n"
                     f"💼 Баланс: {state.paper_balance:.2f} USDT"
                 )
                 continue
@@ -11359,165 +11542,134 @@ async def sync_positions_on_start():
 # СКАНЕР СИГНАЛОВ
 # ============================================================
 async def _autotrade_signals(signals: list, tf_name: str) -> int:
-    """Автовход по сигналам (без ручного подтверждения)."""
+    """Автовход по сигналам. Слоты и занятость пары проверяет create_pending_limit."""
     if not signals:
         return 0
     tf_cfg = CONFIG[tf_name]
-    active_count = sum(1 for p in state.pending_limits if p.status == "pending")
-    open_count   = sum(1 for p in state.positions if p.status == "open")
-    slots        = CONFIG["max_positions"] - (active_count + open_count)
-    if slots <= 0:
-        logger.info(
-            f"autotrade: слоты заняты ({open_count} open + {active_count} pending)"
-        )
-        return 0
-
-    work = list(signals)
-    if not _allow_both_directions():
-        open_dirs = {
-            p.direction for p in state.positions if p.status == "open"
-        } | {
-            p.direction for p in state.pending_limits if p.status == "pending"
-        }
-        if open_dirs:
-            blocked = [
-                s for s in work
-                if ("SHORT" if s["direction"] == "LONG" else "LONG") in open_dirs
-            ]
-            for sig in blocked:
-                opp = "SHORT" if sig["direction"] == "LONG" else "LONG"
-                logger.info(
-                    f"autotrade: skip {sig['direction']} — open/pending {opp} (one-way)"
-                )
-            work = [
-                s for s in work
-                if ("SHORT" if s["direction"] == "LONG" else "LONG") not in open_dirs
-            ]
-
     placed = 0
-    for sig in work:
-        if placed >= slots:
+    for sig in signals:
+        if _open_pending_count() >= int(CONFIG.get("max_positions") or 7):
             break
-        if state.paper:
-            num = state.next_trade_num()
-            await send_paper_signal(sig, tf_name, tf_cfg, trade_num=num)
-            ok = await create_pending_limit(sig, tf_name, trade_num=num)
-        else:
-            if sig.get("hash") in _pending_start_signals:
-                continue
-            ok = await create_pending_limit(sig, tf_name)
+        num = state.next_trade_num()
+        await send_paper_signal(sig, tf_name, tf_cfg, trade_num=num)
+        ok = await create_pending_limit(sig, tf_name, trade_num=num)
         if ok:
             placed += 1
     return placed
 
 
+async def _run_detect_and_trade(
+    tf_name: str,
+    df: pd.DataFrame,
+    df_confirm: Optional[pd.DataFrame] = None,
+) -> None:
+    tf_cfg = CONFIG[tf_name]
+    await _invalidate_pending_no_htf_inter_sweep(tf_name, df)
+    signals = detect_signals(
+        df, state.processed,
+        htf_ratio=tf_cfg["htf_ratio"], tf_name=tf_name,
+        df_confirm=df_confirm,
+        min_sweep_atr=_min_sweep_atr(),
+    )
+    if signals:
+        signals.sort(key=lambda s: s.get("timestamp"), reverse=True)
+    kept = []
+    for sig in signals or []:
+        ok, vd, reason = _vwap_gate(df, sig)
+        sig["vwap_dev"] = vd
+        sig["symbol_key"] = active_symbol_key()
+        if not ok:
+            logger.info(
+                f"vwap skip {active_symbol_key()} {sig.get('direction')} "
+                f"[{tf_name}] {reason}"
+            )
+            await _notify_signal_skip(
+                sig, tf_name, "skipped_vwap",
+                header=(
+                    f"{_mode_prefix()} ⛔ Пропуск {sig.get('direction')} "
+                    f"[{tf_label(tf_name)}] {symbol_profile()['label']} — vwap-фильтр"
+                ),
+                detail=reason,
+            )
+            continue
+        kept.append(sig)
+    if not kept:
+        logger.info(f"{active_symbol_key()} {tf_name}: сигналов нет (после vwap)")
+        return
+    logger.info(f"{active_symbol_key()} {tf_name}: {len(kept)} сигнал(ов)")
+    await _autotrade_signals(kept, tf_name)
+
+
+def _store_closed_ohlc(symbol_key: str, tf_name: str, df: pd.DataFrame) -> None:
+    if df is None or len(df) < 2:
+        return
+    last = df.iloc[-2]
+    state.ohlcv_closed[f"{symbol_key}|{tf_name}"] = {
+        "low": float(last["low"]),
+        "high": float(last["high"]),
+        "close": float(last["close"]),
+    }
+    state.last_ohlcv_low = float(last["low"])
+    state.last_ohlcv_high = float(last["high"])
+
+
+async def _scan_symbol(sk: str, tf8_due: bool) -> None:
+    with _use_symbol(sk):
+        df5 = await fetch_ohlcv("5m", OHLCV_5M_BARS)
+        if df5 is None or len(df5) < 50:
+            logger.warning(f"{sk}: нет 5m данных")
+            return
+        state.df_cache[f"{sk}|tf7"] = df5
+        _store_closed_ohlc(sk, "tf7", df5)
+        await _run_detect_and_trade("tf7", df5, df_confirm=None)
+
+        df30 = _resample_ohlcv(df5, "30m")
+        if df30 is not None and len(df30) >= 2:
+            state.df_cache[f"{sk}|tf8"] = df30
+            _store_closed_ohlc(sk, "tf8", df30)
+        if tf8_due and df30 is not None and len(df30) >= 20:
+            await _run_detect_and_trade("tf8", df30, df_confirm=df5)
+
+
 async def signal_scanner():
     state.processed = set(load_json(SIGNALS_CACHE, []))
-    logger.info(f"Загружено {len(state.processed)} обработанных сигналов")
-
-    next_scan: dict = {}    # tf_name → utc datetime
-    last_bar_ts: dict = {}  # tf_name → ts последнего LTF-бара (forming)
+    logger.info(
+        f"Загружено {len(state.processed)} обработанных сигналов | "
+        f"сканер {len(ACTIVE_SYMBOL_KEYS)} пар × {', '.join(ACTIVE_TF_KEYS)}"
+    )
+    last_5m_forming = None
 
     while True:
-        await state.running.wait()   # ждём команды /start
-
+        await state.running.wait()
         try:
-            # Если /start показывает сигналы с кнопками — не ставим лимитки в LIVE до ответа
-            if (not state.paper) and (time.time() < getattr(state, "start_confirm_until_ts", 0.0)) and _pending_start_signals:
-                await asyncio.sleep(2)
-                continue
-
-            now      = utcnow()
-            tf_name  = state.active_tf
-            tf_cfg   = CONFIG[tf_name]
-            scan_s   = _scan_interval_s(tf_cfg)
-
-            # Сбрасываем таймер если ТФ сменился
-            if tf_name not in next_scan:
-                next_scan = {tf_name: utcnow()}
-                last_bar_ts.pop(tf_name, None)
-                last_bar_ts.pop(f"{tf_name}_confirm", None)
-
-            due = now >= next_scan[tf_name]
-            confirm_tf = _confirm_timeframe_for(tf_name)
-            bar_close_htf = False
-            bar_close_confirm = False
-            if not due:
-                bar_close_htf = await _ltf_bar_closed(
-                    tf_name, tf_cfg["timeframe"], last_bar_ts,
-                )
-            if confirm_tf and not due:
-                confirm_closed = await _ltf_bar_closed(
-                    f"{tf_name}_confirm", confirm_tf, last_bar_ts,
-                )
-                # LTF close (1m/5m): только если уже есть HTF-свип-кандидат и ждём MSS
-                if confirm_closed and _tf_has_sweep_candidates(tf_name):
-                    bar_close_confirm = True
-            bar_close = bar_close_htf or bar_close_confirm
-            if not due and not bar_close:
-                await asyncio.sleep(2)
-                continue
-
-            if bar_close_confirm:
-                logger.info(
-                    f"{tf_name}: {confirm_tf} bar-close → немедленный скан (MSS confirm)"
-                )
-            elif bar_close_htf:
-                logger.info(f"{tf_name}: bar-close → немедленный скан")
-
-            logger.info(f"Сканирую {tf_name.upper()} ({tf_cfg['label']})...")
-
-            df = await fetch_ohlcv(tf_cfg["timeframe"], tf_cfg.get("ohlcv", 500))
-            df_confirm = await _fetch_confirm_ohlcv(tf_name, tf_cfg)
-            if df_confirm is not None and len(df_confirm) >= 1:
-                last_bar_ts[f"{tf_name}_confirm"] = df_confirm.index[-1]
-            if df is not None and len(df) >= 1:
-                last_bar_ts[tf_name] = df.index[-1]
-            if df is not None and len(df) >= 2:
-                # Сохраняем последний завершённый бар для сверки экстремума в limit_monitor
-                last_bar = df.iloc[-2]  # предпоследний — завершённый
-                state.last_ohlcv_low = float(last_bar["low"])
-                state.last_ohlcv_high = float(last_bar["high"])
-
-            next_scan[tf_name] = utcnow() + timedelta(seconds=scan_s)
-
-            if df is None or len(df) < 50:
-                logger.warning(f"{tf_name}: нет данных")
-                continue
-
-            await _invalidate_pending_no_htf_inter_sweep(tf_name, df)
-
-            signals = detect_signals(
-                df, state.processed,
-                htf_ratio=tf_cfg["htf_ratio"], tf_name=tf_name,
-                df_confirm=df_confirm,
-                min_sweep_atr=_min_sweep_atr(),
+            peek = await fetch_ohlcv(
+                "5m", 3, symbol=SYMBOL_PROFILES["BTC"]["symbol"],
             )
-            # Сортировка: свежие сигналы (по времени бара) первыми
-            if signals:
-                signals.sort(key=lambda s: s.get("timestamp"), reverse=True)
-            save_json(SIGNALS_CACHE, sorted(state.processed)[-500:])
-
-            if not signals:
-                logger.info(f"{tf_name}: сигналов нет")
+            if peek is None or len(peek) < 1:
+                await asyncio.sleep(5)
                 continue
-
-            logger.info(f"{tf_name}: {len(signals)} сигнал(ов)")
-
-            if state.paper:
-                await _autotrade_signals(signals, tf_name)
-            else:
-                active_count = sum(1 for p in state.pending_limits if p.status == "pending")
-                open_count   = sum(1 for p in state.positions if p.status == "open")
-                slots        = CONFIG["max_positions"] - (active_count + open_count)
-                if slots <= 0:
-                    logger.info(f"Слоты заняты: {open_count} open + {active_count} pending")
-                else:
-                    await _autotrade_signals(signals[:slots], tf_name)
-
+            forming = peek.index[-1]
+            if last_5m_forming is not None and forming == last_5m_forming:
+                await asyncio.sleep(5)
+                continue
+            # Новый 5m forming-бар = предыдущий закрыт. tf8 — каждый 6-й (граница 30m).
+            tf8_due = int(pd.Timestamp(forming).minute) % 30 == 0
+            last_5m_forming = forming
+            logger.info(
+                f"Скан 5m close forming={forming}  tf8={'да' if tf8_due else 'нет'}"
+            )
+            for sk in ACTIVE_SYMBOL_KEYS:
+                if not state.running.is_set():
+                    break
+                try:
+                    await _scan_symbol(sk, tf8_due)
+                except Exception as e:
+                    logger.error(f"scan {sk}: {e}", exc_info=True)
+            save_json(SIGNALS_CACHE, sorted(state.processed)[-500:])
         except Exception as e:
             logger.error(f"Scanner: {e}", exc_info=True)
             await asyncio.sleep(60)
+
 
 
 # ============================================================
@@ -11572,8 +11724,9 @@ async def ctl_status() -> dict:
             "upnl": upnl,
         })
         pos_lines += (
-            f"\n  #{p.trade_num} {p.direction} [{tfl}] {p.contracts}ctr "
-            f"@ {p.entry_price:.1f}{pnl_str}"
+            f"\n  #{p.trade_num} {symbol_profile(_pos_symbol_key(p))['label']} "
+            f"{p.direction} [{tfl}] {p.contracts}ctr "
+            f"@ {_fmt_px(p.entry_price, _pos_symbol_key(p))}{pnl_str}"
         )
 
     pendings = []
@@ -11588,8 +11741,9 @@ async def ctl_status() -> dict:
             "entry_price": p.entry_price,
         })
         pend_lines += (
-            f"\n  #{p.trade_num} {p.direction} [{tf_label(p.tf)}] "
-            f"@ {p.entry_price:.1f}"
+            f"\n  #{p.trade_num} {symbol_profile(_pos_symbol_key(p))['label']} "
+            f"{p.direction} [{tf_label(p.tf)}] "
+            f"@ {_fmt_px(p.entry_price, _pos_symbol_key(p))}"
         )
 
     dec = _price_decimals(symbol_profile()["price_tick"])
@@ -11611,7 +11765,7 @@ async def ctl_status() -> dict:
         f"📊 Статус CISD BOT\n"
         f"{'─' * 30}\n"
         f"{state.mode_str()}\n"
-        f"Вход: MSS → STOP-LIMIT @ CISD\n"
+        f"Вход: LIMIT @ CISD  TP=1R  vwap-фильтр\n"
         f"⏱ Таймауты:  вход {_fmt_h(tf_cfg['limit_h'])}  |  "
         f"выход {_fmt_h(tf_cfg['position_h'])}  (/timeout)\n"
         f"Detect filters: {_trigger_filters_desc()}\n"
@@ -11669,7 +11823,7 @@ async def ctl_start() -> dict:
 
     n_open = sum(1 for p in state.positions if p.status == "open")
     n_pending = sum(1 for p in state.pending_limits if p.status == "pending")
-    mode = "🧪 PAPER" if state.paper else "🔴 LIVE"
+    mode = _mode_prefix()
     tfl = tf_label(state.active_tf)
     sync_note = ""
     if sync_closed:
@@ -11744,7 +11898,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     was_running = state.running.is_set()
 
-    mode = "🧪 PAPER" if state.paper else "🔴 LIVE"
+    mode = _mode_prefix()
     tf_name = state.active_tf
     tf_cfg  = CONFIG[tf_name]
     tfl     = tf_label(tf_name)
@@ -11765,7 +11919,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             signals.sort(key=lambda s: s.get("timestamp"), reverse=True)
     signals_raw = list(signals)
 
-    need_confirm = bool(signals and not was_running and not state.paper)
+    need_confirm = False  # v6: без кнопок подтверждения
     if (not state.paper) and signals_raw:
         banned = 0
         check_n = min(3, len(signals_raw))
@@ -11999,33 +12153,86 @@ async def callback_stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await q.message.reply_text(text)
 
 
-async def cmd_paper(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Переключить Paper ↔ Live режим."""
-    # В LIVE нельзя переключить если есть открытые позиции
+async def cmd_mode(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """SHADOW ↔ LIVE с подтверждением."""
     n_open = sum(1 for p in state.positions if p.status == "open")
-    if n_open > 0 and not state.paper:
+    n_pend = sum(1 for p in state.pending_limits if p.status == "pending")
+    if state.paper:
         await update.message.reply_text(
-            f"⚠️ Нельзя переключить в Paper: есть {n_open} открытых позиций.\n"
-            f"Сначала закрой их вручную."
+            f"Сейчас {_mode_prefix()}\n"
+            f"Открыто: {n_open}  лимиток: {n_pend}\n\n"
+            f"🔴 LIVE — реальные ордера на Bybit, риск 1% на сделку, плечо 20x.\n"
+            f"Переключить?",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("🔴 Да, LIVE", callback_data="mode:live")],
+                [InlineKeyboardButton("↩ Отмена", callback_data="mode:cancel")],
+            ]),
         )
         return
-
-    state.paper = not state.paper
-    save_bot_state()
-    mode  = "🧪 PAPER TRADING" if state.paper else "🔴 LIVE TRADING"
-    descr = (
-        "Сигналы будут только в Telegram, ордера не ставятся."
-        if state.paper
-        else "Реальные ордера на Bybit. Ключи BYBIT_API_KEY / SECRET, не MEXC."
-    )
-
-    if not state.paper:
-        await set_leverage()
-
+    if n_open > 0:
+        await update.message.reply_text(
+            f"⚠️ Нельзя уйти в SHADOW: есть {n_open} открытых LIVE-позиций.\n"
+            f"Сначала закрой их."
+        )
+        return
     await update.message.reply_text(
-        f"Режим переключён → {mode}\n{descr}"
+        f"Сейчас {_mode_prefix()}\n"
+        f"Вернуться в SHADOW? Ордера на биржу ставиться не будут.",
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton("🧪 Да, SHADOW", callback_data="mode:shadow")],
+            [InlineKeyboardButton("↩ Отмена", callback_data="mode:cancel")],
+        ]),
     )
-    logger.info(f"/paper: paper={state.paper}")
+
+
+async def callback_mode(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    q = update.callback_query
+    await q.answer()
+    action = (q.data or "").split(":", 1)[-1]
+    if action == "cancel":
+        await q.edit_message_text("↩ Отменено")
+        return
+    if action == "live":
+        n_open = sum(1 for p in state.positions if p.status == "open")
+        if n_open > 0 and state.paper:
+            await q.edit_message_text(
+                f"⚠️ Сначала закрой {n_open} SHADOW-позиций (или /stop), "
+                f"потом включай LIVE на чистом стейте."
+            )
+            return
+        state.paper = False
+        save_bot_state()
+        await set_leverage_all()
+        await q.edit_message_text(
+            f"Режим → {_mode_prefix()}\n"
+            f"Реальные ордера на Bybit. 10 пар × tf7+tf8, риск 1%, плечо 20x isolated."
+        )
+        logger.info("/mode LIVE")
+        return
+    if action == "shadow":
+        state.paper = True
+        save_bot_state()
+        await q.edit_message_text(
+            f"Режим → {_mode_prefix()}\n"
+            f"Ордера на биржу не ставятся. Виртуальный баланс {state.paper_balance:.2f} USDT."
+        )
+        logger.info("/mode SHADOW")
+        return
+    await q.edit_message_text("Неизвестная команда")
+
+
+async def cmd_pairs(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Список активных пар (все сканируются сразу)."""
+    lines = []
+    for k in ACTIVE_SYMBOL_KEYS:
+        busy = " 🔒" if _pair_busy(k) else ""
+        lines.append(f"• {SYMBOL_PROFILES[k]['label']}{busy}")
+    await update.message.reply_text(
+        f"{_mode_prefix()} активные пары ({len(ACTIVE_SYMBOL_KEYS)}):\n"
+        + "\n".join(lines)
+        + "\n\nСканер: все сразу, ТФ 5m→4H и 30m→8H.\n"
+        f"Позиций: {_open_pending_count()} / {CONFIG['max_positions']}"
+    )
 
 
 async def cmd_slope(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -12105,7 +12312,7 @@ def archive_trades_before_epoch(epoch: datetime) -> dict:
     epoch_label = epoch.strftime("%Y-%m-%d")
     summary = {"epoch": epoch_label, "trades_kept": 0, "trades_archived": 0, "journal_archived": 0}
 
-    trades = load_json(TRADES_FILE, [])
+    trades = load_json(_trades_file(), [])
     keep, arch = [], []
     for t in trades:
         if _trade_record_closed_at(t) < epoch:
@@ -12116,7 +12323,7 @@ def archive_trades_before_epoch(epoch: datetime) -> dict:
         arc_path = os.path.join(TRADES_ARCHIVE_DIR, f"trades_pre-{epoch_label}.json")
         existing = load_json(arc_path, []) if os.path.isfile(arc_path) else []
         save_json(arc_path, existing + arch)
-        save_json(TRADES_FILE, keep)
+        save_json(_trades_file(), keep)
     summary["trades_kept"] = len(keep)
     summary["trades_archived"] = len(arch)
 
@@ -12211,7 +12418,7 @@ def _stats_keyboard(selected_tf: str = "all") -> InlineKeyboardMarkup:
 
 def _calc_stats(days: int, tf_filter: str = "all") -> dict:
     """Считает статистику из trades.json за последние N дней, опционально по ТФ."""
-    trades = load_json(TRADES_FILE, [])
+    trades = load_json(_trades_file(), [])
     cutoff = utcnow() - timedelta(days=days)
     epoch = _trades_stats_epoch()
 
@@ -12269,6 +12476,23 @@ def _calc_stats(days: int, tf_filter: str = "all") -> dict:
             "pnl": sum(_trade_pnl_value(t) for t in tr if t.get("pnl") is not None),
         }
 
+    per_pair = {}
+    sum_r = 0.0
+    r_n = 0
+    for t in filtered:
+        sk = t.get("symbol") or t.get("symbol_key") or ""
+        if sk:
+            rec = per_pair.setdefault(sk, {"count": 0, "pnl": 0.0})
+            rec["count"] += 1
+            rec["pnl"] += _trade_pnl_value(t) if t.get("pnl") is not None else 0.0
+        entry = float(t.get("entry_price") or 0)
+        stop = float(t.get("stop_price") or 0)
+        close = float(t.get("close_price") or 0)
+        if entry > 0 and stop > 0 and close > 0 and abs(entry - stop) > 0:
+            sign = 1.0 if t.get("direction") == "LONG" else -1.0
+            sum_r += sign * (close - entry) / abs(entry - stop)
+            r_n += 1
+
     # Средний реальный R:R (только закрытые по TP и SL)
     rr_list = []
     for t in filtered:
@@ -12298,6 +12522,8 @@ def _calc_stats(days: int, tf_filter: str = "all") -> dict:
         "avg_rr":      avg_rr,
         "gross_profit": _gp,
         "gross_loss":   _gl,
+        "sum_r": sum_r,
+        "per_pair": per_pair,
         **{
             f"{k}_{fld}": per_tf_stats[k][fld]
             for k in TF_KEYS
@@ -12345,15 +12571,19 @@ def _format_stats(s: dict) -> str:
         tf_breakdown = (
             f"{'─' * 32}\n"
             f"По ТФ:"
-            + _tf_line("tf3", "1m→1H")
-            + _tf_line("tf0", "5m→1H")
-            + _tf_line("tf4", "10m→1H")
-            + _tf_line("tf5", "10m→2H")
             + _tf_line("tf7", "5m→4H")
-            + _tf_line("tf6", "10m→4H")
-            + _tf_line("tf1", "15m→4H")
-            + _tf_line("tf2", "1H→Daily")
+            + _tf_line("tf8", "30m→8H")
         )
+        pair_lines = ""
+        for sk, rec in (s.get("per_pair") or {}).items():
+            lbl = SYMBOL_PROFILES.get(sk, {}).get("label", sk)
+            pnl = rec.get("pnl", 0.0)
+            pair_lines += (
+                f"\n  {lbl}: {rec.get('count', 0)} сд.  "
+                f"{'+' if pnl >= 0 else ''}{pnl:.2f} USDT"
+            )
+        if pair_lines:
+            tf_breakdown += f"\nПо парам:{pair_lines}"
 
     epoch = _trades_stats_epoch()
     epoch_line = (
@@ -12369,6 +12599,7 @@ def _format_stats(s: dict) -> str:
         f"  ⏰ Таймаут: {s['timeouts']}  ({s['timeouts']/s['total']*100:.1f}%)\n"
         f"{'─' * 32}\n"
         f"PnL итого:    {sign}{s['total_pnl']:.2f} USDT\n"
+        f"SumR:         {s.get('sum_r', 0):+.2f}R\n"
         f"  Прибыль:   +{gross_profit:.2f} USDT\n"
         f"  Убыток:    -{gross_loss:.2f} USDT\n"
         f"Avg PnL:      {'+' if s['avg_pnl']>=0 else ''}{s['avg_pnl']:.2f} USDT\n"
@@ -13066,7 +13297,7 @@ def _close_keyboard() -> Optional[InlineKeyboardMarkup]:
 def _close_menu_text() -> str:
     n_pos = sum(1 for p in state.positions if p.status == "open")
     n_lim = sum(1 for pl in state.pending_limits if pl.status == "pending")
-    mode  = "🧪 PAPER" if state.paper else "🔴 LIVE"
+    mode  = _mode_prefix()
     lines = [f"📋 Управление [{mode}]"]
     if n_pos:
         lines.append(f"Позиций: {n_pos} — закрыть по маркету")
@@ -13294,7 +13525,7 @@ async def callback_close(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await query.edit_message_text("⚠️ Лимитка уже отменена")
                 return
             ok, msg = await _manual_cancel_pending_limit(pl)
-            prefix  = "🧪 PAPER " if state.paper else ""
+            prefix  = _mode_prefix() + " "
             await query.edit_message_text(f"{prefix}{msg}" if ok else msg)
             return
 
@@ -13317,9 +13548,11 @@ async def callback_close(update: Update, context: ContextTypes.DEFAULT_TYPE):
             save_positions(state.positions)
             margin = pos.entry_price * cv / CONFIG["leverage"]
             await query.edit_message_text(
-                f"🧪 PAPER ✅ Позиция закрыта вручную\n"
+                f"{_mode_prefix()} ✅ Позиция закрыта вручную\n"
                 f"{'─' * 28}\n"
-                f"{pos.direction}  вход: {pos.entry_price:.1f}  выход: {close_price:.1f}\n"
+                f"{symbol_profile(_pos_symbol_key(pos))['label']} {pos.direction} [{tf_label(pos.tf)}]\n"
+                f"вход: {_fmt_px(pos.entry_price, _pos_symbol_key(pos))}  "
+                f"выход: {_fmt_px(close_price, _pos_symbol_key(pos))}\n"
                 f"{_format_close_pnl_lines(gross, fees, net, margin)}\n"
                 f"💼 Баланс: {state.paper_balance:.2f} USDT"
             )
@@ -14206,9 +14439,9 @@ async def sync_exchange_state() -> tuple[int, int]:
 
 
 async def exchange_sync_loop():
-    """Фоновый цикл сверки с биржей каждые 30 секунд."""
+    """Фоновый цикл сверки с биржей каждые 30 секунд. В SHADOW не дергаем приватный API записи."""
     while True:
-        if not state.tasks_live.is_set():
+        if state.paper or not state.tasks_live.is_set():
             await asyncio.sleep(5)
             continue
         await asyncio.sleep(30)
@@ -14224,11 +14457,15 @@ async def exchange_sync_loop():
 async def main():
     global _tg_app, _trade_log_month
 
-    mode_str = "PAPER" if PAPER_TRADING else "LIVE"
+    mode_str = "SHADOW" if state.paper else "LIVE"
     logger.info("=" * 58)
-    logger.info(f"CISD BOT v5.2-bybit — Bybit linear {symbol_profile()['label']} | {mode_str}")
-    logger.info(f"ТФ: 15m→4H  |  Leverage: {CONFIG['leverage']}x")
-    logger.info(f"Trigger filters: {_trigger_filters_desc()} @ trigger")
+    logger.info(
+        f"CISD BOT v6.0-bybit — {len(ACTIVE_SYMBOL_KEYS)} пар × tf7+tf8 | {mode_str}"
+    )
+    logger.info(
+        f"LIMIT-only TP=1R vwap | leverage {CONFIG['leverage']}x isolated | "
+        f"max {CONFIG['max_positions']} pos"
+    )
     logger.info("=" * 58)
 
     load_bot_state()
@@ -14253,7 +14490,7 @@ async def main():
     await sync_positions_on_start()
 
     if not state.paper:
-        await set_leverage()
+        await set_leverage_all()
 
     # Telegram: только сборка приложения, без сетевых вызовов
     _tg_app = _build_tg_application()

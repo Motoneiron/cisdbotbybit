@@ -19,9 +19,12 @@ __pycache__/
 bot_state.json
 bot_state.*.json
 positions.json
+shadow_positions.json
 pending_limits.json
+shadow_pending.json
 signals_cache.json
 trades.json
+shadow_trades.json
 trades_*.jsonl
 archives/
 trades_stats_epoch.txt
