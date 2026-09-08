@@ -352,12 +352,11 @@ TRIGGER_VOL_FILTER = {
     "max_ratio": 2.5,
 }
 
-# Detect-фильтры (рубильники TG): ATR / VOL / soft-DOW touches (D).
-# Default все ON = боевой профиль research A+V+D.
+# Detect-фильтры v6: ATR + VOL. D / QSZ / PSL / QSTOP вырезаны.
 DETECT_FILTERS_DEFAULT = {
     "atr_enabled": True,
     "vol_enabled": True,
-    "d_enabled": True,
+    "d_enabled": False,
 }
 
 # Slope EMA: профиль по HTF активного ТФ (None — фильтр не применяется)
@@ -573,10 +572,9 @@ class BotState:
         # Одно TG-уведомление на постоянный пропуск сигнала (category:hash).
         self.skip_tg_keys: set[str] = set()
         self.slope_filter_enabled: bool = False  # /slope — EMA slope 2H
-        # Detect-фильтры ATR/VOL/D — persist в bot_state.json, default все ON
+        # Detect-фильтры ATR/VOL — persist в bot_state.json
         self.detect_filters: dict = dict(DETECT_FILTERS_DEFAULT)
-        # Lever-1 quality size — persist; default ON (как CONFIG)
-        self.quality_size_enabled: bool = bool(CONFIG.get("quality_size_enabled", False))
+        self.quality_size_enabled: bool = False
         # P(SL) overlay поверх Lever-1 — отдельный persist toggle
         self.psl_size_enabled: bool = bool(CONFIG.get("psl_size_enabled", False))
         # Continuous quality-score tightening initial SL — отдельный persist toggle
@@ -1101,11 +1099,11 @@ def save_bot_state():
         "detect_filters": {
             "atr_enabled": bool(state.detect_filters.get("atr_enabled", True)),
             "vol_enabled": bool(state.detect_filters.get("vol_enabled", True)),
-            "d_enabled": bool(state.detect_filters.get("d_enabled", True)),
+            "d_enabled": False,
         },
-        "quality_size_enabled": bool(getattr(state, "quality_size_enabled", True)),
-        "psl_size_enabled": bool(getattr(state, "psl_size_enabled", True)),
-        "quality_stop_enabled": bool(getattr(state, "quality_stop_enabled", True)),
+        "quality_size_enabled": False,
+        "psl_size_enabled": False,
+        "quality_stop_enabled": False,
         "htf_taken": {
             str(k): dict(v) if isinstance(v, dict) else {"direction": str(v)}
             for k, v in (state.htf_taken or {}).items()
@@ -1194,20 +1192,11 @@ def load_bot_state():
     state.detect_filters = {
         "atr_enabled": bool(df_f.get("atr_enabled", DETECT_FILTERS_DEFAULT["atr_enabled"])),
         "vol_enabled": bool(df_f.get("vol_enabled", DETECT_FILTERS_DEFAULT["vol_enabled"])),
-        "d_enabled": bool(df_f.get("d_enabled", DETECT_FILTERS_DEFAULT["d_enabled"])),
+        "d_enabled": False,
     }
-    if "quality_size_enabled" in d:
-        state.quality_size_enabled = bool(d["quality_size_enabled"])
-    else:
-        state.quality_size_enabled = bool(CONFIG.get("quality_size_enabled", True))
-    if "psl_size_enabled" in d:
-        state.psl_size_enabled = bool(d["psl_size_enabled"])
-    else:
-        state.psl_size_enabled = bool(CONFIG.get("psl_size_enabled", True))
-    if "quality_stop_enabled" in d:
-        state.quality_stop_enabled = bool(d["quality_stop_enabled"])
-    else:
-        state.quality_stop_enabled = bool(CONFIG.get("quality_stop_enabled", True))
+    state.quality_size_enabled = False
+    state.psl_size_enabled = False
+    state.quality_stop_enabled = False
     ht_raw = d.get("htf_taken") if isinstance(d.get("htf_taken"), dict) else {}
     cleaned_ht: dict[str, dict] = {}
     for k, v in ht_raw.items():
@@ -1230,11 +1219,7 @@ def load_bot_state():
         f"Загружено состояние: пара={symbol_profile()['label']}, ТФ={state.active_tf}, "
         f"paper={state.paper}, slope_filter={state.slope_filter_enabled}, "
         f"detect_filters=A{int(state.detect_filters['atr_enabled'])}"
-        f"V{int(state.detect_filters['vol_enabled'])}"
-        f"D{int(state.detect_filters['d_enabled'])}"
-        f" QSZ={int(bool(getattr(state, 'quality_size_enabled', True)))}"
-        f" PSL={int(bool(getattr(state, 'psl_size_enabled', True)))}"
-        f" QSTOP={int(bool(getattr(state, 'quality_stop_enabled', True)))}, "
+        f"V{int(state.detect_filters['vol_enabled'])} vwap, "
         + " | ".join(
             f"{tf}: вход={_fmt_h(CONFIG[tf]['limit_h'])} выход={_fmt_h(CONFIG[tf]['position_h'])}"
             for tf in TF_KEYS
@@ -3295,19 +3280,19 @@ def _build_tg_application() -> Application:
     app.add_handler(CommandHandler("filter", cmd_filter))
     app.add_handler(CommandHandler("filter_atr", cmd_filter_atr))
     app.add_handler(CommandHandler("filter_vol", cmd_filter_vol))
-    app.add_handler(CommandHandler("filter_d", cmd_filter_d))
-    app.add_handler(CommandHandler("filter_qsz", cmd_filter_qsz))
-    app.add_handler(CommandHandler("filter_psl", cmd_filter_psl))
-    app.add_handler(CommandHandler("filter_qstop", cmd_filter_qstop))
+    app.add_handler(CommandHandler("filter_d", cmd_filter_cut))
+    app.add_handler(CommandHandler("filter_qsz", cmd_filter_cut))
+    app.add_handler(CommandHandler("filter_psl", cmd_filter_cut))
+    app.add_handler(CommandHandler("filter_qstop", cmd_filter_cut))
     app.add_handler(CommandHandler("filters_atr", cmd_filter_atr))
     app.add_handler(CommandHandler("filters_vol", cmd_filter_vol))
-    app.add_handler(CommandHandler("filters_d", cmd_filter_d))
-    app.add_handler(CommandHandler("filters_qsz", cmd_filter_qsz))
-    app.add_handler(CommandHandler("quality_size", cmd_filter_qsz))
-    app.add_handler(CommandHandler("filters_psl", cmd_filter_psl))
-    app.add_handler(CommandHandler("psl_size", cmd_filter_psl))
-    app.add_handler(CommandHandler("filters_qstop", cmd_filter_qstop))
-    app.add_handler(CommandHandler("quality_stop", cmd_filter_qstop))
+    app.add_handler(CommandHandler("filters_d", cmd_filter_cut))
+    app.add_handler(CommandHandler("filters_qsz", cmd_filter_cut))
+    app.add_handler(CommandHandler("quality_size", cmd_filter_cut))
+    app.add_handler(CommandHandler("filters_psl", cmd_filter_cut))
+    app.add_handler(CommandHandler("psl_size", cmd_filter_cut))
+    app.add_handler(CommandHandler("filters_qstop", cmd_filter_cut))
+    app.add_handler(CommandHandler("quality_stop", cmd_filter_cut))
     app.add_handler(CommandHandler("fee",     cmd_fee))
     app.add_handler(CommandHandler("slope",      cmd_slope))
     app.add_handler(CommandHandler("slop_trend", cmd_slop_trend))
@@ -4315,7 +4300,7 @@ def _detect_filter_flags() -> dict:
     return {
         "atr_enabled": bool(f.get("atr_enabled", True)),
         "vol_enabled": bool(f.get("vol_enabled", True)),
-        "d_enabled": bool(f.get("d_enabled", True)),
+        "d_enabled": False,
     }
 
 
@@ -4346,22 +4331,19 @@ def _on_off(v: bool) -> str:
 
 
 def _quality_size_enabled() -> bool:
-    """Lever-1 quality size (TG /filter_qsz). Persist в bot_state."""
-    return bool(getattr(state, "quality_size_enabled", CONFIG.get("quality_size_enabled", True)))
+    return False
 
 
 def _psl_size_enabled() -> bool:
-    """P(SL) overlay toggle; применяется только когда QSZ включён."""
-    return bool(getattr(state, "psl_size_enabled", CONFIG.get("psl_size_enabled", True)))
+    return False
 
 
 def _psl_overlay_enabled() -> bool:
-    return _quality_size_enabled() and _psl_size_enabled()
+    return False
 
 
 def _quality_stop_enabled() -> bool:
-    """Frozen continuous initial-SL tightening toggle (SOL tf7 only)."""
-    return bool(getattr(state, "quality_stop_enabled", CONFIG.get("quality_stop_enabled", True)))
+    return False
 
 
 def _quality_stop_mult(score: float) -> float:
@@ -4382,73 +4364,22 @@ def _quality_stop_mult(score: float) -> float:
 
 
 def _apply_quality_stop_to_signal(sig: dict, tf_name: str) -> bool:
-    """Mutate initial SL once, before pending/locks; fail-safe keeps original SL."""
-    if sig.get("quality_stop_applied"):
-        return bool(float(sig.get("quality_stop_mult") or 1.0) < 1.0)
+    """QSTOP вырезан: стоп остаётся за экстремумом свипа."""
     sig["quality_stop_applied"] = True
     sig["quality_stop_mult"] = 1.0
-    if not _quality_stop_enabled() or active_symbol_key() != "SOL" or tf_name != "tf7":
-        return False
-    try:
-        score = float(sig.get("quality_score") or 0.0)
-        mult = _quality_stop_mult(score)
-        if mult >= 1.0 - 1e-12:
-            return False
-        cisd = float(sig.get("cisd_level") or sig["entry"])
-        kind = _entry_kind_for_signal(sig)
-        entry_ref = _entry_price_for_rr(kind, cisd, _signal_entry_price_ref(sig))
-        old_stop = float(sig["stop"])
-        new_stop = entry_ref + (old_stop - entry_ref) * mult
-        direction = str(sig.get("direction") or "")
-        valid = (
-            math.isfinite(new_stop)
-            and new_stop > 0
-            and (
-                (direction == "LONG" and new_stop < entry_ref)
-                or (direction == "SHORT" and new_stop > entry_ref)
-            )
-        )
-        if not valid:
-            logger.warning(
-                f"QSTOP fail-safe: invalid geometry dir={direction} "
-                f"entry={entry_ref} old={old_stop} new={new_stop}"
-            )
-            return False
-        sig["quality_stop_original"] = old_stop
-        sig["quality_stop_mult"] = float(mult)
-        sig["quality_stop_model"] = "continuous_q60_q90_min085_20260730"
-        sig["stop"] = float(new_stop)
-        logger.info(
-            f"QSTOP {direction} score={score:.4f} k={mult:.4f} "
-            f"entry={_fmt_px(entry_ref)} stop={_fmt_px(old_stop)}->{_fmt_px(new_stop)}"
-        )
-        return True
-    except Exception as e:
-        logger.warning(f"QSTOP fail-safe: {e}")
-        return False
+    return False
 
 
 def _detect_filters_profile_name(flags: Optional[dict] = None) -> str:
     f = flags or _detect_filter_flags()
-    a, v, d = f["atr_enabled"], f["vol_enabled"], f["d_enabled"]
-    base = ""
-    if a and v and d:
-        base = "боевой D (A+V+D)"
-    elif a and v and not d:
-        base = "legacy sw+vol (без touches)"
-    elif a and not v and d:
-        base = "sw + soft-touches (без vol)"
-    elif a and not v and not d:
-        base = "только sweep/ATR"
-    elif not a and v and d:
-        base = "D без ATR (touches/vol по DOW)"
-    elif not a and not v and d:
-        base = "только soft-touches (пн/ср/пт)"
-    elif not a and v and not d:
-        base = "только vol"
-    else:
-        base = "все фильтры OFF"
-    return base
+    a, v = f["atr_enabled"], f["vol_enabled"]
+    if a and v:
+        return "ATR + VOL + vwap"
+    if a and not v:
+        return "только sweep/ATR + vwap"
+    if not a and v:
+        return "только VOL + vwap"
+    return "только vwap"
 
 
 def _filters_status_text() -> str:
@@ -4456,40 +4387,24 @@ def _filters_status_text() -> str:
     sw = max(0.0, float(SWEEP_ATR_FILTER.get("min_atr") or 0.0))
     vr = _trigger_vol_max_ratio_cfg()
     ma = _trigger_vol_ma()
-    q_on = _quality_size_enabled()
-    p_on = _psl_size_enabled()
-    qs_on = _quality_stop_enabled()
     return "\n".join([
-        "Фильтры detect:",
+        "Фильтры:",
         f"  ATR  {_on_off(f['atr_enabled']):<3}  (sweep/ATR ≥ {sw:.2f})",
-        f"  VOL  {_on_off(f['vol_enabled']):<3}  "
-        f"(vol/SMA{ma} ≤ {vr:.1f}; при D=ON — только hard-дни)",
-        f"  D    {_on_off(f['d_enabled']):<3}  "
-        f"(пн/ср/пт: touches≥5; вт/чт/сб/вс: vol если VOL=ON)",
-        f"  QSZ  {_on_off(q_on):<3}  "
-        f"(рычаг1 size ×0.60…1.35 по quality score)",
-        f"  PSL  {_on_off(p_on):<3}  "
-        f"(P(SL)-квартили поверх QSZ; {'активен' if q_on and p_on else 'не активен'})",
-        f"  QSTOP {_on_off(qs_on):<3} "
-        f"(SOL tf7: score q60→q90, SL distance ×1.00→0.85)",
+        f"  VOL  {_on_off(f['vol_enabled']):<3}  (vol/SMA{ma} ≤ {vr:.1f})",
+        "  vwap     всегда  (SHORT vd≤0, LONG vd≤−3)",
         "",
         f"Профиль: {_detect_filters_profile_name(f)}",
+        "D / QSZ / PSL / QSTOP вырезаны.",
         "Сохранено в bot_state.json",
     ])
 
 
 def _trigger_filters_desc() -> str:
     f = _detect_filter_flags()
-    q_on = _quality_size_enabled()
-    p_on = _psl_size_enabled()
-    qs_on = _quality_stop_enabled()
     return (
         f"ATR={_on_off(f['atr_enabled'])}  "
         f"VOL={_on_off(f['vol_enabled'])}  "
-        f"D={_on_off(f['d_enabled'])}  "
-        f"QSZ={_on_off(q_on)}  "
-        f"PSL={_on_off(p_on)}  "
-        f"QSTOP={_on_off(qs_on)}  "
+        f"vwap=ON"
     )
 
 
@@ -4511,50 +4426,11 @@ def _apply_vol_or_touches_gate(
     touch_atr14,
     trigger_vol_max_ok,
 ) -> tuple[Optional[str], Optional[int], bool]:
-    """Матрица §3 для VOL/D. Возвращает (skip_category|None, prior_touches, soft)."""
-    from backtest.touch_filter import (
-        TOUCH_MIN,
-        is_soft_dow,
-        need_touches_check,
-        need_vol_check,
-        prior_touches_at_trigger,
-        touches_ok,
-    )
-
-    soft = bool(is_soft_dow(df.index[trigger_idx]))
-    prior_n: Optional[int] = None
+    """VOL-фильтр. D/touches вырезаны."""
+    _ = (htf_ratio, d_enabled, touch_atr14)
     trigger_time = str(pd.Timestamp(df.index[trigger_idx]))
-
-    if need_touches_check(d_enabled=d_enabled, soft=soft):
-        prior_n = prior_touches_at_trigger(
-            df,
-            direction=direction,
-            level=sweep_level,
-            htf_time=htf_time,
-            trigger_idx=trigger_idx,
-            htf_minutes=htf_ratio,
-            atr14=touch_atr14,
-        )
-        if not touches_ok(prior_n, min_touches=TOUCH_MIN):
-            nt_txt = "n/a" if prior_n is None else str(prior_n)
-            _queue_pre_signal_filter_skip(
-                tf_name=tf_name,
-                direction=direction,
-                category="skipped_soft_dow_touches",
-                filter_title="soft-DOW touches",
-                trigger_time=trigger_time,
-                htf_time=htf_time,
-                sweep_level=sweep_level,
-                trigger_extreme=trigger_extreme,
-                detail=f"prior_touches = {nt_txt} < min {TOUCH_MIN} (soft DOW UTC)",
-            )
-            return "skipped_soft_dow_touches", prior_n, soft
-        return None, prior_n, soft
-
-    if need_vol_check(vol_enabled=vol_enabled, d_enabled=d_enabled, soft=soft):
-        if vol_max > 0 and not trigger_vol_max_ok(
-            vol_ratios, trigger_idx, max_ratio=vol_max,
-        ):
+    if vol_enabled and vol_max > 0 and trigger_vol_max_ok is not None:
+        if not trigger_vol_max_ok(vol_ratios, trigger_idx, max_ratio=vol_max):
             vr = None
             if vol_ratios is not None and 0 <= trigger_idx < len(vol_ratios):
                 raw = vol_ratios.iloc[trigger_idx]
@@ -4572,8 +4448,8 @@ def _apply_vol_or_touches_gate(
                 trigger_extreme=trigger_extreme,
                 detail=f"vol/SMA{vol_ma} = {vr_txt} > max {vol_max:.2f}",
             )
-            return "skipped_trigger_vol", prior_n, soft
-    return None, prior_n, soft
+            return "skipped_trigger_vol", None, False
+    return None, None, False
 
 
 def _fmt_bar_msk(ts) -> str:
@@ -4583,6 +4459,20 @@ def _fmt_bar_msk(ts) -> str:
         return m.strftime("%d.%m %H:%M") if m else str(ts)[:16]
     except Exception:
         return str(ts)[:16] if ts is not None else "?"
+
+
+def _fmt_when_utc_msk(ts) -> str:
+    """UTC + МСК в одной строке — для отсевов в Telegram."""
+    utc = "—"
+    try:
+        t = pd.Timestamp(ts)
+        if getattr(t, "tzinfo", None) is not None:
+            t = t.tz_convert("UTC").tz_localize(None)
+        utc = t.strftime("%Y-%m-%d %H:%M UTC")
+    except Exception:
+        utc = str(ts)[:16] if ts is not None else "—"
+    msk_s = _fmt_bar_msk(ts)
+    return f"{utc}  ({msk_s} МСК)"
 
 
 def _remember_skip_tg_key(key: str) -> bool:
@@ -4635,9 +4525,11 @@ def _queue_pre_signal_filter_skip(
     detail: str,
 ) -> None:
     """TG + лог для pre-signal отсева (vol / sweep-ATR). Дедуп — 1 раз на сетап."""
+    sk = active_symbol_key()
+    lbl = symbol_profile(sk)["label"]
     dedup = (
-        f"{category}:{tf_name}:{direction}:"
-        f"{htf_time}:{trigger_time}:{float(sweep_level):.2f}"
+        f"{category}:{sk}:{tf_name}:{direction}:"
+        f"{htf_time}:{trigger_time}:{float(sweep_level):.6g}"
     )
     if not _remember_skip_tg_key(dedup):
         return
@@ -4645,16 +4537,16 @@ def _queue_pre_signal_filter_skip(
     arrow = "📈" if direction == "LONG" else "📉"
     sep = "─" * 34
     msg = "\n".join([
-        f"⛔ Отсев {arrow} {direction} [{tfl}] — {filter_title}",
+        f"{_mode_prefix()} ⛔ Отсев {arrow} {direction} {lbl} [{tfl}] — {filter_title}",
         sep,
-        f"Trigger: {_fmt_bar_msk(trigger_time)} МСК",
-        f"HTF: {_fmt_bar_msk(htf_time)} МСК",
-        f"Sweep: {sweep_level:.2f}  Ext: {trigger_extreme:.2f}",
+        f"Сигнал: {_fmt_when_utc_msk(trigger_time)}",
+        f"HTF-окно: {_fmt_when_utc_msk(htf_time)}",
+        f"Sweep: {_fmt_px(sweep_level, sk)}  Ext: {_fmt_px(trigger_extreme, sk)}",
         sep,
         detail.strip(),
     ])
     logger.info(
-        f"prefilter skip: {direction} [{tf_name}] {filter_title} | "
+        f"prefilter skip: {sk} {direction} [{tf_name}] {filter_title} | "
         f"{detail.replace(chr(10), ' | ')}"
     )
     _schedule_coro(_send_skip_tg_or_release(dedup, msg))
@@ -4752,21 +4644,12 @@ def detect_signals(
 
         sweep_atr14 = compute_atr14(df)
         sweep_atr_ratio_fn = sweep_atr_ratio
-    elif _quality_size_enabled() or _psl_overlay_enabled():
-        from backtest.sweep_atr_filter import compute_atr14, sweep_atr_ratio
-
-        sweep_atr14 = compute_atr14(df)
-        sweep_atr_ratio_fn = sweep_atr_ratio
-    if (vol_enabled and vol_max > 0) or _psl_overlay_enabled():
+    if vol_enabled and vol_max > 0:
         from backtest.volume_filter import trigger_vol_max_ok, volume_ratio_series
 
         vol_ratios = volume_ratio_series(df, _trigger_vol_ma())
     else:
         from backtest.volume_filter import trigger_vol_max_ok
-    if d_enabled or _psl_overlay_enabled():
-        from backtest.touch_filter import atr14_ewm
-
-        touch_atr14 = atr14_ewm(df)
     vol_ma = _trigger_vol_ma()
 
     # 1) upsert кандидаты из текущего HTF-окна
@@ -4837,7 +4720,6 @@ def detect_signals(
             continue
         if skip_cat == "skipped_trigger_vol":
             skipped_high_vol += 1
-            continue
             continue
         incoming = {
             "tf": tf_name,
@@ -5413,6 +5295,7 @@ def detect_signals(
         )
         signals.append({
             "hash":            sig_hash,
+            "symbol_key":      active_symbol_key(),
             "direction":       direction,
             "entry":           entry,
             "stop":            stop,
@@ -9074,10 +8957,14 @@ def _msk_sig_ts(raw) -> str:
 
 
 def _format_signal_context(sig: dict, tf_name: str) -> str:
-    """Полная карточка сетапа (как при появлении сигнала) — для skip-сообщений."""
+    """Карточка сетапа для skip-сообщений: пара, UTC и МСК."""
     direction = str(sig.get("direction") or "?")
     tfl = tf_label(tf_name)
     arrow = "📈" if direction == "LONG" else "📉"
+    sk = str(sig.get("symbol_key") or "") or active_symbol_key()
+    if sk not in SYMBOL_PROFILES:
+        sk = active_symbol_key()
+    lbl = symbol_profile(sk)["label"]
     htf_name = tf_htf_name(tf_name)
     entry = float(sig.get("entry") or 0)
     stop = float(sig.get("stop") or 0)
@@ -9086,40 +8973,31 @@ def _format_signal_context(sig: dict, tf_name: str) -> str:
     sl_pct = abs(stop - entry) / entry * 100 if entry > 0 else 0
     tp_pct = abs(tp - entry) / entry * 100 if entry > 0 else 0
     rr = tp_pct / sl_pct if sl_pct > 0 else 0
-    sweep = _fmt_px(sig["htf_sweep_level"]) if sig.get("htf_sweep_level") else "—"
-    bh = _fmt_px(sig["base_high"]) if sig.get("base_high") else "—"
-    bl = _fmt_px(sig["base_low"]) if sig.get("base_low") else "—"
+    sweep = _fmt_px(sig["htf_sweep_level"], sk) if sig.get("htf_sweep_level") else "—"
+    bh = _fmt_px(sig["base_high"], sk) if sig.get("base_high") else "—"
+    bl = _fmt_px(sig["base_low"], sk) if sig.get("base_low") else "—"
     tr_ext = _safe_float(sig.get("trigger_extreme"))
-    tr_ext_s = _fmt_px(tr_ext) if tr_ext is not None else "—"
+    tr_ext_s = _fmt_px(tr_ext, sk) if tr_ext is not None else "—"
     entry_kind = _entry_kind_for_signal(sig)
-
-    fib_lines = ""
-    for label, key in [
-        ("1.0x", "fib_1x"),
-        ("2.0x", "fib_2x"),
-        ("2.5x", "fib_2_5x"),
-        ("4.0x", "fib_4x"),
-        ("4.5x", "fib_4_5x"),
-    ]:
-        v = sig.get(key)
-        if v is not None:
-            fib_lines += f"\n  {label}: {_fmt_px(v)}"
+    trig_raw = sig.get("trigger_bar_time") or sig.get("timestamp")
 
     lines = [
+        f"Инструмент: {lbl}",
         f"{arrow} {direction} [{tfl}]",
-        f"🔍 Свип {htf_name}: {sweep}  |  Trigger ext: {tr_ext_s}",
-        f"HTF окно: {_msk_sig_ts(sig.get('htf_time'))} МСК  |  "
-        f"Trigger бар: {_msk_sig_ts(sig.get('trigger_bar_time') or sig.get('timestamp'))} МСК",
-        f"🔷 База: H={bh}  L={bl}",
-        f"CISD: {_fmt_px(cisd)}  |  Entry: {entry_kind}",
-        f"Stop: {_fmt_px(stop)} ({sl_pct:.2f}%)  |  TP: {_fmt_px(tp)} ({tp_pct:.2f}%)  |  R:R {rr:.2f}",
+        f"Сигнал: {_fmt_when_utc_msk(trig_raw)}",
+        f"HTF-окно ({htf_name}): {_fmt_when_utc_msk(sig.get('htf_time'))}",
+        f"Sweep: {sweep}  Ext: {tr_ext_s}",
+        f"CISD: {_fmt_px(cisd, sk)}  |  вход {entry_kind}",
+        f"Stop: {_fmt_px(stop, sk)} ({sl_pct:.2f}%)  |  "
+        f"TP: {_fmt_px(tp, sk)} ({tp_pct:.2f}%)  |  R:R {rr:.2f}",
+        f"База: H={bh}  L={bl}",
     ]
-    if fib_lines:
-        lines.append(f"📊 Фибо:{fib_lines}")
     if sig.get("confirm_bar_time"):
         ctf = str(sig.get("confirm_timeframe") or "")
         ctf_s = f" ({ctf})" if ctf else ""
-        lines.append(f"MSS confirm: {_msk_sig_ts(sig.get('confirm_bar_time'))} МСК{ctf_s}")
+        lines.append(
+            f"MSS confirm: {_fmt_when_utc_msk(sig.get('confirm_bar_time'))}{ctf_s}"
+        )
     h = str(sig.get("hash") or "")
     if h:
         lines.append(f"hash: {h[:16]}")
@@ -10665,6 +10543,7 @@ async def _try_arm_cisd_cross_candidates(now: datetime) -> None:
 
         sig = {
             "hash": sig_hash,
+            "symbol_key": active_symbol_key(),
             "direction": direction,
             "entry": entry,
             "stop": stop,
@@ -12713,11 +12592,12 @@ async def cmd_timeout(update: Update, context: ContextTypes.DEFAULT_TYPE):
 _FILTER_KEY_MAP = {
     "atr": "atr_enabled",
     "vol": "vol_enabled",
-    "d": "d_enabled",
-    "touch": "d_enabled",
-    "touches": "d_enabled",
-    "dow": "d_enabled",
 }
+
+_CUT_FILTERS_MSG = (
+    "Фильтры D, QSZ, PSL, QSTOP вырезаны.\n"
+    "Сейчас работают: ATR, VOL и vwap."
+)
 
 
 def _parse_on_off(raw: str) -> Optional[bool]:
@@ -12736,7 +12616,7 @@ async def _set_detect_filter(
 ) -> None:
     key = _FILTER_KEY_MAP.get(which.lower())
     if key is None:
-        await update.message.reply_text("⚠️ Фильтр: atr | vol | d | qsz")
+        await update.message.reply_text("Фильтр: atr | vol")
         return
     state.detect_filters[key] = bool(enabled)
     save_bot_state()
@@ -12744,49 +12624,20 @@ async def _set_detect_filter(
         f"detect_filters: {which.upper()} → {_on_off(enabled)} | "
         f"A{int(state.detect_filters['atr_enabled'])}"
         f"V{int(state.detect_filters['vol_enabled'])}"
-        f"D{int(state.detect_filters['d_enabled'])}"
-        f" QSZ={_on_off(_quality_size_enabled())}"
-        f" PSL={_on_off(_psl_size_enabled())}"
-        f" QSTOP={_on_off(_quality_stop_enabled())}"
     )
     await update.message.reply_text(_filters_status_text())
 
 
-async def _set_quality_size(update: Update, enabled: bool) -> None:
-    state.quality_size_enabled = bool(enabled)
-    save_bot_state()
-    logger.info(f"quality_size: → {_on_off(enabled)}")
-    await update.message.reply_text(_filters_status_text())
-
-
-async def _set_psl_size(update: Update, enabled: bool) -> None:
-    state.psl_size_enabled = bool(enabled)
-    save_bot_state()
-    logger.info(f"psl_size: → {_on_off(enabled)}")
-    await update.message.reply_text(_filters_status_text())
-
-
-async def _set_quality_stop(update: Update, enabled: bool) -> None:
-    state.quality_stop_enabled = bool(enabled)
-    save_bot_state()
-    logger.info(f"quality_stop: → {_on_off(enabled)}")
-    await update.message.reply_text(_filters_status_text())
-
-
 async def cmd_filters(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Показать / переключить detect-фильтры ATR VOL D / QSZ / PSL / QSTOP."""
+    """Показать / переключить ATR и VOL. vwap всегда включён."""
     args = [a.strip() for a in (context.args or []) if str(a).strip()]
     if len(args) >= 2:
         which = args[0].lower()
         val = _parse_on_off(args[1])
-        if val is not None and which in ("qsz", "q", "quality", "quality_size", "size"):
-            await _set_quality_size(update, val)
-            return
-        if val is not None and which in ("psl", "p_sl", "prob_sl", "psl_size"):
-            await _set_psl_size(update, val)
-            return
-        if val is not None and which in ("qstop", "quality_stop", "stop"):
-            await _set_quality_stop(update, val)
+        if which in ("d", "touch", "touches", "dow", "qsz", "q", "quality",
+                     "quality_size", "size", "psl", "p_sl", "prob_sl",
+                     "psl_size", "qstop", "quality_stop", "stop"):
+            await update.message.reply_text(_CUT_FILTERS_MSG)
             return
         if which in _FILTER_KEY_MAP and val is not None:
             await _set_detect_filter(update, which, val)
@@ -12797,11 +12648,7 @@ async def cmd_filters(update: Update, context: ContextTypes.DEFAULT_TYPE):
         + "Команды:\n"
         + "/filter_atr on|off\n"
         + "/filter_vol on|off\n"
-        + "/filter_d on|off\n"
-        + "/filter_qsz on|off\n"
-        + "/filter_psl on|off\n"
-        + "/filter_qstop on|off\n"
-        + "или /filter atr|vol|d|qsz|psl|qstop off"
+        + "или /filter atr|vol off"
     )
 
 
@@ -12813,24 +12660,13 @@ async def cmd_filter(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     which = args[0].lower()
     val = _parse_on_off(args[1])
-    if val is None:
-        await update.message.reply_text(
-            "Использование: /filter atr|vol|d|qsz|psl|qstop on|off"
-        )
+    if which in ("d", "touch", "touches", "dow", "qsz", "q", "quality",
+                 "quality_size", "size", "psl", "p_sl", "prob_sl",
+                 "psl_size", "qstop", "quality_stop", "stop"):
+        await update.message.reply_text(_CUT_FILTERS_MSG)
         return
-    if which in ("qsz", "q", "quality", "quality_size", "size"):
-        await _set_quality_size(update, val)
-        return
-    if which in ("psl", "p_sl", "prob_sl", "psl_size"):
-        await _set_psl_size(update, val)
-        return
-    if which in ("qstop", "quality_stop", "stop"):
-        await _set_quality_stop(update, val)
-        return
-    if which not in _FILTER_KEY_MAP:
-        await update.message.reply_text(
-            "Использование: /filter atr|vol|d|qsz|psl|qstop on|off"
-        )
+    if val is None or which not in _FILTER_KEY_MAP:
+        await update.message.reply_text("Использование: /filter atr|vol on|off")
         return
     await _set_detect_filter(update, which, val)
 
@@ -12838,7 +12674,6 @@ async def cmd_filter(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def cmd_filter_atr(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args or []
     if not args:
-        # тап из меню → toggle
         await _set_detect_filter(update, "atr", not _detect_filter_flags()["atr_enabled"])
         return
     val = _parse_on_off(args[0])
@@ -12860,55 +12695,8 @@ async def cmd_filter_vol(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await _set_detect_filter(update, "vol", val)
 
 
-async def cmd_filter_d(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    args = context.args or []
-    if not args:
-        await _set_detect_filter(update, "d", not _detect_filter_flags()["d_enabled"])
-        return
-    val = _parse_on_off(args[0])
-    if val is None:
-        await update.message.reply_text("Использование: /filter_d on|off")
-        return
-    await _set_detect_filter(update, "d", val)
-
-
-async def cmd_filter_qsz(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Рычаг1 quality size: тап = toggle, или /filter_qsz on|off."""
-    args = context.args or []
-    if not args:
-        await _set_quality_size(update, not _quality_size_enabled())
-        return
-    val = _parse_on_off(args[0])
-    if val is None:
-        await update.message.reply_text("Использование: /filter_qsz on|off")
-        return
-    await _set_quality_size(update, val)
-
-
-async def cmd_filter_psl(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """P(SL) overlay: тап = toggle, или /filter_psl on|off."""
-    args = context.args or []
-    if not args:
-        await _set_psl_size(update, not _psl_size_enabled())
-        return
-    val = _parse_on_off(args[0])
-    if val is None:
-        await update.message.reply_text("Использование: /filter_psl on|off")
-        return
-    await _set_psl_size(update, val)
-
-
-async def cmd_filter_qstop(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Continuous quality-stop: тап = toggle, или /filter_qstop on|off."""
-    args = context.args or []
-    if not args:
-        await _set_quality_stop(update, not _quality_stop_enabled())
-        return
-    val = _parse_on_off(args[0])
-    if val is None:
-        await update.message.reply_text("Использование: /filter_qstop on|off")
-        return
-    await _set_quality_stop(update, val)
+async def cmd_filter_cut(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(_CUT_FILTERS_MSG)
 
 
 async def callback_timeout(update: Update, context: ContextTypes.DEFAULT_TYPE):
