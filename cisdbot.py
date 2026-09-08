@@ -3633,10 +3633,36 @@ def _cand_key(tf_name: str, direction: str, htf_time: str, symbol_key: Optional[
 
 
 def _tf_has_sweep_candidates(tf_name: str) -> bool:
+    sk = active_symbol_key()
     return any(
-        v.get("tf") == tf_name and v.get("direction") in ("LONG", "SHORT")
+        v.get("tf") == tf_name
+        and v.get("direction") in ("LONG", "SHORT")
+        and str(v.get("symbol_key") or sk) == sk
         for v in state.sweep_candidates.values()
     )
+
+
+def _cand_symbol_key(cand: dict, store_key: str = "") -> str:
+    sk = str(cand.get("symbol_key") or "")
+    if sk in SYMBOL_PROFILES:
+        return sk
+    head = str(store_key).split("|", 1)[0]
+    return head if head in SYMBOL_PROFILES else active_symbol_key()
+
+
+def _cands_for_symbol(tf_name: str, symbol_key: Optional[str] = None) -> list:
+    """Кандидаты только этой пары. Иначе LTC видит Sweep/Ext от LINK/SOL."""
+    sk = symbol_key or active_symbol_key()
+    out = []
+    for k, v in state.sweep_candidates.items():
+        if v.get("tf") != tf_name:
+            continue
+        if str(v.get("direction") or "") not in ("LONG", "SHORT"):
+            continue
+        if _cand_symbol_key(v, k) != sk:
+            continue
+        out.append(v)
+    return out
 
 
 def _cand_matches_sweep(sweep: dict, cand: dict) -> bool:
@@ -4447,6 +4473,7 @@ def _apply_vol_or_touches_gate(
                 sweep_level=sweep_level,
                 trigger_extreme=trigger_extreme,
                 detail=f"vol/SMA{vol_ma} = {vr_txt} > max {vol_max:.2f}",
+                symbol_key=active_symbol_key(),
             )
             return "skipped_trigger_vol", None, False
     return None, None, False
@@ -4523,33 +4550,43 @@ def _queue_pre_signal_filter_skip(
     sweep_level: float,
     trigger_extreme: float,
     detail: str,
+    symbol_key: Optional[str] = None,
 ) -> None:
-    """TG + лог для pre-signal отсева (vol / sweep-ATR). Дедуп — 1 раз на сетап."""
-    sk = active_symbol_key()
-    lbl = symbol_profile(sk)["label"]
+    """TG + лог для pre-signal отсева. Цифры замораживаются здесь, не при send."""
+    sk = str(symbol_key or active_symbol_key())
+    if sk not in SYMBOL_PROFILES:
+        sk = active_symbol_key()
+    lbl = str(symbol_profile(sk)["label"])
+    sweep_v = float(sweep_level)
+    ext_v = float(trigger_extreme)
+    trig_s = str(trigger_time)
+    htf_s = str(htf_time)
+    title = str(filter_title)
+    detail_s = str(detail or "").strip()
+    dir_s = str(direction)
     dedup = (
-        f"{category}:{sk}:{tf_name}:{direction}:"
-        f"{htf_time}:{trigger_time}:{float(sweep_level):.6g}"
+        f"{category}:{sk}:{tf_name}:{dir_s}:"
+        f"{htf_s}:{trig_s}:{sweep_v:.6g}"
     )
     if not _remember_skip_tg_key(dedup):
         return
     tfl = tf_label(tf_name)
-    arrow = "📈" if direction == "LONG" else "📉"
+    arrow = "📈" if dir_s == "LONG" else "📉"
     sep = "─" * 34
     msg = "\n".join([
-        f"{_mode_prefix()} ⛔ Отсев {arrow} {direction} {lbl} [{tfl}] — {filter_title}",
+        f"{_mode_prefix()} ⛔ Отсев {arrow} {dir_s} {lbl} [{tfl}] — {title}",
         sep,
-        f"Сигнал: {_fmt_when_utc_msk(trigger_time)}",
-        f"HTF-окно: {_fmt_when_utc_msk(htf_time)}",
-        f"Sweep: {_fmt_px(sweep_level, sk)}  Ext: {_fmt_px(trigger_extreme, sk)}",
+        f"Сигнал: {_fmt_when_utc_msk(trig_s)}",
+        f"HTF-окно: {_fmt_when_utc_msk(htf_s)}",
+        f"Sweep: {_fmt_px(sweep_v, sk)}  Ext: {_fmt_px(ext_v, sk)}",
         sep,
-        detail.strip(),
+        detail_s,
     ])
     logger.info(
-        f"prefilter skip: {sk} {direction} [{tf_name}] {filter_title} | "
-        f"{detail.replace(chr(10), ' | ')}"
+        f"prefilter skip: {sk} {dir_s} [{tf_name}] {title} | "
+        f"sweep={sweep_v} ext={ext_v} | {detail_s.replace(chr(10), ' | ')}"
     )
-    _schedule_coro(_send_skip_tg_or_release(dedup, msg))
+    _schedule_coro(_send_skip_tg_or_release(str(dedup), str(msg)))
 
 
 def detect_signals(
@@ -4696,6 +4733,7 @@ def detect_signals(
                 sweep_level=sweep_lvl_i,
                 trigger_extreme=trigger_extreme,
                 detail=f"sweep/ATR = {atr_txt} < min {min_sweep_atr:.2f}",
+                symbol_key=active_symbol_key(),
             )
             continue
         skip_cat, _, _ = _apply_vol_or_touches_gate(
@@ -4723,6 +4761,7 @@ def detect_signals(
             continue
         incoming = {
             "tf": tf_name,
+            "symbol_key": active_symbol_key(),
             "direction": direction,
             "htf_time": htf_s,
             "type": str(sweep.get("type") or ""),
@@ -4741,8 +4780,11 @@ def detect_signals(
         for t in df_htf.index[-tail_n:]:
             keep.add(str(pd.Timestamp(t)))
         drop = []
+        sk_now = active_symbol_key()
         for k, v in state.sweep_candidates.items():
             if v.get("tf") != tf_name:
+                continue
+            if _cand_symbol_key(v, k) != sk_now:
                 continue
             if str(pd.Timestamp(v.get("htf_time"))) not in keep:
                 drop.append(k)
@@ -4752,10 +4794,7 @@ def detect_signals(
         _prune_htf_taken(tf_name, keep)
 
     # 3) Обрабатываем кандидатов (текущий + предыдущий), но сигнал разрешаем только если confirm в текущем окне.
-    cands = [
-        v for v in state.sweep_candidates.values()
-        if v.get("tf") == tf_name and v.get("direction") in ("LONG", "SHORT")
-    ]
+    cands = _cands_for_symbol(tf_name)
     for cand in cands:
         direction = str(cand["direction"])
         is_bearish = direction == "SHORT"
@@ -4839,8 +4878,12 @@ def detect_signals(
                 sweep_level=sweep_lvl,
                 trigger_extreme=trigger_extreme,
                 detail=f"sweep/ATR = {atr_txt} < min {min_sweep_atr:.2f}",
+                symbol_key=str(cand.get("symbol_key") or active_symbol_key()),
             )
-            _drop_sweep_candidate(tf_name, direction, htf_s, "sweep/ATR мал")
+            _drop_sweep_candidate(
+                tf_name, direction, htf_s, "sweep/ATR мал",
+                symbol_key=str(cand.get("symbol_key") or active_symbol_key()),
+            )
             continue
 
         skip_cat, prior_touches_n, soft_dow = _apply_vol_or_touches_gate(
@@ -8383,9 +8426,12 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
     arrow    = "📈" if direction == "LONG" else "📉"
     htf_name = tf_htf_name(tf_name)
 
-    sweep = _fmt_px(sig["htf_sweep_level"]) if sig.get("htf_sweep_level") else "—"
-    bh    = _fmt_px(sig["base_high"]) if sig.get("base_high") else "—"
-    bl    = _fmt_px(sig["base_low"]) if sig.get("base_low") else "—"
+    sk = str(sig.get("symbol_key") or "") or active_symbol_key()
+    if sk not in SYMBOL_PROFILES:
+        sk = active_symbol_key()
+    sweep = _fmt_px(sig["htf_sweep_level"], sk) if sig.get("htf_sweep_level") else "—"
+    bh    = _fmt_px(sig["base_high"], sk) if sig.get("base_high") else "—"
+    bl    = _fmt_px(sig["base_low"], sk) if sig.get("base_low") else "—"
 
     fib_lines = ""
     for label, key in [
@@ -8397,9 +8443,7 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
     ]:
         v = sig.get(key)
         if v is not None:
-            fib_lines += f"\n  {label}: {_fmt_px(v)}"
-
-    sk = active_symbol_key()
+            fib_lines += f"\n  {label}: {_fmt_px(v, sk)}"
     risk_usdt = abs(float(entry) - float(stop)) * 1.0
     # риск в USDT уточнится при размере; здесь карточка лимитки
     msg = (
@@ -8413,8 +8457,8 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
         f"Ожидание входа: {_fmt_h(tf_cfg['limit_h'])}  |  позиция: {_fmt_h(tf_cfg['position_h'])}"
     )
     logger.info(
-        f"[PAPER] {direction} [{tf_name}] sweep={sweep} entry={_fmt_px(entry)} "
-        f"stop={_fmt_px(stop)} tp={_fmt_px(tp)} R:R={rr:.2f}"
+        f"[PAPER] {sk} {direction} [{tf_name}] sweep={sweep} entry={_fmt_px(entry, sk)} "
+        f"stop={_fmt_px(stop, sk)} tp={_fmt_px(tp, sk)} R:R={rr:.2f}"
     )
     await send_telegram(msg)
 
@@ -10342,10 +10386,7 @@ async def _try_arm_cisd_cross_candidates(now: datetime) -> None:
         return
     tf_name = state.active_tf
     tf_cfg = CONFIG[tf_name]
-    cands = [
-        v for v in state.sweep_candidates.values()
-        if v.get("tf") == tf_name and v.get("direction") in ("LONG", "SHORT")
-    ]
+    cands = _cands_for_symbol(tf_name)
     if not cands:
         return
     df = await fetch_ohlcv(tf_cfg["timeframe"], tf_cfg.get("ohlcv", 500))
