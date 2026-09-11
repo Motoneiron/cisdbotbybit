@@ -3728,10 +3728,33 @@ def _htf_sweep_validate_key(tf_name: str, htf_time: str, symbol_key: Optional[st
     return f"{sk}|{tf_name}|{htf_time}"
 
 
-def _htf_closed_sweep_flags(df_htf: pd.DataFrame, closed_idx: int) -> tuple[bool, bool]:
-    """Pine f_is_sweep между закрытым HTF-баром и предыдущим: (high_sweep, low_sweep)."""
+def _htf_window_ltf_bars(
+    df: pd.DataFrame, htf_ts: pd.Timestamp, htf_ratio: int,
+) -> int:
+    """Сколько LTF-баров попало в HTF-окно [htf_ts, htf_ts + ratio)."""
+    start = pd.Timestamp(htf_ts)
+    end = start + pd.Timedelta(minutes=int(htf_ratio))
+    return int(((df.index >= start) & (df.index < end)).sum())
+
+
+def _htf_closed_sweep_flags(
+    df_htf: pd.DataFrame,
+    closed_idx: int,
+    df: pd.DataFrame | None = None,
+    htf_ratio: int | None = None,
+    tf_minutes: int | None = None,
+) -> tuple[bool, bool] | None:
+    """Pine f_is_sweep между закрытым HTF-баром и предыдущим: (high_sweep, low_sweep).
+
+    None — в закрытой свече не все LTF-бары (рестарт/дыра в df), валидацию пропускаем.
+    """
     if closed_idx < 1 or closed_idx >= len(df_htf):
         return True, True
+    if df is not None and htf_ratio and tf_minutes:
+        expected = max(1, int(htf_ratio) // int(tf_minutes))
+        n = _htf_window_ltf_bars(df, df_htf.index[closed_idx], int(htf_ratio))
+        if n < expected:
+            return None
     c2 = df_htf.iloc[closed_idx]
     c3 = df_htf.iloc[closed_idx - 1]
     return (
@@ -3762,6 +3785,7 @@ async def _invalidate_pending_no_htf_inter_sweep(
     """
     tf_cfg = CONFIG.get(tf_name, {})
     htf_ratio = int(tf_cfg.get("htf_ratio") or 60)
+    tf_minutes = _tf_to_minutes(str(tf_cfg.get("timeframe") or "5m"))
     if df is None:
         df = await fetch_ohlcv(tf_cfg["timeframe"], tf_cfg.get("ohlcv", 500))
     if df is None or len(df) < 50:
@@ -3805,7 +3829,18 @@ async def _invalidate_pending_no_htf_inter_sweep(
         if idx is None or idx >= len(df_htf) - 1:
             continue
 
-        has_high, has_low = _htf_closed_sweep_flags(df_htf, idx)
+        flags = _htf_closed_sweep_flags(
+            df_htf, idx, df=df, htf_ratio=htf_ratio, tf_minutes=tf_minutes,
+        )
+        if flags is None:
+            expected = max(1, htf_ratio // tf_minutes)
+            n = _htf_window_ltf_bars(df, df_htf.index[idx], htf_ratio)
+            logger.info(
+                f"detect:   -> HTF {htf_s} неполное окно "
+                f"({n}/{expected} баров) — валидацию пропускаем"
+            )
+            continue
+        has_high, has_low = flags
         state.htf_sweep_validated[vk] = True
         if len(state.htf_sweep_validated) > 300:
             for old_k in list(state.htf_sweep_validated.keys())[:100]:
@@ -11392,9 +11427,11 @@ async def _run_detect_and_trade(
     tf_name: str,
     df: pd.DataFrame,
     df_confirm: Optional[pd.DataFrame] = None,
+    skip_invalidate: bool = False,
 ) -> None:
     tf_cfg = CONFIG[tf_name]
-    await _invalidate_pending_no_htf_inter_sweep(tf_name, df)
+    if not skip_invalidate:
+        await _invalidate_pending_no_htf_inter_sweep(tf_name, df)
     signals = detect_signals(
         df, state.processed,
         htf_ratio=tf_cfg["htf_ratio"], tf_name=tf_name,
@@ -11443,7 +11480,9 @@ def _store_closed_ohlc(symbol_key: str, tf_name: str, df: pd.DataFrame) -> None:
     state.last_ohlcv_high = float(last["high"])
 
 
-async def _scan_symbol(sk: str, tf8_due: bool) -> None:
+async def _scan_symbol(
+    sk: str, tf8_due: bool, skip_invalidate: bool = False,
+) -> None:
     with _use_symbol(sk):
         df5 = await fetch_ohlcv("5m", OHLCV_5M_BARS)
         if df5 is None or len(df5) < 50:
@@ -11451,14 +11490,18 @@ async def _scan_symbol(sk: str, tf8_due: bool) -> None:
             return
         state.df_cache[f"{sk}|tf7"] = df5
         _store_closed_ohlc(sk, "tf7", df5)
-        await _run_detect_and_trade("tf7", df5, df_confirm=None)
+        await _run_detect_and_trade(
+            "tf7", df5, df_confirm=None, skip_invalidate=skip_invalidate,
+        )
 
         df30 = _resample_ohlcv(df5, "30m")
         if df30 is not None and len(df30) >= 2:
             state.df_cache[f"{sk}|tf8"] = df30
             _store_closed_ohlc(sk, "tf8", df30)
         if tf8_due and df30 is not None and len(df30) >= 20:
-            await _run_detect_and_trade("tf8", df30, df_confirm=df5)
+            await _run_detect_and_trade(
+                "tf8", df30, df_confirm=df5, skip_invalidate=skip_invalidate,
+            )
 
 
 async def signal_scanner():
@@ -11468,6 +11511,7 @@ async def signal_scanner():
         f"сканер {len(ACTIVE_SYMBOL_KEYS)} пар × {', '.join(ACTIVE_TF_KEYS)}"
     )
     last_5m_forming = None
+    warmup = True
 
     while True:
         await state.running.wait()
@@ -11485,16 +11529,25 @@ async def signal_scanner():
             # Новый 5m forming-бар = предыдущий закрыт. tf8 — каждый 6-й (граница 30m).
             tf8_due = int(pd.Timestamp(forming).minute) % 30 == 0
             last_5m_forming = forming
-            logger.info(
-                f"Скан 5m close forming={forming}  tf8={'да' if tf8_due else 'нет'}"
-            )
+            if warmup:
+                logger.info(
+                    f"Скан 5m close forming={forming}  tf8={'да' if tf8_due else 'нет'} "
+                    f"(прогрев — без HTF-инвалидаций)"
+                )
+            else:
+                logger.info(
+                    f"Скан 5m close forming={forming}  tf8={'да' if tf8_due else 'нет'}"
+                )
             for sk in ACTIVE_SYMBOL_KEYS:
                 if not state.running.is_set():
                     break
                 try:
-                    await _scan_symbol(sk, tf8_due)
+                    await _scan_symbol(sk, tf8_due, skip_invalidate=warmup)
                 except Exception as e:
                     logger.error(f"scan {sk}: {e}", exc_info=True)
+            if warmup:
+                logger.info("сканер: прогрев завершён, HTF-инвалидации включены")
+                warmup = False
             save_json(SIGNALS_CACHE, sorted(state.processed)[-500:])
         except Exception as e:
             logger.error(f"Scanner: {e}", exc_info=True)
