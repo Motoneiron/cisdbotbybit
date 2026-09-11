@@ -352,10 +352,10 @@ TRIGGER_VOL_FILTER = {
     "max_ratio": 2.5,
 }
 
-# Detect-фильтры v6: ATR + VOL. D / QSZ / PSL / QSTOP вырезаны.
+# Detect-фильтры v6: только vwap. ATR / VOL(SMA) / D / QSZ / PSL / QSTOP вырезаны.
 DETECT_FILTERS_DEFAULT = {
-    "atr_enabled": True,
-    "vol_enabled": True,
+    "atr_enabled": False,
+    "vol_enabled": False,
     "d_enabled": False,
 }
 
@@ -1097,8 +1097,8 @@ def save_bot_state():
         "slope_ema_spans": CONFIG.get("slope_ema_spans") or {},
         "slope_timing_mode": CONFIG.get("slope_timing_mode", "hermes"),
         "detect_filters": {
-            "atr_enabled": bool(state.detect_filters.get("atr_enabled", True)),
-            "vol_enabled": bool(state.detect_filters.get("vol_enabled", True)),
+            "atr_enabled": False,
+            "vol_enabled": False,
             "d_enabled": False,
         },
         "quality_size_enabled": False,
@@ -1188,10 +1188,9 @@ def load_bot_state():
         mode = str(d["slope_timing_mode"]).strip().lower()
         if mode in ("hermes", "trigger"):
             CONFIG["slope_timing_mode"] = mode
-    df_f = d.get("detect_filters") if isinstance(d.get("detect_filters"), dict) else {}
     state.detect_filters = {
-        "atr_enabled": bool(df_f.get("atr_enabled", DETECT_FILTERS_DEFAULT["atr_enabled"])),
-        "vol_enabled": bool(df_f.get("vol_enabled", DETECT_FILTERS_DEFAULT["vol_enabled"])),
+        "atr_enabled": False,
+        "vol_enabled": False,
         "d_enabled": False,
     }
     state.quality_size_enabled = False
@@ -1218,8 +1217,7 @@ def load_bot_state():
     logger.info(
         f"Загружено состояние: пара={symbol_profile()['label']}, ТФ={state.active_tf}, "
         f"paper={state.paper}, slope_filter={state.slope_filter_enabled}, "
-        f"detect_filters=A{int(state.detect_filters['atr_enabled'])}"
-        f"V{int(state.detect_filters['vol_enabled'])} vwap, "
+        f"detect_filters=vwap, "
         + " | ".join(
             f"{tf}: вход={_fmt_h(CONFIG[tf]['limit_h'])} выход={_fmt_h(CONFIG[tf]['position_h'])}"
             for tf in TF_KEYS
@@ -3278,14 +3276,14 @@ def _build_tg_application() -> Application:
     app.add_handler(CommandHandler("timeout", cmd_timeout))
     app.add_handler(CommandHandler("filters", cmd_filters))
     app.add_handler(CommandHandler("filter", cmd_filter))
-    app.add_handler(CommandHandler("filter_atr", cmd_filter_atr))
-    app.add_handler(CommandHandler("filter_vol", cmd_filter_vol))
+    app.add_handler(CommandHandler("filter_atr", cmd_filter_cut))
+    app.add_handler(CommandHandler("filter_vol", cmd_filter_cut))
     app.add_handler(CommandHandler("filter_d", cmd_filter_cut))
     app.add_handler(CommandHandler("filter_qsz", cmd_filter_cut))
     app.add_handler(CommandHandler("filter_psl", cmd_filter_cut))
     app.add_handler(CommandHandler("filter_qstop", cmd_filter_cut))
-    app.add_handler(CommandHandler("filters_atr", cmd_filter_atr))
-    app.add_handler(CommandHandler("filters_vol", cmd_filter_vol))
+    app.add_handler(CommandHandler("filters_atr", cmd_filter_cut))
+    app.add_handler(CommandHandler("filters_vol", cmd_filter_cut))
     app.add_handler(CommandHandler("filters_d", cmd_filter_cut))
     app.add_handler(CommandHandler("filters_qsz", cmd_filter_cut))
     app.add_handler(CommandHandler("quality_size", cmd_filter_cut))
@@ -4322,18 +4320,15 @@ def _sig_hash_stable(
 
 
 def _detect_filter_flags() -> dict:
-    f = getattr(state, "detect_filters", None) or DETECT_FILTERS_DEFAULT
     return {
-        "atr_enabled": bool(f.get("atr_enabled", True)),
-        "vol_enabled": bool(f.get("vol_enabled", True)),
+        "atr_enabled": False,
+        "vol_enabled": False,
         "d_enabled": False,
     }
 
 
 def _min_sweep_atr() -> float:
-    if not _detect_filter_flags()["atr_enabled"]:
-        return 0.0
-    return max(0.0, float(SWEEP_ATR_FILTER.get("min_atr") or 0.0))
+    return 0.0
 
 
 def _trigger_vol_ma() -> int:
@@ -4341,15 +4336,11 @@ def _trigger_vol_ma() -> int:
 
 
 def _trigger_vol_max_ratio() -> float:
-    """Порог vol/SMA если VOL=ON; 0 = не проверять (флаг OFF или выкл в CONFIG)."""
-    if not _detect_filter_flags()["vol_enabled"]:
-        return 0.0
-    return max(0.0, float(TRIGGER_VOL_FILTER.get("max_ratio") or 0.0))
+    return 0.0
 
 
 def _trigger_vol_max_ratio_cfg() -> float:
-    """Сырой порог из CONFIG (без учёта TG-флага VOL)."""
-    return max(0.0, float(TRIGGER_VOL_FILTER.get("max_ratio") or 0.0))
+    return 0.0
 
 
 def _on_off(v: bool) -> str:
@@ -4397,41 +4388,20 @@ def _apply_quality_stop_to_signal(sig: dict, tf_name: str) -> bool:
 
 
 def _detect_filters_profile_name(flags: Optional[dict] = None) -> str:
-    f = flags or _detect_filter_flags()
-    a, v = f["atr_enabled"], f["vol_enabled"]
-    if a and v:
-        return "ATR + VOL + vwap"
-    if a and not v:
-        return "только sweep/ATR + vwap"
-    if not a and v:
-        return "только VOL + vwap"
     return "только vwap"
 
 
 def _filters_status_text() -> str:
-    f = _detect_filter_flags()
-    sw = max(0.0, float(SWEEP_ATR_FILTER.get("min_atr") or 0.0))
-    vr = _trigger_vol_max_ratio_cfg()
-    ma = _trigger_vol_ma()
     return "\n".join([
         "Фильтры:",
-        f"  ATR  {_on_off(f['atr_enabled']):<3}  (sweep/ATR ≥ {sw:.2f})",
-        f"  VOL  {_on_off(f['vol_enabled']):<3}  (vol/SMA{ma} ≤ {vr:.1f})",
-        "  vwap     всегда  (SHORT vd≤0, LONG vd≤−3)",
+        "  vwap  ON  (SHORT vd≤0, LONG vd≤−3)",
         "",
-        f"Профиль: {_detect_filters_profile_name(f)}",
-        "D / QSZ / PSL / QSTOP вырезаны.",
-        "Сохранено в bot_state.json",
+        "ATR / VOL(SMA) / D / QSZ / PSL / QSTOP вырезаны.",
     ])
 
 
 def _trigger_filters_desc() -> str:
-    f = _detect_filter_flags()
-    return (
-        f"ATR={_on_off(f['atr_enabled'])}  "
-        f"VOL={_on_off(f['vol_enabled'])}  "
-        f"vwap=ON"
-    )
+    return "vwap=ON"
 
 
 def _apply_vol_or_touches_gate(
@@ -4452,30 +4422,10 @@ def _apply_vol_or_touches_gate(
     touch_atr14,
     trigger_vol_max_ok,
 ) -> tuple[Optional[str], Optional[int], bool]:
-    """VOL-фильтр. D/touches вырезаны."""
-    _ = (htf_ratio, d_enabled, touch_atr14)
-    trigger_time = str(pd.Timestamp(df.index[trigger_idx]))
-    if vol_enabled and vol_max > 0 and trigger_vol_max_ok is not None:
-        if not trigger_vol_max_ok(vol_ratios, trigger_idx, max_ratio=vol_max):
-            vr = None
-            if vol_ratios is not None and 0 <= trigger_idx < len(vol_ratios):
-                raw = vol_ratios.iloc[trigger_idx]
-                if not pd.isna(raw):
-                    vr = float(raw)
-            vr_txt = f"{vr:.2f}" if vr is not None else "n/a"
-            _queue_pre_signal_filter_skip(
-                tf_name=tf_name,
-                direction=direction,
-                category="skipped_trigger_vol",
-                filter_title="trigger vol",
-                trigger_time=trigger_time,
-                htf_time=htf_time,
-                sweep_level=sweep_level,
-                trigger_extreme=trigger_extreme,
-                detail=f"vol/SMA{vol_ma} = {vr_txt} > max {vol_max:.2f}",
-                symbol_key=active_symbol_key(),
-            )
-            return "skipped_trigger_vol", None, False
+    """ATR/VOL вырезаны: только vwap дальше по пайплайну."""
+    _ = (df, trigger_idx, direction, sweep_level, htf_time, htf_ratio,
+         trigger_extreme, tf_name, d_enabled, vol_enabled, vol_max,
+         vol_ratios, vol_ma, touch_atr14, trigger_vol_max_ok)
     return None, None, False
 
 
@@ -4663,31 +4613,16 @@ def detect_signals(
     skipped_high_vol = 0
     skipped_soft_touches = 0
     seen_physical: set[str] = set()
-    filt = _detect_filter_flags()
-    d_enabled = filt["d_enabled"]
-    vol_enabled = filt["vol_enabled"]
-    if min_sweep_atr <= 0:
-        min_sweep_atr = _min_sweep_atr()
-    vol_max = _trigger_vol_max_ratio()  # 0 если VOL=OFF
+    min_sweep_atr = 0.0
+    vol_enabled = False
+    vol_max = 0.0
     sweep_atr14 = None
     vol_ratios = None
     touch_atr14 = None
     sweep_atr_ratio_fn = None
     trigger_vol_max_ok = None
-    if min_sweep_atr > 0:
-        from backtest.sweep_atr_filter import (
-            compute_atr14, sweep_atr_ratio, sweep_min_atr_ok,
-        )
-
-        sweep_atr14 = compute_atr14(df)
-        sweep_atr_ratio_fn = sweep_atr_ratio
-    if vol_enabled and vol_max > 0:
-        from backtest.volume_filter import trigger_vol_max_ok, volume_ratio_series
-
-        vol_ratios = volume_ratio_series(df, _trigger_vol_ma())
-    else:
-        from backtest.volume_filter import trigger_vol_max_ok
-    vol_ma = _trigger_vol_ma()
+    vol_ma = 20
+    d_enabled = False
 
     # 1) upsert кандидаты из текущего HTF-окна
     for sweep in sweeps:
@@ -5399,9 +5334,9 @@ def detect_signals(
                 ),
             },
             "detect_filters": {
-                "atr": filt["atr_enabled"],
-                "vol": filt["vol_enabled"],
-                "d": filt["d_enabled"],
+                "atr": False,
+                "vol": False,
+                "d": False,
             },
         })
 
@@ -12630,14 +12565,11 @@ async def cmd_timeout(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-_FILTER_KEY_MAP = {
-    "atr": "atr_enabled",
-    "vol": "vol_enabled",
-}
+_FILTER_KEY_MAP = {}
 
 _CUT_FILTERS_MSG = (
-    "Фильтры D, QSZ, PSL, QSTOP вырезаны.\n"
-    "Сейчас работают: ATR, VOL и vwap."
+    "Фильтры ATR, VOL(SMA), D, QSZ, PSL, QSTOP вырезаны.\n"
+    "Сейчас работает только vwap."
 )
 
 
@@ -12650,90 +12582,12 @@ def _parse_on_off(raw: str) -> Optional[bool]:
     return None
 
 
-async def _set_detect_filter(
-    update: Update,
-    which: str,
-    enabled: bool,
-) -> None:
-    key = _FILTER_KEY_MAP.get(which.lower())
-    if key is None:
-        await update.message.reply_text("Фильтр: atr | vol")
-        return
-    state.detect_filters[key] = bool(enabled)
-    save_bot_state()
-    logger.info(
-        f"detect_filters: {which.upper()} → {_on_off(enabled)} | "
-        f"A{int(state.detect_filters['atr_enabled'])}"
-        f"V{int(state.detect_filters['vol_enabled'])}"
-    )
+async def cmd_filters(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(_filters_status_text())
 
 
-async def cmd_filters(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Показать / переключить ATR и VOL. vwap всегда включён."""
-    args = [a.strip() for a in (context.args or []) if str(a).strip()]
-    if len(args) >= 2:
-        which = args[0].lower()
-        val = _parse_on_off(args[1])
-        if which in ("d", "touch", "touches", "dow", "qsz", "q", "quality",
-                     "quality_size", "size", "psl", "p_sl", "prob_sl",
-                     "psl_size", "qstop", "quality_stop", "stop"):
-            await update.message.reply_text(_CUT_FILTERS_MSG)
-            return
-        if which in _FILTER_KEY_MAP and val is not None:
-            await _set_detect_filter(update, which, val)
-            return
-    await update.message.reply_text(
-        _filters_status_text()
-        + "\n\n"
-        + "Команды:\n"
-        + "/filter_atr on|off\n"
-        + "/filter_vol on|off\n"
-        + "или /filter atr|vol off"
-    )
-
-
 async def cmd_filter(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Алиас: /filter atr off."""
-    args = [a.strip() for a in (context.args or []) if str(a).strip()]
-    if len(args) < 2:
-        await cmd_filters(update, context)
-        return
-    which = args[0].lower()
-    val = _parse_on_off(args[1])
-    if which in ("d", "touch", "touches", "dow", "qsz", "q", "quality",
-                 "quality_size", "size", "psl", "p_sl", "prob_sl",
-                 "psl_size", "qstop", "quality_stop", "stop"):
-        await update.message.reply_text(_CUT_FILTERS_MSG)
-        return
-    if val is None or which not in _FILTER_KEY_MAP:
-        await update.message.reply_text("Использование: /filter atr|vol on|off")
-        return
-    await _set_detect_filter(update, which, val)
-
-
-async def cmd_filter_atr(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    args = context.args or []
-    if not args:
-        await _set_detect_filter(update, "atr", not _detect_filter_flags()["atr_enabled"])
-        return
-    val = _parse_on_off(args[0])
-    if val is None:
-        await update.message.reply_text("Использование: /filter_atr on|off")
-        return
-    await _set_detect_filter(update, "atr", val)
-
-
-async def cmd_filter_vol(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    args = context.args or []
-    if not args:
-        await _set_detect_filter(update, "vol", not _detect_filter_flags()["vol_enabled"])
-        return
-    val = _parse_on_off(args[0])
-    if val is None:
-        await update.message.reply_text("Использование: /filter_vol on|off")
-        return
-    await _set_detect_filter(update, "vol", val)
+    await update.message.reply_text(_CUT_FILTERS_MSG)
 
 
 async def cmd_filter_cut(update: Update, context: ContextTypes.DEFAULT_TYPE):
