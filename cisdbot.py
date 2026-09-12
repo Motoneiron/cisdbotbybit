@@ -546,7 +546,7 @@ class BotState:
         self.manual_setup_bans: dict[str, float] = {}
         self.last_ohlcv_low: Optional[float] = None
         self.last_ohlcv_high: Optional[float] = None
-        self.ohlcv_closed: dict[str, dict] = {}  # f"{symbol}|{tf}" → {low, high, close}
+        self.ohlcv_closed: dict[str, dict] = {}  # f"{symbol}|{tf}" → {time, low, high, close}
         self.df_cache: dict = {}  # f"{symbol}|{tf}" → DataFrame рабочего ТФ
         self.start_confirm_until_ts: float = 0.0
         self._fill_in_progress: set[str] = set()  # pending.id во время _finalize_limit_fill
@@ -780,6 +780,7 @@ class PendingLimit:
         self.confirm_on_sweep: bool = False  # confirm на баре свипа (метка сетапа)
         self.confirm_close: float = 0.0      # close CISD confirm-бара (журнал)
         self.confirm_bar_time: str = ""      # ISO open-time конфирм-бара
+        self.closed_bar_at: str = ""         # open-time последнего закрытого бара на момент лимитки
         self.sweep_close_close: float = 0.0  # close бара close-свипа → тип входа STOP-LIMIT/MARKET
         self.cisd_level: float = 0.0       # уровень CISD (для цены лимитки без taker-fill)
         self.defer_entry: bool = False     # ждём ретест, пока лимитка не «в рынке»
@@ -821,6 +822,7 @@ class PendingLimit:
             "confirm_on_sweep": self.confirm_on_sweep,
             "confirm_close": self.confirm_close or None,
             "confirm_bar_time": self.confirm_bar_time or None,
+            "closed_bar_at": self.closed_bar_at or None,
             "sweep_close_close": self.sweep_close_close or None,
             "cisd_level": self.cisd_level,
             "defer_entry": self.defer_entry,
@@ -864,6 +866,7 @@ class PendingLimit:
         p.confirm_on_sweep = bool(d.get("confirm_on_sweep", False))
         p.confirm_close    = float(d.get("confirm_close") or 0)
         p.confirm_bar_time = str(d.get("confirm_bar_time") or "")
+        p.closed_bar_at    = str(d.get("closed_bar_at") or "")
         p.sweep_close_close = float(d.get("sweep_close_close") or 0)
         p.cisd_level       = float(d.get("cisd_level") or 0)
         p.defer_entry      = bool(d.get("defer_entry", False))
@@ -9591,6 +9594,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     pl.price_at_creation = price_live
     pl.confirm_close = confirm_close
     pl.confirm_bar_time = str(sig.get("confirm_bar_time") or "")
+    pl.closed_bar_at = _last_closed_bar_time(pl.symbol_key, tf_name)
     pl.sweep_close_close = float(sig.get("sweep_close_close") or 0)
     pl.confirm_on_sweep = bool(sig.get("confirm_on_sweep", False))
     pl.cisd_level = float(sig.get("cisd_level") or sig["entry"])
@@ -10774,16 +10778,19 @@ async def limit_monitor():
             # ── PAPER MODE: проверяем цену вместо ордера ──────────────
             if state.paper:
                 cisd_p = pl.cisd_level or pl.entry_price
-                # SHADOW: fill по касанию уровня в OHLC закрытого бара (как бэктест)
-                # плюс live-цена, если тикер уже дошёл до лимитки.
+                # SHADOW: fill только по новому закрытому бару или live-цене.
+                # Бар, уже закрытый на момент лимитки, не считается ретестом.
+                ohlc_fresh = _shadow_ohlc_usable_for_fill(pl, cached)
+                use_low = ohlc_low if ohlc_fresh else None
+                use_high = ohlc_high if ohlc_fresh else None
                 if pl.direction == "LONG":
                     entry_hit = (
-                        (ohlc_low is not None and float(ohlc_low) <= float(pl.entry_price))
+                        (use_low is not None and float(use_low) <= float(pl.entry_price))
                         or (price is not None and float(price) <= float(pl.entry_price))
                     )
                 else:
                     entry_hit = (
-                        (ohlc_high is not None and float(ohlc_high) >= float(pl.entry_price))
+                        (use_high is not None and float(use_high) >= float(pl.entry_price))
                         or (price is not None and float(price) >= float(pl.entry_price))
                     )
                 if not entry_hit:
@@ -11479,11 +11486,35 @@ async def _run_detect_and_trade(
     await _autotrade_signals(kept, tf_name)
 
 
+def _last_closed_bar_time(symbol_key: str, tf_name: str) -> str:
+    cached = state.ohlcv_closed.get(f"{symbol_key}|{tf_name}") or {}
+    t = str(cached.get("time") or "")
+    if t:
+        return t
+    df = state.df_cache.get(f"{symbol_key}|{tf_name}")
+    if df is None or len(df) < 2:
+        return ""
+    return str(pd.Timestamp(df.index[_last_closed_bar_iloc(df)]))
+
+
+def _shadow_ohlc_usable_for_fill(pl: "PendingLimit", cached: dict) -> bool:
+    """SHADOW: не fill по бару, который уже был закрыт в момент постановки лимитки."""
+    bar_t = _bar_time_to_utc(str((cached or {}).get("time") or ""))
+    if bar_t is None:
+        return False
+    seen = _bar_time_to_utc(str(getattr(pl, "closed_bar_at", "") or ""))
+    if seen is not None:
+        return bar_t > seen
+    created = getattr(pl, "created_at", None)
+    return created is not None and bar_t > created
+
+
 def _store_closed_ohlc(symbol_key: str, tf_name: str, df: pd.DataFrame) -> None:
     if df is None or len(df) < 2:
         return
     last = df.iloc[-2]
     state.ohlcv_closed[f"{symbol_key}|{tf_name}"] = {
+        "time": str(pd.Timestamp(last.name)),
         "low": float(last["low"]),
         "high": float(last["high"]),
         "close": float(last["close"]),
