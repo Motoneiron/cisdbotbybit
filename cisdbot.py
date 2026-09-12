@@ -11541,7 +11541,7 @@ async def _scan_symbol(
         if df30 is not None and len(df30) >= 2:
             state.df_cache[f"{sk}|tf8"] = df30
             _store_closed_ohlc(sk, "tf8", df30)
-        if tf8_due and df30 is not None and len(df30) >= 20:
+        if df30 is not None and len(df30) >= 20:  # ранний детект: tf8 на каждом 5м-скане
             await _run_detect_and_trade(
                 "tf8", df30, df_confirm=df5, skip_invalidate=skip_invalidate,
             )
@@ -11569,8 +11569,8 @@ async def signal_scanner():
             if last_5m_forming is not None and forming == last_5m_forming:
                 await asyncio.sleep(5)
                 continue
-            # Новый 5m forming-бар = предыдущий закрыт. tf8 — каждый 6-й (граница 30m).
-            tf8_due = int(pd.Timestamp(forming).minute) % 30 == 0
+            # Новый 5m forming-бар = предыдущий закрыт. tf8 — каждый 5m-скан (ранний детект).
+            tf8_due = True
             last_5m_forming = forming
             if warmup:
                 logger.info(
