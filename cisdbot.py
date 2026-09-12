@@ -180,7 +180,7 @@ CONFIG = {
     "min_balance_usdt":    20.0,
     "min_contracts":       1,
     "min_notional_usdt":   5.0,   # Bybit minNotional linear
-    "min_stop_pct":        0.6,   # сигналы со стопом < 0.6% не торгуем
+    "min_stop_pct":        0.25,  # сигналы со стопом < 0.25% не торгуем
     "hedge_mode":          False, # one-way: 1 позиция на пару
     "emergency_stop_pct":  0.3,    # % за стоп-ценой → принудительное закрытие маркетом
     "min_rr":              0.2,    # min R:R (reward/risk); MARKET retest — от текущей цены
@@ -9233,7 +9233,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     stop_px = float(sig.get("stop") or 0)
     if entry_px > 0 and stop_px > 0:
         stop_pct = abs(stop_px - entry_px) / entry_px * 100.0
-        min_stop = float(CONFIG.get("min_stop_pct") or 0.6)
+        min_stop = float(CONFIG.get("min_stop_pct") or 0.25)
         if stop_pct < min_stop:
             logger.info(f"SKIP min_stop: {stop_pct:.3f}% < {min_stop}%")
             await _notify_signal_skip(
