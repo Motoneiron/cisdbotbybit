@@ -1214,6 +1214,18 @@ def load_bot_state():
         state.tasks_live.clear()
         state.running.clear()
         logger.info("Загружено: tasks_halted=True — торговые задачи выключены до /start")
+    if state.paper:
+        try:
+            trades = load_json(_trades_file(), [])
+            if isinstance(trades, list):
+                pnl = sum(float(t.get("pnl_net") or 0.0) for t in trades)
+                state.paper_balance = float(CONFIG["paper_balance"]) + pnl
+                logger.info(
+                    f"paper_balance restore: {len(trades)} trades, "
+                    f"pnl={pnl:+.4f} → {state.paper_balance:.4f}"
+                )
+        except Exception as e:
+            logger.warning(f"paper_balance restore: {e}")
     logger.info(
         f"Загружено состояние: пара={symbol_profile()['label']}, ТФ={state.active_tf}, "
         f"paper={state.paper}, slope_filter={state.slope_filter_enabled}, "
