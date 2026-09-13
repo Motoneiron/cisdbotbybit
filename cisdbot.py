@@ -3840,7 +3840,10 @@ async def _invalidate_pending_no_htf_inter_sweep(
     """
     Pine bear/bull_sweep_check: HTF-окно закрылось без свипа между диапазонами →
     снять pending (позиции не трогаем).
+
+    Выключено: ложные срабатывания снимали кандидатов и лимитки на закрытии HTF.
     """
+    return 0
     tf_cfg = CONFIG.get(tf_name, {})
     htf_ratio = int(tf_cfg.get("htf_ratio") or 60)
     tf_minutes = _tf_to_minutes(str(tf_cfg.get("timeframe") or "5m"))
