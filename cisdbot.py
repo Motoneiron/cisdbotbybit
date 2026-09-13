@@ -1204,6 +1204,8 @@ def load_bot_state():
     for k, v in ht_raw.items():
         if not k or not isinstance(k, str):
             continue
+        if len(k.split("|")) < 3:  # старый формат без символа
+            continue
         if isinstance(v, dict):
             cleaned_ht[k] = {
                 "direction": str(v.get("direction") or ""),
@@ -1500,9 +1502,12 @@ def _find_open_position_for_pyramid(direction: str, tf_name: str) -> Optional["P
     return min(cands, key=lambda p: p.entry_time or utcnow())
 
 
-def _has_pyramid_pending(direction: str, tf_name: str) -> bool:
+def _has_pyramid_pending(direction: str, tf_name: str, symbol_key: Optional[str] = None) -> bool:
+    sk = symbol_key or active_symbol_key()
     for pl in state.pending_limits:
         if pl.status != "pending" or pl.direction != direction or pl.tf != tf_name:
+            continue
+        if _pos_symbol_key(pl) != sk:
             continue
         if getattr(pl, "pyramid_parent_id", ""):
             return True
@@ -2323,14 +2328,19 @@ def _active_same_setup_conflict(sig: dict, tf_name: str) -> Optional[str]:
         return None
     direction = str(sp["direction"])
 
+    sk = str(sig.get("symbol_key") or active_symbol_key())
     for p in state.positions:
         if p.status != "open" or p.tf != sp["tf"] or p.direction != direction:
+            continue
+        if _pos_symbol_key(p) != sk:
             continue
         if _setup_sl_tp_match(p.stop_price, p.tp_price, sl, tp):
             return f"OPEN #{p.trade_num} @ {p.entry_price:.1f}"
 
     for pl in state.pending_limits:
         if pl.tf != sp["tf"] or pl.direction != direction:
+            continue
+        if _pos_symbol_key(pl) != sk:
             continue
         if not _setup_sl_tp_match(pl.stop_price, pl.tp_price, sl, tp):
             continue
@@ -2352,9 +2362,12 @@ def _duplicate_active_setup(sig: dict, tf_name: str) -> bool:
     sig_hash = str(sig.get("hash") or "")
     entry = float(sig.get("entry") or 0)
     sig_htf = _htf_time_for_sig(sig, tf_name)
+    sk = str(sig.get("symbol_key") or active_symbol_key())
 
     for p in state.positions:
         if p.status != "open" or p.direction != direction:
+            continue
+        if _pos_symbol_key(p) != sk:
             continue
         if not _htf_times_match(sig_htf, _htf_time_for_position(p)):
             continue
@@ -2365,6 +2378,8 @@ def _duplicate_active_setup(sig: dict, tf_name: str) -> bool:
 
     for pl in state.pending_limits:
         if pl.direction != direction or pl.tf != tf_name:
+            continue
+        if _pos_symbol_key(pl) != sk:
             continue
         if not _htf_times_match(sig_htf, _htf_time_for_pending(pl, tf_name)):
             continue
@@ -2587,15 +2602,23 @@ def _cisd_price_crossed(direction: str, cisd: float, price: float) -> bool:
     return float(price) <= float(cisd)
 
 
-def _has_cisd_cross_pending(tf_name: str, direction: str, htf_time: str) -> bool:
-    return _has_pending_for_htf(tf_name, direction, htf_time)
+def _has_cisd_cross_pending(
+    tf_name: str, direction: str, htf_time: str, symbol_key: Optional[str] = None,
+) -> bool:
+    return _has_pending_for_htf(
+        tf_name, direction, htf_time, symbol_key or active_symbol_key(),
+    )
 
 
-def _has_pending_for_htf(tf_name: str, direction: str, htf_time: str) -> bool:
+def _has_pending_for_htf(
+    tf_name: str, direction: str, htf_time: str, symbol_key: str,
+) -> bool:
     for pl in state.pending_limits:
         if pl.status != "pending":
             continue
         if pl.tf != tf_name or pl.direction != direction:
+            continue
+        if _pos_symbol_key(pl) != symbol_key:
             continue
         if _htf_times_match(htf_time, _htf_time_for_pending(pl, tf_name)):
             return True
@@ -2607,6 +2630,7 @@ def _find_near_pending_duplicate(
     direction: str,
     entry: float,
     stop: float,
+    symbol_key: str,
 ) -> Optional["PendingLimit"]:
     """Pending с тем же направлением/ТФ и близким entry (любой HTF)."""
     stop_dist = abs(float(entry) - float(stop)) if entry and stop else 0.0
@@ -2616,6 +2640,8 @@ def _find_near_pending_duplicate(
         if pl.status != "pending":
             continue
         if pl.tf != tf_name or pl.direction != direction:
+            continue
+        if _pos_symbol_key(pl) != symbol_key:
             continue
         if abs(pl.entry_price - float(entry)) < stop_dist:
             return pl
@@ -2809,7 +2835,10 @@ async def _cancel_pending_tp_already_hit(pl: "PendingLimit", detail: str) -> Non
     # После cancel orphan-clear снимает taken — вернём one-shot, окно не переоткрываем.
     ht = pl.htf_time or _htf_time_for_pending(pl, pl.tf)
     if ht:
-        _mark_htf_taken(pl.tf, ht, direction=pl.direction, trade_num=pl.trade_num)
+        _mark_htf_taken(
+            _pos_symbol_key(pl), pl.tf, ht,
+            direction=pl.direction, trade_num=pl.trade_num,
+        )
     tfl = tf_label(pl.tf)
     await send_telegram(
         f"🗑 ЛИМИТКА #{pl.trade_num} отменена — TP уже был до входа [{tfl}]\n"
@@ -4776,7 +4805,7 @@ def detect_signals(
         for k in drop:
             state.sweep_candidates.pop(k, None)
         _prune_htf_sweep_locks(tf_name, keep)
-        _prune_htf_taken(tf_name, keep)
+        _prune_htf_taken(sk_now, tf_name, keep)
 
     # 3) Обрабатываем кандидатов (текущий + предыдущий), но сигнал разрешаем только если confirm в текущем окне.
     cands = _cands_for_symbol(tf_name)
@@ -9304,7 +9333,9 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
                 return False
         else:
             # Один триггер на HTF-окно (любое направление — opposite/2nd CISD skip).
-            conflict = _same_htf_open_or_pending(direction, htf_time, tf_name)
+            conflict = _same_htf_open_or_pending(
+                direction, htf_time, tf_name, active_symbol_key(),
+            )
             if conflict:
                 logger.info(
                     f"SKIP HTF ONE-SHOT: {sig.get('direction')} [{tf_name}] "
@@ -9345,7 +9376,9 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     # Дедупликация pending: то же направление + HTF или близкий entry (любой HTF).
     async with _create_pending_lock:
         sig_htf = _htf_time_for_sig(sig, tf_name)
-        if _has_pending_for_htf(tf_name, str(sig.get("direction") or ""), sig_htf):
+        if _has_pending_for_htf(
+            tf_name, str(sig.get("direction") or ""), sig_htf, active_symbol_key(),
+        ):
             logger.info(
                 f"Дубль пропущен: pending {sig.get('direction')} [{tf_name}] "
                 f"HTF {sig_htf} уже есть"
@@ -9354,6 +9387,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
         near = _find_near_pending_duplicate(
             tf_name, str(sig.get("direction") or ""),
             float(sig["entry"]), float(sig["stop"]),
+            active_symbol_key(),
         )
         if near is not None:
             logger.info(
@@ -9409,7 +9443,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             )
             if htf_time:
                 _mark_htf_taken(
-                    tf_name, htf_time,
+                    active_symbol_key(), tf_name, htf_time,
                     direction=str(sig.get("direction") or ""),
                 )
             return False
@@ -9618,20 +9652,23 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     async with _create_pending_lock:
         sig_htf = _htf_time_for_sig(sig, tf_name)
         if not is_pyramid:
-            race_htf = _same_htf_open_or_pending(pl.direction, sig_htf, tf_name)
+            race_htf = _same_htf_open_or_pending(
+                pl.direction, sig_htf, tf_name, _pos_symbol_key(pl),
+            )
             if race_htf:
                 logger.info(
                     f"Дубль пропущен (race HTF): {pl.direction} [{tf_name}] "
                     f"HTF {sig_htf} ({race_htf})"
                 )
                 return False
-        if _has_pending_for_htf(tf_name, pl.direction, sig_htf):
+        if _has_pending_for_htf(tf_name, pl.direction, sig_htf, _pos_symbol_key(pl)):
             logger.info(
                 f"Дубль пропущен (race): pending {pl.direction} [{tf_name}] HTF {sig_htf}"
             )
             return False
         near = _find_near_pending_duplicate(
             tf_name, pl.direction, pl.entry_price, pl.stop_price,
+            _pos_symbol_key(pl),
         )
         if near is not None:
             logger.info(
@@ -9649,6 +9686,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
         save_pending(state.pending_limits)
         if not is_pyramid and sig_htf:
             _mark_htf_taken(
+                active_symbol_key(),
                 tf_name,
                 sig_htf,
                 direction=pl.direction,
@@ -10414,7 +10452,7 @@ async def _try_arm_cisd_cross_candidates(now: datetime) -> None:
                 f"sweep={sweep_lvl:.1f}"
             )
             continue
-        if _has_cisd_cross_pending(tf_name, direction, htf_s):
+        if _has_cisd_cross_pending(tf_name, direction, htf_s, active_symbol_key()):
             continue
         if _find_sweep_for_cand(sweeps, cand) is None:
             continue
@@ -13566,15 +13604,16 @@ def _htf_time_for_pending(pl: "PendingLimit", tf_name: str) -> str:
     return _htf_window_start(anchor, ratio).isoformat()
 
 
-def _htf_taken_key(tf_name: str, htf_time: str) -> str:
+def _htf_taken_key(symbol_key: str, tf_name: str, htf_time: str) -> str:
     try:
         ht = str(pd.Timestamp(htf_time))
     except Exception:
         ht = str(htf_time or "")
-    return f"{tf_name}|{ht}"
+    return f"{symbol_key}|{tf_name}|{ht}"
 
 
 def _mark_htf_taken(
+    symbol_key: str,
     tf_name: str,
     htf_time: str,
     *,
@@ -13583,7 +13622,7 @@ def _mark_htf_taken(
 ) -> None:
     if not htf_time:
         return
-    k = _htf_taken_key(tf_name, htf_time)
+    k = _htf_taken_key(symbol_key, tf_name, htf_time)
     state.htf_taken[k] = {
         "direction": str(direction or ""),
         "trade_num": trade_num,
@@ -13591,7 +13630,7 @@ def _mark_htf_taken(
     }
     save_bot_state()
     logger.info(
-        f"HTF taken lock: {tf_name} [{htf_time}] dir={direction or '?'} "
+        f"HTF taken lock: {symbol_key} {tf_name} [{htf_time}] dir={direction or '?'} "
         f"#{trade_num if trade_num is not None else '-'}"
     )
 
@@ -13601,15 +13640,16 @@ def _clear_htf_taken_if_idle(pl: "PendingLimit") -> None:
     ht = pl.htf_time or _htf_time_for_pending(pl, pl.tf)
     if not ht:
         return
-    if _same_htf_open_or_pending("", ht, pl.tf, check_taken=False):
+    sk = _pos_symbol_key(pl)
+    if _same_htf_open_or_pending("", ht, pl.tf, sk, check_taken=False):
         return
-    k = _htf_taken_key(pl.tf, ht)
+    k = _htf_taken_key(sk, pl.tf, ht)
     if k not in state.htf_taken:
         return
     state.htf_taken.pop(k, None)
     save_bot_state()
     logger.info(
-        f"HTF taken clear (cancel, no position): {pl.tf} [{ht}] "
+        f"HTF taken clear (cancel, no position): {sk} {pl.tf} [{ht}] "
         f"#{pl.trade_num} {pl.status}"
     )
 
@@ -13618,11 +13658,12 @@ def _reconcile_htf_taken_drop_orphans() -> None:
     """Убрать taken-локи без open/pending (старые cancel без fill, рестарт)."""
     drop: list[str] = []
     for k in list(state.htf_taken):
-        parts = k.split("|", 1)
-        if len(parts) < 2:
+        parts = k.split("|", 2)
+        if len(parts) < 3:
+            drop.append(k)  # старый формат — вычистить
             continue
-        tf_name, ht = parts[0], parts[1]
-        if _same_htf_open_or_pending("", ht, tf_name, check_taken=False):
+        symbol_key, tf_name, ht = parts
+        if _same_htf_open_or_pending("", ht, tf_name, symbol_key, check_taken=False):
             continue
         drop.append(k)
     for k in drop:
@@ -13632,11 +13673,11 @@ def _reconcile_htf_taken_drop_orphans() -> None:
         save_bot_state()
 
 
-def _prune_htf_taken(tf_name: str, keep_htf_times: set) -> None:
+def _prune_htf_taken(symbol_key: str, tf_name: str, keep_htf_times: set) -> None:
     """Снять one-shot lock для HTF-окон, ушедших из keep (если нет open/pending)."""
     if not keep_htf_times:
         return
-    prefix = f"{tf_name}|"
+    prefix = f"{symbol_key}|{tf_name}|"
     for k, meta in list(state.htf_taken.items()):
         if not k.startswith(prefix):
             continue
@@ -13644,10 +13685,10 @@ def _prune_htf_taken(tf_name: str, keep_htf_times: set) -> None:
         if _htf_time_in_keep_set(lock_htf, keep_htf_times):
             continue
         # ещё есть работа в этом окне — не трогаем
-        if _same_htf_open_or_pending("", lock_htf, tf_name, check_taken=False):
+        if _same_htf_open_or_pending("", lock_htf, tf_name, symbol_key, check_taken=False):
             continue
         state.htf_taken.pop(k, None)
-        logger.info(f"HTF taken prune: {tf_name} [{lock_htf}]")
+        logger.info(f"HTF taken prune: {symbol_key} {tf_name} [{lock_htf}]")
     # bot_state сохраняется периодически; явный save при prune не обязателен
 
 
@@ -13659,7 +13700,7 @@ def _reconcile_htf_taken_from_live() -> None:
         ht = _htf_time_for_position(p)
         if not ht:
             continue
-        k = _htf_taken_key(p.tf, ht)
+        k = _htf_taken_key(_pos_symbol_key(p), p.tf, ht)
         if k not in state.htf_taken:
             state.htf_taken[k] = {
                 "direction": p.direction,
@@ -13677,7 +13718,7 @@ def _reconcile_htf_taken_from_live() -> None:
         ht = _htf_time_for_pending(pl, pl.tf)
         if not ht:
             continue
-        k = _htf_taken_key(pl.tf, ht)
+        k = _htf_taken_key(_pos_symbol_key(pl), pl.tf, ht)
         if k not in state.htf_taken:
             state.htf_taken[k] = {
                 "direction": pl.direction,
@@ -13690,13 +13731,14 @@ def _same_htf_open_or_pending(
     direction: str,
     htf_time: str,
     tf_name: str,
+    symbol_key: str,
     *,
     check_taken: bool = True,
 ) -> Optional[str]:
     """Блок если HTF-окно уже занято: open/pending/fill или one-shot taken (любое направление)."""
     _ = direction  # раньше фильтровали по dir; теперь 1 триггер на HTF
     if check_taken and htf_time:
-        k = _htf_taken_key(tf_name, htf_time)
+        k = _htf_taken_key(symbol_key, tf_name, htf_time)
         meta = state.htf_taken.get(k)
         if meta:
             d0 = meta.get("direction") or "?"
@@ -13706,12 +13748,16 @@ def _same_htf_open_or_pending(
     for p in state.positions:
         if p.status != "open" or p.tf != tf_name:
             continue
+        if _pos_symbol_key(p) != symbol_key:
+            continue
         p_htf = _htf_time_for_position(p)
         if _htf_times_match(htf_time, p_htf):
             return f"OPEN #{p.trade_num} {p.direction} htf={p_htf}"
 
     for pl in state.pending_limits:
         if pl.tf != tf_name:
+            continue
+        if _pos_symbol_key(pl) != symbol_key:
             continue
         active = (
             pl.status == "pending"
@@ -13748,13 +13794,16 @@ def _setup_sl_tp_match(sl_a: float, tp_a: float, sl_b: float, tp_b: float) -> bo
 def _find_active_work_for_signal(sig: dict, tf_name: str) -> Optional[str]:
     """Сетап уже в pending/open — краткое описание для /start."""
     sp = _sig_setup_params(sig, tf_name)
-    conflict = _same_htf_open_or_pending(sp["direction"], sp["htf_time"], tf_name)
+    sk = str(sig.get("symbol_key") or active_symbol_key())
+    conflict = _same_htf_open_or_pending(sp["direction"], sp["htf_time"], tf_name, sk)
     if conflict:
         return conflict
     sig_hash = str(sig.get("hash") or "")
 
     for pl in state.pending_limits:
         if pl.status != "pending" or pl.tf != sp["tf"] or pl.direction != sp["direction"]:
+            continue
+        if _pos_symbol_key(pl) != sk:
             continue
         if sig_hash and pl.sig_hash == sig_hash:
             extra = f", ордер {pl.order_id}" if pl.order_id else ""
@@ -13768,6 +13817,8 @@ def _find_active_work_for_signal(sig: dict, tf_name: str) -> Optional[str]:
 
     for pos in state.positions:
         if pos.status != "open" or pos.tf != sp["tf"] or pos.direction != sp["direction"]:
+            continue
+        if _pos_symbol_key(pos) != sk:
             continue
         if sig_hash and getattr(pos, "sig_hash", "") == sig_hash:
             return f"OPEN #{pos.trade_num} @ {pos.entry_price:.1f}"
@@ -13862,10 +13913,15 @@ def _build_start_in_progress_blocks(tf_name: str, tfl: str, signals: list) -> li
         blocks.append(f"{_format_signal_card(sig, tfl)}\n\n{note}")
         sp = _sig_setup_params(sig, tf_name)
         sig_hash = str(sig.get("hash") or "")
+        sk = str(sig.get("symbol_key") or active_symbol_key())
         for pl in state.pending_limits:
+            if _pos_symbol_key(pl) != sk:
+                continue
             if _pending_matches_setup(pl, sp, sig_hash, tf_name):
                 matched_pl.add(pl.id)
         for pos in state.positions:
+            if _pos_symbol_key(pos) != sk:
+                continue
             if _position_matches_setup(pos, sp, sig_hash, tf_name):
                 matched_pos.add(pos.id)
 
