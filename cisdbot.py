@@ -4389,10 +4389,14 @@ def _sig_hash_stable(
 ) -> str:
     """Стабильный hash сетапа (без trigger/confirm idx) — не плодит «новые» сигналы каждый бар."""
     sk = active_symbol_key()
+    try:
+        htf_n = str(pd.Timestamp(htf_time))
+    except Exception:
+        htf_n = str(htf_time or "")
     sweep_r = _round_sweep_level(sweep_level, sk)
     dec = _price_decimals(symbol_profile(sk)["price_tick"])
     return hashlib.md5(
-        f"{direction}_{htf_time}_{sweep_r}_"
+        f"{direction}_{htf_n}_{sweep_r}_"
         f"cisd={_round_price(cisd_level, sk):.{dec}f}_"
         f"sl={_round_price(stop, sk):.{dec}f}_tp={_round_price(tp, sk):.{dec}f}".encode()
     ).hexdigest()[:16]
@@ -8461,7 +8465,8 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
     risk_usdt = abs(float(entry) - float(stop)) * 1.0
     # риск в USDT уточнится при размере; здесь карточка лимитки
     msg = (
-        f"{_mode_prefix()} {arrow} {direction} #{trade_num} — лимитка\n"
+        f"{_mode_prefix()} {arrow} {direction} #{trade_num} — заявка\n"
+        f"Сигнал найден, заявка выставлена, ожидаем вход\n"
         f"Инструмент: {symbol_profile(sk)['label']}\n"
         f"ТФ: {tfl}\n"
         f"Сигнал: {_utc_iso_short(sig.get('confirm_bar_time') or sig.get('timestamp'))}"
@@ -9230,7 +9235,7 @@ def _format_position_taken_tg(
     htf_s = _utc_iso_short(htf_time)
     htf_part = f" (HTF {htf_s})" if htf_time else ""
     return (
-        f"{_mode_prefix()} {arrow} {direction} #{trade_num}\n"
+        f"🟢 {_mode_prefix()} {arrow} {direction} #{trade_num} — вход\n"
         f"Инструмент: {sk_lbl}\n"
         f"ТФ: {tfl}\n"
         f"Сигнал: {sig_s}{htf_part}\n"
@@ -9355,6 +9360,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
                     tf_name,
                     "skipped_htf_one_shot",
                     header=header,
+                    telegram=False,
                 )
                 return False
 
@@ -9828,6 +9834,8 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             await send_telegram(
                 f"✅ На бирже: {pl.order_id}  (#{pl.trade_num} {pl.direction}, {ek})"
             )
+    else:
+        await send_paper_signal(sig, tf_name, tf_cfg, trade_num=pl.trade_num)
     return True
 
 
@@ -10689,8 +10697,8 @@ async def limit_monitor():
                 prefix    = _mode_prefix() + " "
                 sk = getattr(pl, "symbol_key", None)
                 await send_telegram(
-                    f"{prefix}⏰ ЛИМИТКА #{pl.trade_num} ОТМЕНЕНА — таймаут [{tfl}]\n"
-                    f"ID: {pl.id}  |  {pl.direction}\n"
+                    f"{prefix}⏰ #{pl.trade_num} {pl.direction} — не взята, таймаут [{tfl}]\n"
+                    f"ID: {pl.id}\n"
                     f"Прошло {elapsed_h:.1f}ч из {_fmt_h(limit_h)} "
                     f"(от постановки {msk(pl.order_placed_at or pl.created_at).strftime('%H:%M')} МСК, {htf_name})\n"
                     f"Вход не случился: {_fmt_px(pl.entry_price, sk)}"
@@ -11467,14 +11475,22 @@ async def _autotrade_signals(signals: list, tf_name: str) -> int:
     """Автовход по сигналам. Слоты и занятость пары проверяет create_pending_limit."""
     if not signals:
         return 0
-    tf_cfg = CONFIG[tf_name]
     placed = 0
     for sig in signals:
         if _open_pending_count() >= int(CONFIG.get("max_positions") or 7):
             break
-        num = state.next_trade_num()
-        await send_paper_signal(sig, tf_name, tf_cfg, trade_num=num)
-        ok = await create_pending_limit(sig, tf_name, trade_num=num)
+        sk = str(sig.get("symbol_key") or active_symbol_key())
+        htf = _htf_time_for_sig(sig, tf_name)
+        already = _same_htf_open_or_pending(
+            str(sig.get("direction") or ""), htf, tf_name, sk,
+        )
+        if already:
+            logger.info(
+                f"SKIP already active: {sig.get('direction')} [{tf_name}] "
+                f"{sk} HTF {htf} ({already})"
+            )
+            continue
+        ok = await create_pending_limit(sig, tf_name)
         if ok:
             placed += 1
     return placed
