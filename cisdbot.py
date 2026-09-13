@@ -4477,7 +4477,7 @@ def _detect_filters_profile_name(flags: Optional[dict] = None) -> str:
 def _filters_status_text() -> str:
     return "\n".join([
         "Фильтры:",
-        "  vwap  ON  (SHORT vd≤0, LONG vd≤−3)",
+        "  vwap  ON  (SHORT vd≤0, LONG vd≥0)",
         "",
         "ATR / VOL(SMA) / D / QSZ / PSL / QSTOP вырезаны.",
     ])
@@ -9167,7 +9167,7 @@ def _open_pending_count() -> int:
 
 
 def _vwap_gate(df: pd.DataFrame, sig: dict) -> tuple[bool, float, str]:
-    """Причинный vwap-фильтр на scan-баре: SHORT vd≤0, LONG vd≤−3."""
+    """Причинный vwap-фильтр на scan-баре: SHORT vd≤0, LONG vd≥0."""
     from backtest.vwap_filter import daily_session_vwap
     from backtest.sweep_atr_filter import compute_atr14
 
@@ -9194,10 +9194,10 @@ def _vwap_gate(df: pd.DataFrame, sig: dict) -> tuple[bool, float, str]:
         return True, 0.0, "vwap: ATR/VWAP недоступен"
     vd = (close - vw) / at
     direction = str(sig.get("direction") or "")
-    ok = (direction == "SHORT" and vd <= 0.0) or (direction == "LONG" and vd <= -3.0)
+    ok = (direction == "SHORT" and vd <= 0.0) or (direction == "LONG" and vd >= 0.0)
     reason = f"vd={vd:.2f}  close={close:.6g} vwap={vw:.6g} ATR14={at:.6g}"
     if not ok:
-        need = "≤ 0" if direction == "SHORT" else "≤ −3"
+        need = "≤ 0" if direction == "SHORT" else "≥ 0"
         reason += f"  ({direction} нужно {need})"
     return ok, vd, reason
 

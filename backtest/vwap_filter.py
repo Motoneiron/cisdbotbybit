@@ -18,11 +18,11 @@ def daily_session_vwap(df: pd.DataFrame) -> pd.Series:
 
 
 def vwap_dev_ok(direction: str, vd: float) -> bool:
-    """Causal vwap gate: SHORT vd≤0, LONG vd≤−3."""
+    """Causal vwap gate: SHORT vd≤0, LONG vd≥0."""
     if direction == "SHORT":
         return vd <= 0.0
     if direction == "LONG":
-        return vd <= -3.0
+        return vd >= 0.0
     return False
 
 
