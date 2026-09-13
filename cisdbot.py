@@ -3787,13 +3787,14 @@ def _htf_closed_sweep_flags(
     df: pd.DataFrame | None = None,
     htf_ratio: int | None = None,
     tf_minutes: int | None = None,
-) -> tuple[bool, bool] | None:
-    """Pine f_is_sweep между закрытым HTF-баром и предыдущим: (high_sweep, low_sweep).
+) -> tuple[bool, bool, dict | None] | None:
+    """Pine f_is_sweep между закрытым HTF-баром и предыдущим: (high_sweep, low_sweep, dbg).
 
     None — в закрытой свече не все LTF-бары (рестарт/дыра в df), валидацию пропускаем.
     """
+    n = None
     if closed_idx < 1 or closed_idx >= len(df_htf):
-        return True, True
+        return True, True, None
     if df is not None and htf_ratio and tf_minutes:
         expected = max(1, int(htf_ratio) // int(tf_minutes))
         n = _htf_window_ltf_bars(df, df_htf.index[closed_idx], int(htf_ratio))
@@ -3801,9 +3802,22 @@ def _htf_closed_sweep_flags(
             return None
     c2 = df_htf.iloc[closed_idx]
     c3 = df_htf.iloc[closed_idx - 1]
+    dbg = {
+        "c2_time": str(df_htf.index[closed_idx]),
+        "c3_time": str(df_htf.index[closed_idx - 1]),
+        "c2_h": float(c2["high"]),
+        "c2_l": float(c2["low"]),
+        "c2_c": float(c2["close"]),
+        "c3_h": float(c3["high"]),
+        "c3_l": float(c3["low"]),
+        "c3_c": float(c3["close"]),
+        "df_last": str(df.index[-1]) if df is not None and len(df) else "?",
+        "n": n,
+    }
     return (
         CISDDetector.htf_candles_sweep(c2, c3, True),
         CISDDetector.htf_candles_sweep(c2, c3, False),
+        dbg,
     )
 
 
@@ -3884,7 +3898,40 @@ async def _invalidate_pending_no_htf_inter_sweep(
                 f"({n}/{expected} баров) — валидацию пропускаем"
             )
             continue
-        has_high, has_low = flags
+        has_high, has_low, dbg = flags
+        if dbg:
+            logger.info(
+                f"HTF sweep check [{tf_name}|{htf_s}]: "
+                f"c2 {dbg['c2_time']} h/l/c={dbg['c2_h']:.6g}/{dbg['c2_l']:.6g}/{dbg['c2_c']:.6g} | "
+                f"c3 {dbg['c3_time']} h/l/c={dbg['c3_h']:.6g}/{dbg['c3_l']:.6g}/{dbg['c3_c']:.6g} | "
+                f"high={has_high} low={has_low} | df_last={dbg['df_last']} n={dbg['n']}"
+            )
+
+        # Ретрай: любой False — перечитать закрытие окна, не снимать по битым данным.
+        if not (has_high and has_low):
+            await asyncio.sleep(15.0)
+            try:
+                df_r = await fetch_ohlcv(tf_cfg["timeframe"], tf_cfg.get("ohlcv", 500))
+                if df_r is not None and len(df_r) >= 50:
+                    df_htf_r = det.resample_to_htf(df_r)
+                    idx_r = _htf_loc_for_time(df_htf_r, htf_s)
+                    if idx_r is not None and idx_r < len(df_htf_r) - 1:
+                        fr = _htf_closed_sweep_flags(
+                            df_htf_r, idx_r,
+                            df=df_r, htf_ratio=htf_ratio, tf_minutes=tf_minutes,
+                        )
+                        if fr is not None:
+                            rh, rl = fr[0], fr[1]
+                            if (rh, rl) != (has_high, has_low):
+                                logger.info(
+                                    f"HTF sweep retry [{tf_name}|{htf_s}]: "
+                                    f"было ({has_high},{has_low}) → стало ({rh},{rl})"
+                                )
+                            has_high = has_high or rh
+                            has_low = has_low or rl
+            except Exception as e:
+                logger.warning(f"HTF sweep retry error [{tf_name}|{htf_s}]: {e}")
+
         state.htf_sweep_validated[vk] = True
         if len(state.htf_sweep_validated) > 300:
             for old_k in list(state.htf_sweep_validated.keys())[:100]:
