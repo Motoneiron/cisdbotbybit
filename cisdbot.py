@@ -4584,19 +4584,41 @@ def _detect_filters_profile_name(flags: Optional[dict] = None) -> str:
     return "только vwap"
 
 
-def _filters_status_text() -> str:
-    return "\n".join([
+def _filters_live_lines() -> list[str]:
+    """Живые фильтры: вкл/выкл и режет ли (или только лог)."""
+    if not state.cvd_enabled:
+        cvd_tail = "/cvd"
+    elif CVD_APPLY_SIZING:
+        cvd_tail = "меняет размер  /cvd"
+    else:
+        cvd_tail = "лог  /cvd"
+    if not state.elliott_enabled:
+        el_tail = "/elliott"
+    elif ELLIOTT_APPLY_SKIP:
+        el_tail = "режет гонку  /elliott"
+    else:
+        el_tail = "лог  /elliott"
+    return [
         "Фильтры:",
-        "  vwap  ON  (SHORT vd≤0, LONG vd≥0)",
-        f"  cvd   {_on_off(state.cvd_enabled)}  (shadow, /cvd)",
-        f"  elliott {_on_off(state.elliott_enabled)}  (shadow, /elliott)",
+        "  vwap     ON   режет  SHORT vd≤0, LONG vd≥0",
+        f"  cvd      {_on_off(state.cvd_enabled):<3}  {cvd_tail}",
+        f"  elliott  {_on_off(state.elliott_enabled):<3}  {el_tail}",
+    ]
+
+
+def _filters_status_text() -> str:
+    return "\n".join(_filters_live_lines() + [
         "",
         "ATR / VOL(SMA) / D / QSZ / PSL / QSTOP вырезаны.",
     ])
 
 
 def _trigger_filters_desc() -> str:
-    return "vwap=ON"
+    return (
+        f"vwap=ON "
+        f"cvd={_on_off(state.cvd_enabled)} "
+        f"elliott={_on_off(state.elliott_enabled)}"
+    )
 
 
 def _apply_vol_or_touches_gate(
@@ -12122,10 +12144,10 @@ async def ctl_status() -> dict:
         f"📊 Статус CISD BOT\n"
         f"{'─' * 30}\n"
         f"{state.mode_str()}\n"
-        f"Вход: LIMIT @ CISD  TP=1R  vwap-фильтр\n"
+        f"Вход: LIMIT @ CISD  TP=1R\n"
+        + "\n".join(_filters_live_lines()) + "\n"
         f"⏱ Таймауты:  вход {_fmt_h(tf_cfg['limit_h'])}  |  "
         f"выход {_fmt_h(tf_cfg['position_h'])}  (/timeout)\n"
-        f"Detect filters: {_trigger_filters_desc()}\n"
         f"{symbol_profile()['label']} цена:  {price_str}\n"
         f"Баланс:    {balance:.2f} USDT{bal_extra}\n"
         f"Fees:      maker {_fee_rate_to_pct_str(CONFIG['maker_fee'])}%  "
