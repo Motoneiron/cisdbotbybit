@@ -170,6 +170,11 @@ CVD_BOUNDS       = (0.0063, 0.0712)   # frozen-терцили (2020-23)
 CVD_WEIGHTS      = (0.7, 1.0, 1.3)
 CVD_TIMEOUT_S    = 3.0
 CVD_RETRIES      = 3
+# ==== Эллиотт-структура ZigZag HTF (ЭТАП 1: shadow-лог, скип выключен) ====
+ELLIOTT_ENABLED    = True
+ELLIOTT_APPLY_SKIP = False        # ЭТАП 2: True → SKIP «гонка»
+ELLIOTT_FRAC       = 0.236        # порог отката «гонки»
+ELLIOTT_THETA      = 1.5          # ATR-порог ZigZag
 ACTIVE_SYMBOL_KEYS = (
     "SOL", "BTC", "ETH", "DOGE", "KAS", "ADA", "BNB", "LINK", "LTC", "XRP",
 )
@@ -538,6 +543,7 @@ class BotState:
     def __init__(self):
         self.paper: bool            = PAPER_TRADING
         self.cvd_enabled: bool      = bool(CVD_ENABLED)
+        self.elliott_enabled: bool  = bool(ELLIOTT_ENABLED)
         self.running: asyncio.Event = asyncio.Event()
         self.tasks_live: asyncio.Event = asyncio.Event()  # False = все торговые задачи в idle
         self.tasks_live.set()
@@ -814,6 +820,9 @@ class PendingLimit:
         self.vwap_dev: float = 0.0
         self.of_1h_s: Optional[float] = None
         self.cvd_weight: Optional[float] = None
+        self.zz_last_dir: int = 0
+        self.zz_frac: Optional[float] = None
+        self.zz_verdict: str = ""
 
     def to_dict(self):
         d = {
@@ -857,6 +866,10 @@ class PendingLimit:
             d["of_1h_s"] = self.of_1h_s
         if self.cvd_weight is not None:
             d["cvd_weight"] = self.cvd_weight
+        if self.zz_frac is not None:
+            d["zz_last_dir"] = self.zz_last_dir
+            d["zz_frac"] = self.zz_frac
+            d["zz_verdict"] = self.zz_verdict or None
         return d
 
     @classmethod
@@ -902,6 +915,9 @@ class PendingLimit:
         p.vwap_dev = float(d.get("vwap_dev") or 0)
         p.of_1h_s = _safe_float(d.get("of_1h_s"))
         p.cvd_weight = _safe_float(d.get("cvd_weight"))
+        p.zz_last_dir = int(d.get("zz_last_dir") or 0)
+        p.zz_frac = _safe_float(d.get("zz_frac"))
+        p.zz_verdict = str(d.get("zz_verdict") or "")
         if p.status == "pending":
             p.force_market = False
             p.cisd_cross_market = False
@@ -956,6 +972,9 @@ class Position:
         self.confirm_bar_time: str = ""
         self.of_1h_s: Optional[float] = None
         self.cvd_weight: Optional[float] = None
+        self.zz_last_dir: int = 0
+        self.zz_frac: Optional[float] = None
+        self.zz_verdict: str = ""
 
     def to_dict(self):
         d = {
@@ -1013,6 +1032,10 @@ class Position:
             d["of_1h_s"] = self.of_1h_s
         if self.cvd_weight is not None:
             d["cvd_weight"] = self.cvd_weight
+        if self.zz_frac is not None:
+            d["zz_last_dir"] = self.zz_last_dir
+            d["zz_frac"] = self.zz_frac
+            d["zz_verdict"] = self.zz_verdict or None
         return d
 
     @classmethod
@@ -1057,6 +1080,9 @@ class Position:
         p.quality_stop_model = str(d.get("quality_stop_model") or "")
         p.of_1h_s = _safe_float(d.get("of_1h_s"))
         p.cvd_weight = _safe_float(d.get("cvd_weight"))
+        p.zz_last_dir = int(d.get("zz_last_dir") or 0)
+        p.zz_frac = _safe_float(d.get("zz_frac"))
+        p.zz_verdict = str(d.get("zz_verdict") or "")
         return p
 
 
@@ -1137,6 +1163,7 @@ def save_bot_state():
         },
         "tasks_halted": not state.tasks_live.is_set(),
         "cvd_enabled": bool(state.cvd_enabled),
+        "elliott_enabled": bool(state.elliott_enabled),
     })
 
 
@@ -1258,6 +1285,8 @@ def load_bot_state():
             logger.warning(f"paper_balance restore: {e}")
     if "cvd_enabled" in d:
         state.cvd_enabled = bool(d["cvd_enabled"])
+    if "elliott_enabled" in d:
+        state.elliott_enabled = bool(d["elliott_enabled"])
     logger.info(
         f"Загружено состояние: пара={symbol_profile()['label']}, ТФ={state.active_tf}, "
         f"paper={state.paper}, slope_filter={state.slope_filter_enabled}, "
@@ -3295,6 +3324,7 @@ BOT_COMMANDS = [
     BotCommand("close",  "🔒 Закрыть позицию / отменить лимитку"),
     BotCommand("fee",    "💰 Maker / taker fee %"),
     BotCommand("cvd",    "📉 Order-flow 1ч вкл/выкл"),
+    BotCommand("elliott", "📐 Эллиотт-структура вкл/выкл"),
 ]
 
 
@@ -3365,6 +3395,7 @@ def _build_tg_application() -> Application:
     app.add_handler(CommandHandler("quality_stop", cmd_filter_cut))
     app.add_handler(CommandHandler("fee",     cmd_fee))
     app.add_handler(CommandHandler("cvd",     cmd_cvd))
+    app.add_handler(CommandHandler("elliott", cmd_elliott))
     app.add_handler(CommandHandler("slope",      cmd_slope))
     app.add_handler(CommandHandler("slop_trend", cmd_slop_trend))
     app.add_handler(CommandHandler("prog_ema",   cmd_prog_ema))
@@ -4558,6 +4589,7 @@ def _filters_status_text() -> str:
         "Фильтры:",
         "  vwap  ON  (SHORT vd≤0, LONG vd≥0)",
         f"  cvd   {_on_off(state.cvd_enabled)}  (shadow, /cvd)",
+        f"  elliott {_on_off(state.elliott_enabled)}  (shadow, /elliott)",
         "",
         "ATR / VOL(SMA) / D / QSZ / PSL / QSTOP вырезаны.",
     ])
@@ -6128,6 +6160,9 @@ def _pending_journal_record(pl: "PendingLimit", event: str, **extra) -> dict:
         "quality_stop_model": pl.quality_stop_model or None,
         "of_1h_s": getattr(pl, "of_1h_s", None),
         "cvd_weight": getattr(pl, "cvd_weight", None),
+        "zz_last_dir": getattr(pl, "zz_last_dir", None),
+        "zz_frac": getattr(pl, "zz_frac", None),
+        "zz_verdict": getattr(pl, "zz_verdict", "") or None,
     }
     if pl.trigger_bar_at:
         rec["trigger_bar_at"] = pl.trigger_bar_at.isoformat()
@@ -6185,6 +6220,9 @@ def _position_journal_record(pos: Position, event: str = "closed", **extra) -> d
         "quality_stop_model": pos.quality_stop_model or None,
         "of_1h_s": getattr(pos, "of_1h_s", None),
         "cvd_weight": getattr(pos, "cvd_weight", None),
+        "zz_last_dir": getattr(pos, "zz_last_dir", None),
+        "zz_frac": getattr(pos, "zz_frac", None),
+        "zz_verdict": getattr(pos, "zz_verdict", "") or None,
     }
     rec.update(extra)
     return rec
@@ -6212,6 +6250,9 @@ def _copy_pending_meta_to_position(pl: "PendingLimit", pos: Position) -> None:
     pos.confirm_bar_time = str(getattr(pl, "confirm_bar_time", "") or "")
     pos.of_1h_s = getattr(pl, "of_1h_s", None)
     pos.cvd_weight = getattr(pl, "cvd_weight", None)
+    pos.zz_last_dir = int(getattr(pl, "zz_last_dir", 0) or 0)
+    pos.zz_frac = _safe_float(getattr(pl, "zz_frac", None))
+    pos.zz_verdict = str(getattr(pl, "zz_verdict", "") or "")
 
 
 def _journal_log_pending(pl: "PendingLimit", event: str, **extra) -> None:
@@ -8550,6 +8591,7 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
             fib_lines += f"\n  {label}: {_fmt_px(v, sk)}"
     risk_usdt = abs(float(entry) - float(stop)) * 1.0
     cvd_line = _cvd_card_line(sig, direction)
+    zz_ln = _elliott_card_line(sig)
     # риск в USDT уточнится при размере; здесь карточка лимитки
     msg = (
         f"{_mode_prefix()} {arrow} {direction} #{trade_num} — заявка\n"
@@ -8561,6 +8603,7 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
         f"Вход: {_fmt_px(entry, sk)} | Стоп: {_fmt_px(stop, sk)} | Тейк: {_fmt_px(tp, sk)}\n"
         f"vd={float(sig.get('vwap_dev') or 0):.2f}  R:R={rr:.2f}\n"
         f"{cvd_line}"
+        f"{zz_ln}"
         f"Ожидание входа: {_fmt_h(tf_cfg['limit_h'])}  |  позиция: {_fmt_h(tf_cfg['position_h'])}"
     )
     logger.info(
@@ -9419,6 +9462,107 @@ def _cvd_card_line(sig: dict, direction: str = "") -> str:
     return line + "\n"
 
 
+def _zigzag(htf: pd.DataFrame, atr: pd.Series, theta: float):
+    """ZigZag по HTF: пивот подтверждается после отката >= theta*ATR.
+    Порт БИТ-В-БИТ из _elliott_proxy_v1.py (каузальный).
+    pivots: [(confirm_time, extreme_time, price, 'up'|'down'), ...]"""
+    pivots = []
+    idx = htf.index
+    h = htf["high"].to_numpy(float)
+    l = htf["low"].to_numpy(float)
+    c = htf["close"].to_numpy(float)
+    a = atr.to_numpy(float)
+    n = len(htf)
+    if n < 3:
+        return pivots, None
+    dirn = 1 if c[1] >= c[0] else -1
+    ext = h[1] if dirn == 1 else l[1]
+    ext_i = 1
+    for i in range(2, n):
+        if not np.isfinite(a[i]) or a[i] <= 0:
+            continue
+        if dirn == 1:
+            if h[i] > ext:
+                ext, ext_i = h[i], i
+            elif (ext - l[i]) >= theta * a[i]:
+                pivots.append((idx[i], idx[ext_i], ext, "up"))
+                dirn, ext, ext_i = -1, l[i], i
+        else:
+            if l[i] < ext:
+                ext, ext_i = l[i], i
+            elif (h[i] - ext) >= theta * a[i]:
+                pivots.append((idx[i], idx[ext_i], ext, "down"))
+                dirn, ext, ext_i = 1, h[i], i
+    return pivots, (dirn, ext, ext_i)
+
+
+def _elliott_features(df: pd.DataFrame, tf_name: str, sig: dict) -> tuple[Optional[dict], str]:
+    """Причинный Эллиотт-прокси на scan-моменте: ZigZag по HTF (tf7→4h, tf8→8h), θ=1.5 ATR.
+    Каузально строже прототипа: пивоты — только по ПОЛНОСТЬЮ закрытым HTF-бакетам;
+    глубина отката — по LTF-барам от пивота до scan (без «хвоста» текущего бакета).
+    Возврат: ({zz_last_dir, zz_frac, verdict}, reason) либо (None, reason) — фильтр НЕ блокирует при None."""
+    from backtest.sweep_atr_filter import compute_atr14
+    try:
+        scan_raw = sig.get("confirm_bar_time") or sig.get("timestamp")
+        df_cut = df
+        if scan_raw:
+            ts = pd.Timestamp(scan_raw)
+            if getattr(ts, "tzinfo", None) is not None:
+                ts = ts.tz_convert("UTC").tz_localize(None) if ts.tzinfo else ts.tz_localize(None)
+            df_cut = df.loc[:ts]
+        if df_cut is None or len(df_cut) < 60:
+            return None, "elliott: мало LTF-баров — фильтр не применён"
+        rule = "4h" if tf_name == "tf7" else "8h"
+        tfm = 5 if tf_name == "tf7" else 30
+        htf = pd.DataFrame({
+            "high":  df_cut["high"].resample(rule, label="left", closed="left").max(),
+            "low":   df_cut["low"].resample(rule, label="left", closed="left").min(),
+            "close": df_cut["close"].resample(rule, label="left", closed="left").last(),
+        }).dropna()
+        if len(htf) < 4:
+            return None, "elliott: мало HTF-баров — фильтр не применён"
+        scan_dt = pd.Timestamp(df_cut.index[-1]) + pd.Timedelta(minutes=tfm)
+        htf_closed = htf.loc[htf.index + pd.Timedelta(rule) <= scan_dt]
+        if len(htf_closed) < 3:
+            return None, "elliott: нет закрытых HTF — фильтр не применён"
+        atr = compute_atr14(htf_closed)
+        pivots, _ = _zigzag(htf_closed, atr, ELLIOTT_THETA)
+        if len(pivots) < 2:
+            return None, "elliott: менее 2 пивотов — фильтр не применён"
+        pB, pA = pivots[-1], pivots[-2]
+        leg_len = abs(pB[2] - pA[2])
+        if not (leg_len > 0):
+            return None, "elliott: нулевой лег — фильтр не применён"
+        sl = df_cut.loc[df_cut.index >= pB[0] + pd.Timedelta(rule)]
+        if sl.empty:
+            frac = 0.0
+        elif pB[3] == "up":
+            frac = (pB[2] - float(sl["low"].min())) / leg_len
+        else:
+            frac = (float(sl["high"].max()) - pB[2]) / leg_len
+        ld = 1 if pB[3] == "up" else -1
+        direction = str(sig.get("direction") or "")
+        same_leg = (ld == 1 and direction == "LONG") or (ld == -1 and direction == "SHORT")
+        verdict = "chase" if (same_leg and frac < ELLIOTT_FRAC) else "ok"
+        reason = (f"откат {frac:.2f} от {'up' if ld == 1 else 'down'}-ноги"
+                  + (" — гонка" if verdict == "chase" else " — ок"))
+        return {"zz_last_dir": ld, "zz_frac": round(float(frac), 4), "verdict": verdict}, reason
+    except Exception as e:
+        return None, f"elliott: ошибка {e!r} — фильтр не применён"
+
+
+def _elliott_card_line(sig: dict) -> str:
+    if not state.elliott_enabled:
+        return ""
+    if sig.get("zz_frac") is None:
+        return ""
+    zz_dir = "up" if int(sig.get("zz_last_dir") or 0) == 1 else "down"
+    line = f"Эллиотт: откат {float(sig['zz_frac']):.2f} от {zz_dir}-ноги"
+    if sig.get("zz_verdict") == "chase":
+        line += " → гонка" + ("" if ELLIOTT_APPLY_SKIP else " (shadow)")
+    return line + "\n"
+
+
 async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> bool:
     tf_cfg  = CONFIG[tf_name]
     direction = str(sig.get("direction") or "")
@@ -9815,6 +9959,9 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     pl.symbol_key = active_symbol_key()
     pl.of_1h_s = cvd_of
     pl.cvd_weight = cvd_w
+    pl.zz_last_dir = int(sig.get("zz_last_dir") or 0)
+    pl.zz_frac = _safe_float(sig.get("zz_frac"))
+    pl.zz_verdict = str(sig.get("zz_verdict") or "")
     ts = sig.get("trigger_bar_time") or sig.get("series_start_time") or ""
     if ts:
         pl.trigger_bar_at = _bar_time_to_utc(str(ts))
@@ -10018,6 +10165,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             )
         rr_line = f"R:R:   {tp_pct / sl_pct:.1f}" if sl_pct > 0 else "R:R:   —"
         cvd_line = _cvd_card_line(sig, pl.direction)
+        zz_ln = _elliott_card_line(sig)
         await send_telegram(
             f"{hdr}"
             f"ID: {pl.id}  |  {contracts} ctr\n"
@@ -10029,6 +10177,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             f"{qstop_note}"
             f"{rr_line}"
             + (f"\n{cvd_line.rstrip()}" if cvd_line else "")
+            + (f"\n{zz_ln.rstrip()}" if zz_ln else "")
         )
         if not pl.defer_entry:
             await _try_place_pending_entry(pl)
@@ -11735,6 +11884,31 @@ async def _run_detect_and_trade(
                 detail=reason,
             )
             continue
+        if state.elliott_enabled:
+            ef, e_reason = _elliott_features(df, tf_name, sig)
+            if ef:
+                sig["zz_last_dir"] = ef["zz_last_dir"]
+                sig["zz_frac"] = ef["zz_frac"]
+                sig["zz_verdict"] = ef["verdict"]
+                if ef["verdict"] == "chase" and ELLIOTT_APPLY_SKIP:
+                    logger.info(
+                        f"elliott skip {active_symbol_key()} {sig.get('direction')} "
+                        f"[{tf_name}] {e_reason}"
+                    )
+                    await _notify_signal_skip(
+                        sig, tf_name, "skipped_elliott",
+                        header=(
+                            f"{_mode_prefix()} ⛔ Пропуск {sig.get('direction')} "
+                            f"[{tf_label(tf_name)}] {symbol_profile()['label']} — эллиотт (гонка)"
+                        ),
+                        detail=e_reason,
+                    )
+                    continue
+            else:
+                logger.info(
+                    f"elliott {active_symbol_key()} {sig.get('direction')} "
+                    f"[{tf_name}] {e_reason}"
+                )
         kept.append(sig)
     if not kept:
         logger.info(f"{active_symbol_key()} {tf_name}: сигналов нет (после vwap)")
@@ -12959,6 +13133,29 @@ async def cmd_cvd(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Запросы к Binance не идут."
         )
         + "\n/cvd — переключить, /cvd on | off — явно."
+    )
+
+
+async def cmd_elliott(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Вкл/выкл shadow-лог Эллиотт ZigZag. Сделки не режем (ЭТАП 1)."""
+    args = [str(a).strip().lower() for a in (context.args or [])]
+    raw = args[0] if args else ""
+    if raw in ("on", "1", "вкл"):
+        state.elliott_enabled = True
+    elif raw in ("off", "0", "выкл"):
+        state.elliott_enabled = False
+    else:
+        state.elliott_enabled = not bool(state.elliott_enabled)
+    save_bot_state()
+    on = bool(state.elliott_enabled)
+    await update.message.reply_text(
+        f"📐 Эллиотт ZigZag: {'вкл' if on else 'выкл'}\n"
+        + (
+            "Пишем откат/ногу в лог и карточку, сделки не режем."
+            if on else
+            "Фичи Эллиотта не считаем."
+        )
+        + "\n/elliott — переключить, /elliott on | off — явно."
     )
 
 
