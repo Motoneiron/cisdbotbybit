@@ -169,6 +169,7 @@ CVD_API          = "https://fapi.binance.com/fapi/v1/klines"
 CVD_BOUNDS       = (0.0063, 0.0712)   # frozen-терцили (2020-23)
 CVD_WEIGHTS      = (0.7, 1.0, 1.3)
 CVD_TIMEOUT_S    = 3.0
+CVD_RETRIES      = 3
 ACTIVE_SYMBOL_KEYS = (
     "SOL", "BTC", "ETH", "DOGE", "KAS", "ADA", "BNB", "LINK", "LTC", "XRP",
 )
@@ -8548,16 +8549,7 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
         if v is not None:
             fib_lines += f"\n  {label}: {_fmt_px(v, sk)}"
     risk_usdt = abs(float(entry) - float(stop)) * 1.0
-    of_v = sig.get("cvd_of_1h")
-    cvd_line = ""
-    if of_v is not None:
-        ofs = float(of_v) * (1 if direction == "LONG" else -1)
-        cvd_line = f"Поток 1ч: {ofs:+.4f}"
-        if sig.get("cvd_weight") is not None:
-            cvd_line += f" → вес ×{float(sig['cvd_weight']):.1f}"
-            if not CVD_APPLY_SIZING:
-                cvd_line += " (shadow)"
-        cvd_line += "\n"
+    cvd_line = _cvd_card_line(sig, direction)
     # риск в USDT уточнится при размере; здесь карточка лимитки
     msg = (
         f"{_mode_prefix()} {arrow} {direction} #{trade_num} — заявка\n"
@@ -9341,36 +9333,58 @@ def _format_position_taken_tg(
     )
 
 
-async def _cvd_order_flow_1h(symbol_key: str) -> Optional[float]:
-    """Order-flow за 60 закрытых минут: (buy-sell)/(buy+sell). Binance fapi klines.
-    None при любой ошибке (фича опциональна, торговлю не ломает)."""
+async def _cvd_order_flow_1h(symbol_key: str) -> tuple[Optional[float], bool]:
+    """Order-flow за 60 закрытых минут: (value, unavailable).
+    unavailable=True — Binance не ответил после ретраев. Торговлю не ломает."""
     try:
         sym = str(symbol_profile(symbol_key)["symbol"]).split("/")[0] + "USDT"
     except Exception:
-        return None
+        return None, False
     url = f"{CVD_API}?symbol={sym}&interval=1m&limit=61"
-    try:
-        timeout = aiohttp.ClientTimeout(total=CVD_TIMEOUT_S)
-        async with aiohttp.ClientSession(timeout=timeout) as sess:
-            async with sess.get(url) as resp:
-                data = await resp.json(content_type=None)
-    except Exception as e:
-        logger.warning(f"CVD: запрос не удался ({sym}): {e}")
-        return None
+    data = None
+    last_err: Exception | str | None = None
+    attempts = max(1, int(CVD_RETRIES))
+    for attempt in range(attempts):
+        try:
+            timeout = aiohttp.ClientTimeout(total=CVD_TIMEOUT_S)
+            async with aiohttp.ClientSession(timeout=timeout) as sess:
+                async with sess.get(url) as resp:
+                    if resp.status in (429, 500, 502, 503, 504) or resp.status >= 500:
+                        last_err = f"HTTP {resp.status}"
+                        if attempt + 1 < attempts:
+                            await asyncio.sleep(0.4 * (attempt + 1))
+                            continue
+                        logger.warning(f"CVD: {sym} {last_err} после {attempts} попыток")
+                        return None, True
+                    if resp.status != 200:
+                        logger.warning(f"CVD: {sym} HTTP {resp.status}")
+                        return None, True
+                    data = await resp.json(content_type=None)
+                    break
+        except Exception as e:
+            last_err = e
+            if attempt + 1 < attempts:
+                await asyncio.sleep(0.4 * (attempt + 1))
+                continue
+            logger.warning(f"CVD: запрос не удался ({sym}) после {attempts} попыток: {e}")
+            return None, True
+    if data is None:
+        logger.warning(f"CVD: нет ответа ({sym}): {last_err}")
+        return None, True
     try:
         rows = data if isinstance(data, list) else (data or {}).get("data") or []
         now_ms = int(time.time() * 1000)
         closed = [k for k in rows if int(k[6]) <= now_ms][-60:]
         if len(closed) < 40:
-            return None
+            return None, False
         vol = sum(float(k[5]) for k in closed)
         tb = sum(float(k[9]) for k in closed)
         if vol <= 0:
-            return None
-        return (2.0 * tb - vol) / vol
+            return None, False
+        return (2.0 * tb - vol) / vol, False
     except Exception as e:
         logger.warning(f"CVD: разбор не удался ({sym}): {e}")
-        return None
+        return None, True
 
 
 def _cvd_weight(of: Optional[float], direction: str) -> Optional[float]:
@@ -9384,6 +9398,25 @@ def _cvd_weight(of: Optional[float], direction: str) -> Optional[float]:
     if ofs > c2:
         return CVD_WEIGHTS[2]
     return CVD_WEIGHTS[1]
+
+
+def _cvd_card_line(sig: dict, direction: str = "") -> str:
+    if not state.cvd_enabled:
+        return ""
+    if sig.get("cvd_unavailable"):
+        return "CVD недоступен (Binance)\n"
+    of_v = sig.get("cvd_of_1h")
+    if of_v is None:
+        return "CVD нет данных\n"
+    direction = direction or str(sig.get("direction") or "")
+    ofs = float(of_v) * (1 if str(direction).upper() == "LONG" else -1)
+    line = f"Поток 1ч: {ofs:+.4f}"
+    w = sig.get("cvd_weight")
+    if w is not None:
+        line += f" → вес ×{float(w):.1f}"
+        if not CVD_APPLY_SIZING:
+            line += " (shadow)"
+    return line + "\n"
 
 
 async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> bool:
@@ -9752,10 +9785,19 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     limit_h = float(tf_cfg["limit_h"])
     timeout_at = now + timedelta(hours=limit_h)
 
-    cvd_of = await _cvd_order_flow_1h(sk) if state.cvd_enabled else None
-    cvd_w = _cvd_weight(cvd_of, direction)
+    cvd_of = None
+    cvd_w = None
+    cvd_down = False
+    if state.cvd_enabled:
+        try:
+            cvd_of, cvd_down = await _cvd_order_flow_1h(sk)
+            cvd_w = _cvd_weight(cvd_of, direction)
+        except Exception as e:
+            logger.warning(f"CVD [{sk}]: {e}")
+            cvd_of, cvd_w, cvd_down = None, None, True
     sig["cvd_of_1h"] = cvd_of
     sig["cvd_weight"] = cvd_w
+    sig["cvd_unavailable"] = bool(cvd_down)
 
     pl  = PendingLimit(
         lid         = f"L{uuid.uuid4().hex[:8]}",
@@ -9888,13 +9930,15 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
         )
 
     if state.cvd_enabled:
-        if cvd_of is not None:
+        if cvd_down:
+            logger.info(f"CVD [{sk}]: Binance недоступен — сделка без CVD")
+        elif cvd_of is not None:
             logger.info(
                 f"CVD [{sk}]: of_1h={cvd_of:+.4f} вес=x{cvd_w:.2f} "
                 f"({'SIZING' if CVD_APPLY_SIZING else 'shadow: риск не изменён'})"
             )
         else:
-            logger.info(f"CVD [{sk}]: нет данных (Binance) — вес 1.00 (shadow)")
+            logger.info(f"CVD [{sk}]: нет данных — вес 1.00 (shadow)")
 
     if not state.paper:
         px_chk = price_live or get_price() or 0.0
@@ -9973,6 +10017,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
                 f"({_fmt_px(pl.quality_stop_original, sk)} → {_fmt_px(pl.stop_price, sk)})\n"
             )
         rr_line = f"R:R:   {tp_pct / sl_pct:.1f}" if sl_pct > 0 else "R:R:   —"
+        cvd_line = _cvd_card_line(sig, pl.direction)
         await send_telegram(
             f"{hdr}"
             f"ID: {pl.id}  |  {contracts} ctr\n"
@@ -9983,6 +10028,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             f"TP:    {_fmt_px(pl.tp_price, sk)}  ({tp_pct:.2f}%)  [LIMIT after fill]\n"
             f"{qstop_note}"
             f"{rr_line}"
+            + (f"\n{cvd_line.rstrip()}" if cvd_line else "")
         )
         if not pl.defer_entry:
             await _try_place_pending_entry(pl)
