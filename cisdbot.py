@@ -27,6 +27,7 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
+import aiohttp
 import numpy as np
 import pandas as pd
 from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -161,6 +162,13 @@ SYMBOL_PROFILES: dict[str, dict] = {
     },
 }
 DEFAULT_SYMBOL_KEY = "SOL"
+# ==== CVD order-flow (ЭТАП 1: shadow-лог, риск НЕ меняется) ====
+CVD_ENABLED      = True
+CVD_APPLY_SIZING = False          # ЭТАП 2: True → риск = 1% x вес
+CVD_API          = "https://fapi.binance.com/fapi/v1/klines"
+CVD_BOUNDS       = (0.0063, 0.0712)   # frozen-терцили (2020-23)
+CVD_WEIGHTS      = (0.7, 1.0, 1.3)
+CVD_TIMEOUT_S    = 3.0
 ACTIVE_SYMBOL_KEYS = (
     "SOL", "BTC", "ETH", "DOGE", "KAS", "ADA", "BNB", "LINK", "LTC", "XRP",
 )
@@ -528,6 +536,7 @@ class BotState:
 
     def __init__(self):
         self.paper: bool            = PAPER_TRADING
+        self.cvd_enabled: bool      = bool(CVD_ENABLED)
         self.running: asyncio.Event = asyncio.Event()
         self.tasks_live: asyncio.Event = asyncio.Event()  # False = все торговые задачи в idle
         self.tasks_live.set()
@@ -802,6 +811,8 @@ class PendingLimit:
         self.quality_stop_mult: float = 1.0
         self.quality_stop_model: str = ""
         self.vwap_dev: float = 0.0
+        self.of_1h_s: Optional[float] = None
+        self.cvd_weight: Optional[float] = None
 
     def to_dict(self):
         d = {
@@ -841,6 +852,10 @@ class PendingLimit:
         if self.trigger_bar_at:
             d["trigger_bar_at"] = self.trigger_bar_at.isoformat()
         d["symbol_key"] = self.symbol_key or DEFAULT_SYMBOL_KEY
+        if self.of_1h_s is not None:
+            d["of_1h_s"] = self.of_1h_s
+        if self.cvd_weight is not None:
+            d["cvd_weight"] = self.cvd_weight
         return d
 
     @classmethod
@@ -884,6 +899,8 @@ class PendingLimit:
         p.quality_stop_mult = float(d.get("quality_stop_mult") or 1)
         p.quality_stop_model = str(d.get("quality_stop_model") or "")
         p.vwap_dev = float(d.get("vwap_dev") or 0)
+        p.of_1h_s = _safe_float(d.get("of_1h_s"))
+        p.cvd_weight = _safe_float(d.get("cvd_weight"))
         if p.status == "pending":
             p.force_market = False
             p.cisd_cross_market = False
@@ -936,6 +953,8 @@ class Position:
         self.quality_stop_model: str = ""
         self.vwap_dev: float = 0.0
         self.confirm_bar_time: str = ""
+        self.of_1h_s: Optional[float] = None
+        self.cvd_weight: Optional[float] = None
 
     def to_dict(self):
         d = {
@@ -989,6 +1008,10 @@ class Position:
         d["quality_stop_mult"] = self.quality_stop_mult
         if self.quality_stop_model:
             d["quality_stop_model"] = self.quality_stop_model
+        if self.of_1h_s is not None:
+            d["of_1h_s"] = self.of_1h_s
+        if self.cvd_weight is not None:
+            d["cvd_weight"] = self.cvd_weight
         return d
 
     @classmethod
@@ -1031,6 +1054,8 @@ class Position:
         p.quality_stop_original = _safe_float(d.get("quality_stop_original"))
         p.quality_stop_mult = float(d.get("quality_stop_mult") or 1)
         p.quality_stop_model = str(d.get("quality_stop_model") or "")
+        p.of_1h_s = _safe_float(d.get("of_1h_s"))
+        p.cvd_weight = _safe_float(d.get("cvd_weight"))
         return p
 
 
@@ -1110,6 +1135,7 @@ def save_bot_state():
             for k, v in (state.htf_taken or {}).items()
         },
         "tasks_halted": not state.tasks_live.is_set(),
+        "cvd_enabled": bool(state.cvd_enabled),
     })
 
 
@@ -1229,6 +1255,8 @@ def load_bot_state():
                 )
         except Exception as e:
             logger.warning(f"paper_balance restore: {e}")
+    if "cvd_enabled" in d:
+        state.cvd_enabled = bool(d["cvd_enabled"])
     logger.info(
         f"Загружено состояние: пара={symbol_profile()['label']}, ТФ={state.active_tf}, "
         f"paper={state.paper}, slope_filter={state.slope_filter_enabled}, "
@@ -3265,6 +3293,7 @@ BOT_COMMANDS = [
     BotCommand("pairs",  "🪙 Активные пары"),
     BotCommand("close",  "🔒 Закрыть позицию / отменить лимитку"),
     BotCommand("fee",    "💰 Maker / taker fee %"),
+    BotCommand("cvd",    "📉 Order-flow 1ч вкл/выкл"),
 ]
 
 
@@ -3334,6 +3363,7 @@ def _build_tg_application() -> Application:
     app.add_handler(CommandHandler("filters_qstop", cmd_filter_cut))
     app.add_handler(CommandHandler("quality_stop", cmd_filter_cut))
     app.add_handler(CommandHandler("fee",     cmd_fee))
+    app.add_handler(CommandHandler("cvd",     cmd_cvd))
     app.add_handler(CommandHandler("slope",      cmd_slope))
     app.add_handler(CommandHandler("slop_trend", cmd_slop_trend))
     app.add_handler(CommandHandler("prog_ema",   cmd_prog_ema))
@@ -4526,6 +4556,7 @@ def _filters_status_text() -> str:
     return "\n".join([
         "Фильтры:",
         "  vwap  ON  (SHORT vd≤0, LONG vd≥0)",
+        f"  cvd   {_on_off(state.cvd_enabled)}  (shadow, /cvd)",
         "",
         "ATR / VOL(SMA) / D / QSZ / PSL / QSTOP вырезаны.",
     ])
@@ -6094,6 +6125,8 @@ def _pending_journal_record(pl: "PendingLimit", event: str, **extra) -> dict:
         "quality_stop_original": pl.quality_stop_original,
         "quality_stop_mult": pl.quality_stop_mult,
         "quality_stop_model": pl.quality_stop_model or None,
+        "of_1h_s": getattr(pl, "of_1h_s", None),
+        "cvd_weight": getattr(pl, "cvd_weight", None),
     }
     if pl.trigger_bar_at:
         rec["trigger_bar_at"] = pl.trigger_bar_at.isoformat()
@@ -6149,6 +6182,8 @@ def _position_journal_record(pos: Position, event: str = "closed", **extra) -> d
         "quality_stop_original": pos.quality_stop_original,
         "quality_stop_mult": pos.quality_stop_mult,
         "quality_stop_model": pos.quality_stop_model or None,
+        "of_1h_s": getattr(pos, "of_1h_s", None),
+        "cvd_weight": getattr(pos, "cvd_weight", None),
     }
     rec.update(extra)
     return rec
@@ -6174,6 +6209,8 @@ def _copy_pending_meta_to_position(pl: "PendingLimit", pos: Position) -> None:
     pos.quality_stop_model = pl.quality_stop_model
     pos.vwap_dev = float(getattr(pl, "vwap_dev", 0) or 0)
     pos.confirm_bar_time = str(getattr(pl, "confirm_bar_time", "") or "")
+    pos.of_1h_s = getattr(pl, "of_1h_s", None)
+    pos.cvd_weight = getattr(pl, "cvd_weight", None)
 
 
 def _journal_log_pending(pl: "PendingLimit", event: str, **extra) -> None:
@@ -8511,6 +8548,16 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
         if v is not None:
             fib_lines += f"\n  {label}: {_fmt_px(v, sk)}"
     risk_usdt = abs(float(entry) - float(stop)) * 1.0
+    of_v = sig.get("cvd_of_1h")
+    cvd_line = ""
+    if of_v is not None:
+        ofs = float(of_v) * (1 if direction == "LONG" else -1)
+        cvd_line = f"Поток 1ч: {ofs:+.4f}"
+        if sig.get("cvd_weight") is not None:
+            cvd_line += f" → вес ×{float(sig['cvd_weight']):.1f}"
+            if not CVD_APPLY_SIZING:
+                cvd_line += " (shadow)"
+        cvd_line += "\n"
     # риск в USDT уточнится при размере; здесь карточка лимитки
     msg = (
         f"{_mode_prefix()} {arrow} {direction} #{trade_num} — заявка\n"
@@ -8521,6 +8568,7 @@ async def send_paper_signal(sig: dict, tf_name: str, tf_cfg: dict, trade_num: in
         f" (HTF {_utc_iso_short(sig.get('htf_time'))})\n"
         f"Вход: {_fmt_px(entry, sk)} | Стоп: {_fmt_px(stop, sk)} | Тейк: {_fmt_px(tp, sk)}\n"
         f"vd={float(sig.get('vwap_dev') or 0):.2f}  R:R={rr:.2f}\n"
+        f"{cvd_line}"
         f"Ожидание входа: {_fmt_h(tf_cfg['limit_h'])}  |  позиция: {_fmt_h(tf_cfg['position_h'])}"
     )
     logger.info(
@@ -9293,6 +9341,51 @@ def _format_position_taken_tg(
     )
 
 
+async def _cvd_order_flow_1h(symbol_key: str) -> Optional[float]:
+    """Order-flow за 60 закрытых минут: (buy-sell)/(buy+sell). Binance fapi klines.
+    None при любой ошибке (фича опциональна, торговлю не ломает)."""
+    try:
+        sym = str(symbol_profile(symbol_key)["symbol"]).split("/")[0] + "USDT"
+    except Exception:
+        return None
+    url = f"{CVD_API}?symbol={sym}&interval=1m&limit=61"
+    try:
+        timeout = aiohttp.ClientTimeout(total=CVD_TIMEOUT_S)
+        async with aiohttp.ClientSession(timeout=timeout) as sess:
+            async with sess.get(url) as resp:
+                data = await resp.json(content_type=None)
+    except Exception as e:
+        logger.warning(f"CVD: запрос не удался ({sym}): {e}")
+        return None
+    try:
+        rows = data if isinstance(data, list) else (data or {}).get("data") or []
+        now_ms = int(time.time() * 1000)
+        closed = [k for k in rows if int(k[6]) <= now_ms][-60:]
+        if len(closed) < 40:
+            return None
+        vol = sum(float(k[5]) for k in closed)
+        tb = sum(float(k[9]) for k in closed)
+        if vol <= 0:
+            return None
+        return (2.0 * tb - vol) / vol
+    except Exception as e:
+        logger.warning(f"CVD: разбор не удался ({sym}): {e}")
+        return None
+
+
+def _cvd_weight(of: Optional[float], direction: str) -> Optional[float]:
+    """Вес размера по of_1h (знак — в сторону сделки): 0.7 / 1.0 / 1.3."""
+    if of is None:
+        return None
+    ofs = float(of) if str(direction).upper() == "LONG" else -float(of)
+    c1, c2 = CVD_BOUNDS
+    if ofs < c1:
+        return CVD_WEIGHTS[0]
+    if ofs > c2:
+        return CVD_WEIGHTS[2]
+    return CVD_WEIGHTS[1]
+
+
 async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> bool:
     tf_cfg  = CONFIG[tf_name]
     direction = str(sig.get("direction") or "")
@@ -9659,6 +9752,11 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     limit_h = float(tf_cfg["limit_h"])
     timeout_at = now + timedelta(hours=limit_h)
 
+    cvd_of = await _cvd_order_flow_1h(sk) if state.cvd_enabled else None
+    cvd_w = _cvd_weight(cvd_of, direction)
+    sig["cvd_of_1h"] = cvd_of
+    sig["cvd_weight"] = cvd_w
+
     pl  = PendingLimit(
         lid         = f"L{uuid.uuid4().hex[:8]}",
         direction   = sig["direction"],
@@ -9673,6 +9771,8 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
         trade_num   = trade_num or state.next_trade_num(),
     )
     pl.symbol_key = active_symbol_key()
+    pl.of_1h_s = cvd_of
+    pl.cvd_weight = cvd_w
     ts = sig.get("trigger_bar_time") or sig.get("series_start_time") or ""
     if ts:
         pl.trigger_bar_at = _bar_time_to_utc(str(ts))
@@ -9786,6 +9886,15 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             f"entry={_fmt_px(sig['entry'])} stop={_fmt_px(sig['stop'])} "
             f"tp={_fmt_px(sig['tp'])} | {contracts} ctr"
         )
+
+    if state.cvd_enabled:
+        if cvd_of is not None:
+            logger.info(
+                f"CVD [{sk}]: of_1h={cvd_of:+.4f} вес=x{cvd_w:.2f} "
+                f"({'SIZING' if CVD_APPLY_SIZING else 'shadow: риск не изменён'})"
+            )
+        else:
+            logger.info(f"CVD [{sk}]: нет данных (Binance) — вес 1.00 (shadow)")
 
     if not state.paper:
         px_chk = price_live or get_price() or 0.0
@@ -12782,6 +12891,29 @@ def _parse_on_off(raw: str) -> Optional[bool]:
 
 async def cmd_filters(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(_filters_status_text())
+
+
+async def cmd_cvd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Вкл/выкл shadow-лог order-flow 1ч. Размер сделки не меняет."""
+    args = [str(a).strip().lower() for a in (context.args or [])]
+    raw = args[0] if args else ""
+    if raw in ("on", "1", "вкл"):
+        state.cvd_enabled = True
+    elif raw in ("off", "0", "выкл"):
+        state.cvd_enabled = False
+    else:
+        state.cvd_enabled = not bool(state.cvd_enabled)
+    save_bot_state()
+    on = bool(state.cvd_enabled)
+    await update.message.reply_text(
+        f"📉 CVD order-flow: {'вкл' if on else 'выкл'}\n"
+        + (
+            "Пишем поток 1ч в лог и карточку, размер сделки не меняем."
+            if on else
+            "Запросы к Binance не идут."
+        )
+        + "\n/cvd — переключить, /cvd on | off — явно."
+    )
 
 
 async def cmd_filter(update: Update, context: ContextTypes.DEFAULT_TYPE):
