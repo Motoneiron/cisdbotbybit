@@ -840,8 +840,7 @@ class PendingLimit:
         }
         if self.trigger_bar_at:
             d["trigger_bar_at"] = self.trigger_bar_at.isoformat()
-        if self.symbol_key and self.symbol_key != DEFAULT_SYMBOL_KEY:
-            d["symbol_key"] = self.symbol_key
+        d["symbol_key"] = self.symbol_key or DEFAULT_SYMBOL_KEY
         return d
 
     @classmethod
@@ -984,8 +983,7 @@ class Position:
             d["sig_hash"] = self.sig_hash
         if self.pending_created_at:
             d["pending_created_at"] = self.pending_created_at.isoformat()
-        if self.symbol_key and self.symbol_key != DEFAULT_SYMBOL_KEY:
-            d["symbol_key"] = self.symbol_key
+        d["symbol_key"] = self.symbol_key or DEFAULT_SYMBOL_KEY
         d["quality_score"] = self.quality_score
         d["quality_stop_original"] = self.quality_stop_original
         d["quality_stop_mult"] = self.quality_stop_mult
