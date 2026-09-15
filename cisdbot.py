@@ -180,7 +180,8 @@ CONFIG = {
     "min_balance_usdt":    20.0,
     "min_contracts":       1,
     "min_notional_usdt":   5.0,   # Bybit minNotional linear
-    "min_stop_pct":        0.25,  # сигналы со стопом < 0.25% не торгуем
+    "min_stop_pct":        0.5,   # сигналы со стопом < 0.5% не торгуем
+    "vwap_gate_enabled":   False, # vwap-гейт выключен (на tf8 режет +840R прибыльных сделок)
     "hedge_mode":          False, # one-way: 1 позиция на пару
     "emergency_stop_pct":  0.3,    # % за стоп-ценой → принудительное закрытие маркетом
     "min_rr":              0.2,    # min R:R (reward/risk); MARKET retest — от текущей цены
@@ -336,7 +337,8 @@ CONFIG = {
 }
 
 TF_KEYS = ("tf0", "tf1", "tf2", "tf3", "tf4", "tf5", "tf6", "tf7", "tf8")
-ACTIVE_TF_KEYS = ("tf7", "tf8")
+ACTIVE_TF_KEYS = ("tf8",)   # tf7 снят: на Bybit убит комиссиями + узкими стопами
+SCAN_TF_KEYS   = ("tf8",)   # что сканирует автосканер; чтобы вернуть tf7 — дописать в оба кортежа
 OHLCV_5M_BARS = 1000  # один запрос 5m на пару за цикл
 # tf4 (10m→1H): особый паттерн «2 бара HTF + подтверждение баром 3»
 TF4_BAR3_PATTERN_TF = "tf4"
@@ -534,7 +536,7 @@ class BotState:
         self.pending_limits: list   = []
         self.positions: list        = []
         self.paper_balance: float   = CONFIG["paper_balance"]
-        self.active_tf: str         = "tf7"
+        self.active_tf: str         = "tf8"
         self.active_symbol_key: str  = DEFAULT_SYMBOL_KEY  # для fetch/detect текущего цикла
         self.fees_by_symbol: dict[str, dict] = {}
         self._trade_counter: int    = 0
@@ -1117,7 +1119,7 @@ def load_bot_state():
     """Загружает активный ТФ, режим и таймауты с диска."""
     d = load_json(BOT_STATE_FILE, {})
     if "active_tf" in d and d["active_tf"] in TF_KEYS:
-        state.active_tf = d["active_tf"] if d["active_tf"] in ACTIVE_TF_KEYS else "tf7"
+        state.active_tf = d["active_tf"] if d["active_tf"] in ACTIVE_TF_KEYS else "tf8"
     if "fees_by_symbol" in d and isinstance(d["fees_by_symbol"], dict):
         cleaned_fees: dict[str, dict] = {}
         for k, v in d["fees_by_symbol"].items():
@@ -1232,7 +1234,7 @@ def load_bot_state():
     logger.info(
         f"Загружено состояние: пара={symbol_profile()['label']}, ТФ={state.active_tf}, "
         f"paper={state.paper}, slope_filter={state.slope_filter_enabled}, "
-        f"detect_filters=vwap, "
+        f"detect_filters={'vwap' if CONFIG.get('vwap_gate_enabled', True) else 'off'}, "
         + " | ".join(
             f"{tf}: вход={_fmt_h(CONFIG[tf]['limit_h'])} выход={_fmt_h(CONFIG[tf]['position_h'])}"
             for tf in TF_KEYS
@@ -4515,13 +4517,15 @@ def _apply_quality_stop_to_signal(sig: dict, tf_name: str) -> bool:
 
 
 def _detect_filters_profile_name(flags: Optional[dict] = None) -> str:
-    return "только vwap"
+    return "vwap ON" if CONFIG.get("vwap_gate_enabled", True) else "vwap OFF (фильтров нет)"
 
 
 def _filters_live_lines() -> list[str]:
+    on = bool(CONFIG.get("vwap_gate_enabled", True))
     return [
         "Фильтры:",
-        "  vwap     ON   режет  SHORT vd≤0, LONG vd≥0",
+        ("  vwap     ON   режет  SHORT vd≤0, LONG vd≥0" if on
+         else "  vwap     OFF  гейт выключен — берём все сигналы"),
     ]
 
 
@@ -4533,7 +4537,7 @@ def _filters_status_text() -> str:
 
 
 def _trigger_filters_desc() -> str:
-    return "vwap=ON"
+    return "vwap=ON" if CONFIG.get("vwap_gate_enabled", True) else "vwap=OFF"
 
 
 def _apply_vol_or_touches_gate(
@@ -9248,6 +9252,9 @@ def _vwap_gate(df: pd.DataFrame, sig: dict) -> tuple[bool, float, str]:
     if not ok:
         need = "≤ 0" if direction == "SHORT" else "≥ 0"
         reason += f"  ({direction} нужно {need})"
+    if not CONFIG.get("vwap_gate_enabled", True):
+        # гейт выключен, но vd по-прежнему считается и пишется в сделку (vwap_dev) — для аналитики
+        return True, vd, "vwap: гейт выключен — " + reason
     return ok, vd, reason
 
 
@@ -9319,7 +9326,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     stop_px = float(sig.get("stop") or 0)
     if entry_px > 0 and stop_px > 0:
         stop_pct = abs(stop_px - entry_px) / entry_px * 100.0
-        min_stop = float(CONFIG.get("min_stop_pct") or 0.25)
+        min_stop = float(CONFIG.get("min_stop_pct") or 0.5)
         if stop_pct < min_stop:
             logger.info(f"SKIP min_stop: {stop_pct:.3f}% < {min_stop}%")
             await _notify_signal_skip(
@@ -11636,15 +11643,16 @@ async def _scan_symbol(
             return
         state.df_cache[f"{sk}|tf7"] = df5
         _store_closed_ohlc(sk, "tf7", df5)
-        await _run_detect_and_trade(
-            "tf7", df5, df_confirm=None, skip_invalidate=skip_invalidate,
-        )
+        if "tf7" in SCAN_TF_KEYS:
+            await _run_detect_and_trade(
+                "tf7", df5, df_confirm=None, skip_invalidate=skip_invalidate,
+            )
 
         df30 = _resample_ohlcv(df5, "30m")
         if df30 is not None and len(df30) >= 2:
             state.df_cache[f"{sk}|tf8"] = df30
             _store_closed_ohlc(sk, "tf8", df30)
-        if df30 is not None and len(df30) >= 20:  # ранний детект: tf8 на каждом 5м-скане
+        if df30 is not None and len(df30) >= 20 and "tf8" in SCAN_TF_KEYS:  # ранний детект: tf8 на каждом 5м-скане
             await _run_detect_and_trade(
                 "tf8", df30, df_confirm=df5, skip_invalidate=skip_invalidate,
             )
