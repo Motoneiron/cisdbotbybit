@@ -938,6 +938,11 @@ class Position:
         self.quality_stop_model: str = ""
         self.vwap_dev: float = 0.0
         self.confirm_bar_time: str = ""
+        self.closed_bar_at: str = ""  # open-time последнего закрытого бара ТФ на момент входа
+        self.px_min_since_entry: float = 0.0
+        self.px_max_since_entry: float = 0.0
+        self.exit_src: str = ""          # live_px | since_entry | bar
+        self.exit_bar_time: Optional[str] = None
 
     def to_dict(self):
         d = {
@@ -991,6 +996,13 @@ class Position:
         d["quality_stop_mult"] = self.quality_stop_mult
         if self.quality_stop_model:
             d["quality_stop_model"] = self.quality_stop_model
+        d["closed_bar_at"] = self.closed_bar_at or None
+        d["px_min_since_entry"] = self.px_min_since_entry or None
+        d["px_max_since_entry"] = self.px_max_since_entry or None
+        if self.exit_src:
+            d["exit_src"] = self.exit_src
+        if self.exit_bar_time:
+            d["exit_bar_time"] = self.exit_bar_time
         return d
 
     @classmethod
@@ -1033,6 +1045,12 @@ class Position:
         p.quality_stop_original = _safe_float(d.get("quality_stop_original"))
         p.quality_stop_mult = float(d.get("quality_stop_mult") or 1)
         p.quality_stop_model = str(d.get("quality_stop_model") or "")
+        p.closed_bar_at = str(d.get("closed_bar_at") or "")
+        p.px_min_since_entry = float(d.get("px_min_since_entry") or 0)
+        p.px_max_since_entry = float(d.get("px_max_since_entry") or 0)
+        p.exit_src = str(d.get("exit_src") or "")
+        ebt = d.get("exit_bar_time")
+        p.exit_bar_time = str(ebt) if ebt else None
         return p
 
 
@@ -6154,6 +6172,8 @@ def _position_journal_record(pos: Position, event: str = "closed", **extra) -> d
         "quality_stop_original": pos.quality_stop_original,
         "quality_stop_mult": pos.quality_stop_mult,
         "quality_stop_model": pos.quality_stop_model or None,
+        "exit_src": getattr(pos, "exit_src", None) or None,
+        "exit_bar_time": getattr(pos, "exit_bar_time", None) or None,
     }
     rec.update(extra)
     return rec
@@ -10926,6 +10946,8 @@ async def limit_monitor():
                     trade_num   = pl.trade_num,
                 )
                 _copy_pending_meta_to_position(pl, pos)
+                pos.closed_bar_at = str((cached or {}).get("time") or "")
+                pos.px_min_since_entry = pos.px_max_since_entry = float(avg_price)
                 state.positions.append(pos)
                 save_positions(state.positions)
                 save_pending(state.pending_limits)
@@ -11199,25 +11221,17 @@ async def position_monitor():
                 if price is None:
                     continue
                 tfl = tf_label(p.tf)
+                px = float(price)
+                if float(getattr(p, "px_min_since_entry", 0) or 0) <= 0 or float(
+                    getattr(p, "px_max_since_entry", 0) or 0
+                ) <= 0:
+                    p.px_min_since_entry = p.px_max_since_entry = px
+                else:
+                    p.px_min_since_entry = min(float(p.px_min_since_entry), px)
+                    p.px_max_since_entry = max(float(p.px_max_since_entry), px)
                 cached = state.ohlcv_closed.get(f"{sk}|{p.tf}") or {}
-                bar_high = cached.get("high")
-                bar_low = cached.get("low")
-
-                tp_hit = (
-                    (p.direction == "LONG"  and (
-                        price >= p.tp_price or (bar_high is not None and bar_high >= p.tp_price)
-                    )) or
-                    (p.direction == "SHORT" and (
-                        price <= p.tp_price or (bar_low is not None and bar_low <= p.tp_price)
-                    ))
-                )
-                sl_hit = (
-                    (p.direction == "LONG"  and (
-                        price <= p.stop_price or (bar_low is not None and bar_low <= p.stop_price)
-                    )) or
-                    (p.direction == "SHORT" and (
-                        price >= p.stop_price or (bar_high is not None and bar_high >= p.stop_price)
-                    ))
+                tp_hit, sl_hit, exit_src, exit_bar_time = _paper_position_level_hits(
+                    p, px, cached,
                 )
                 timeout_hit = now >= p.exit_time
 
@@ -11227,8 +11241,11 @@ async def position_monitor():
                     close_price, close_reason = p.stop_price,  "closed_sl"
                 elif timeout_hit:
                     close_price, close_reason = price,          "closed_time"
+                    exit_src, exit_bar_time = "live_px", None
                 else:
                     continue
+                p.exit_src = exit_src
+                p.exit_bar_time = exit_bar_time
 
                 p.status      = close_reason
                 p.close_price = close_price
@@ -11617,6 +11634,72 @@ def _shadow_ohlc_usable_for_fill(pl: "PendingLimit", cached: dict) -> bool:
         return bar_t > seen
     created = getattr(pl, "created_at", None)
     return created is not None and bar_t > created
+
+
+def _shadow_ohlc_usable_for_position(p: "Position", cached: dict) -> bool:
+    """SHADOW: OHLC-ветка позиции только если бар целиком после входа."""
+    bar_t = _bar_time_to_utc(str((cached or {}).get("time") or ""))
+    if bar_t is None:
+        return False
+    seen = _bar_time_to_utc(str(getattr(p, "closed_bar_at", "") or ""))
+    if seen is None:
+        return False
+    entry = getattr(p, "entry_time", None)
+    if entry is not None:
+        if getattr(entry, "tzinfo", None) is not None:
+            entry = entry.replace(tzinfo=None)
+        cutoff = max(seen, entry)
+    else:
+        cutoff = seen
+    return bar_t > cutoff
+
+
+def _paper_position_level_hits(
+    p: "Position", price: float, cached: dict,
+) -> tuple[bool, bool, str, Optional[str]]:
+    """PAPER: TP/SL по live-цене, экстремумам с входа и бару кэша (если гейт пустил)."""
+    bar_ok = _shadow_ohlc_usable_for_position(p, cached)
+    bar_high = (cached or {}).get("high") if bar_ok else None
+    bar_low = (cached or {}).get("low") if bar_ok else None
+    px_min = float(getattr(p, "px_min_since_entry", 0) or 0)
+    px_max = float(getattr(p, "px_max_since_entry", 0) or 0)
+    px = float(price)
+
+    if p.direction == "LONG":
+        live_tp = px >= p.tp_price
+        since_tp = px_max > 0 and px_max >= p.tp_price
+        bar_tp = bar_high is not None and float(bar_high) >= p.tp_price
+        live_sl = px <= p.stop_price
+        since_sl = px_min > 0 and px_min <= p.stop_price
+        bar_sl = bar_low is not None and float(bar_low) <= p.stop_price
+    else:
+        live_tp = px <= p.tp_price
+        since_tp = px_min > 0 and px_min <= p.tp_price
+        bar_tp = bar_low is not None and float(bar_low) <= p.tp_price
+        live_sl = px >= p.stop_price
+        since_sl = px_max > 0 and px_max >= p.stop_price
+        bar_sl = bar_high is not None and float(bar_high) >= p.stop_price
+
+    tp_hit = live_tp or since_tp or bar_tp
+    sl_hit = live_sl or since_sl or bar_sl
+
+    def _src(live: bool, since: bool, bar: bool) -> tuple[str, Optional[str]]:
+        if live:
+            return "live_px", None
+        if since:
+            return "since_entry", None
+        if bar:
+            t = str((cached or {}).get("time") or "") or None
+            return "bar", t
+        return "", None
+
+    if tp_hit:
+        src, bar_t = _src(live_tp, since_tp, bar_tp)
+    elif sl_hit:
+        src, bar_t = _src(live_sl, since_sl, bar_sl)
+    else:
+        src, bar_t = "", None
+    return tp_hit, sl_hit, src, bar_t
 
 
 def _store_closed_ohlc(symbol_key: str, tf_name: str, df: pd.DataFrame) -> None:
