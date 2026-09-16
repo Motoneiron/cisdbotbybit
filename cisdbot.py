@@ -1,5 +1,5 @@
 """
-CISD BOT v6.0-bybit — Bybit USDT linear, 10 пар × tf7+tf8, SHADOW/LIVE
+CISD BOT v6.0-bybit — Bybit USDT linear, 10 пар × tf8, SHADOW/LIVE
 ====================================================================
 Стратегия ТЗ v6: LIMIT-only на cisd_level, TP=1R, vwap-фильтр, 1 поз/пара, max 7.
 По умолчанию SHADOW (dry_run): реальные котировки, виртуальные сделки, ордеров нет.
@@ -324,7 +324,6 @@ CONFIG = {
     },
     "tf8": {
         "timeframe":  "30m",
-        "confirm_timeframe": "5m",  # MSS по 5m из того же буфера
         "htf_ratio":  480,   # 8H HTF (30m×16 баров)
         "limit_h":    0.5,   # 30 мин = 1 бар 30m
         "position_h": 6,     # 6 ч = 12 баров 30m
@@ -2802,7 +2801,10 @@ async def _hist_tp_already_touched(
         if direction == "SHORT" and float(px) <= float(tp):
             return True, f"price_now={_fmt_px(px)} ≤ TP={_fmt_px(tp)}"
 
-    confirm_tf = _confirm_timeframe_for(tf_name) or "1m"
+    confirm_tf = (
+        _confirm_timeframe_for(tf_name)
+        or str(CONFIG.get(tf_name, {}).get("timeframe") or "1m")
+    )
     df = await fetch_ohlcv(confirm_tf, limit=1500)
     if df is None or len(df) < 2:
         tf_cfg = CONFIG.get(tf_name, {})
@@ -3413,7 +3415,7 @@ async def telegram_connect_loop():
                 f"Режим: {_mode_prefix()} | "
                 f"{'▶ RUNNING' if state.running.is_set() else '⏸ PAUSED'}\n"
                 f"{'─' * 28}\n"
-                f"10 пар × 5m→4H + 30m→8H | LIMIT TP=1R vwap\n"
+                f"{len(ACTIVE_SYMBOL_KEYS)} пар × {CONFIG['tf8']['label']} | LIMIT TP=1R vwap\n"
                 f"Команды: /start  /stop  /mode  /status  /stats  /pairs"
             )
             # Держим задачу живой, пока polling работает
@@ -9356,21 +9358,31 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             return False
 
     cisd = float(sig.get("cisd_level") or entry_px)
-    price_ref = _signal_entry_price_ref(sig)
-    if price_ref <= 0:
-        price_ref = get_price(sk) or 0.0
-    if cisd > 0 and price_ref > 0 and not _is_retrace_at_creation(direction, cisd, price_ref):
+    refs = {
+        "confirm": float(_signal_entry_price_ref(sig) or 0.0),
+        "live":    float(get_price(sk) or 0.0),
+    }
+    bad = [
+        k for k, v in refs.items()
+        if v > 0 and not _is_retrace_at_creation(direction, cisd, v)
+    ]
+    if cisd > 0 and bad:
         logger.info(
-            f"SKIP implicit MARKET: {direction} [{tf_name}] "
-            f"ref={price_ref} уже за cisd={cisd}"
+            f"SKIP implicit MARKET: {direction} [{tf_name}] cisd={cisd} "
+            + " ".join(f"{k}={refs[k]} за уровнем" for k in bad)
         )
         await _notify_signal_skip(
             sig, tf_name, "skipped_implicit_market",
             header=(
-                f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — цена уже за уровнем, "
-                "неявный MARKET"
+                f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — "
+                "цена уже за уровнем, неявный MARKET"
             ),
-            detail=f"ref={_fmt_px(price_ref, sk)}  cisd={_fmt_px(cisd, sk)}",
+            detail=(
+                "  ".join(
+                    f"{k}={_fmt_px(v, sk)}" for k, v in refs.items() if v > 0
+                )
+                + f"  cisd={_fmt_px(cisd, sk)}"
+            ),
         )
         return False
 
@@ -10917,6 +10929,18 @@ async def limit_monitor():
                     )
                 if not entry_hit:
                     continue
+                if not _is_retrace_at_creation(
+                    pl.direction,
+                    float(pl.entry_price),
+                    float(pl.price_at_creation or 0),
+                ):
+                    pl.status = "skipped_implicit_market"
+                    _journal_log_pending_cancelled(pl)
+                    logger.info(
+                        f"SKIP implicit MARKET fill #{pl.trade_num} {pl.direction} "
+                        f"pac={pl.price_at_creation} entry={pl.entry_price}"
+                    )
+                    continue
                 px_ref_p = _pending_entry_price_ref(pl)
                 kind_paper, _, _ = _resolve_entry_order_kind(
                     pl.direction, pl.entry_price, px_ref_p,
@@ -12325,7 +12349,8 @@ async def callback_mode(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await set_leverage_all()
         await q.edit_message_text(
             f"Режим → {_mode_prefix()}\n"
-            f"Реальные ордера на Bybit. 10 пар × tf7+tf8, риск 1%, плечо 20x isolated."
+            f"Реальные ордера на Bybit. {len(ACTIVE_SYMBOL_KEYS)} пар × "
+            f"{CONFIG['tf8']['label']}, риск 1%, плечо 20x isolated."
         )
         logger.info("/mode LIVE")
         return
@@ -12350,7 +12375,7 @@ async def cmd_pairs(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"{_mode_prefix()} активные пары ({len(ACTIVE_SYMBOL_KEYS)}):\n"
         + "\n".join(lines)
-        + "\n\nСканер: все сразу, ТФ 5m→4H и 30m→8H.\n"
+        + f"\n\nСканер: все сразу, ТФ {CONFIG['tf8']['label']}.\n"
         f"Позиций: {_open_pending_count()} / {CONFIG['max_positions']}"
     )
 
@@ -14426,7 +14451,7 @@ async def main():
     mode_str = "SHADOW" if state.paper else "LIVE"
     logger.info("=" * 58)
     logger.info(
-        f"CISD BOT v6.0-bybit — {len(ACTIVE_SYMBOL_KEYS)} пар × tf7+tf8 | {mode_str}"
+        f"CISD BOT v6.0-bybit — {len(ACTIVE_SYMBOL_KEYS)} пар × tf8 | {mode_str}"
     )
     logger.info(
         f"LIMIT-only TP=1R vwap | leverage {CONFIG['leverage']}x isolated | "
