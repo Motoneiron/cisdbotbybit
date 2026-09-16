@@ -3801,6 +3801,99 @@ def _htf_window_ltf_bars(
     return int(((df.index >= start) & (df.index < end)).sum())
 
 
+def _sweep_valid_for_setup(
+    df: pd.DataFrame,
+    htf_ratio: int,
+    htf_s: str,
+    trig_s: str,
+    sweep_l: float,
+    direction: str,
+) -> tuple[bool, str]:
+    """Мягко: False только если HTF-окно закрыто и свип триггера не подтверждён.
+
+    Нет данных / окно ещё открыто / неполное закрытие → True (сетап не режем).
+    """
+    if df is None or len(df) < 2 or int(htf_ratio or 0) <= 0:
+        return True, "no data"
+    htf_ts = _bar_time_to_utc(str(htf_s or ""))
+    if htf_ts is None:
+        return True, "no htf_time"
+    last_t = pd.Timestamp(df.index[-1])
+    if getattr(last_t, "tzinfo", None) is not None:
+        last_t = last_t.replace(tzinfo=None)
+    rule = f"{int(htf_ratio)}min"
+    try:
+        forming_htf = last_t.floor(rule)
+    except Exception:
+        return True, "bad index"
+    if htf_ts >= forming_htf:
+        return True, "window still forming"
+
+    is_bearish = direction == "SHORT"
+    win_end = htf_ts + pd.Timedelta(minutes=int(htf_ratio))
+    win = df[(df.index >= htf_ts) & (df.index < win_end)]
+    if len(win) == 0:
+        return True, "empty window"
+
+    trig_t = _bar_time_to_utc(str(trig_s or ""))
+    trig_row = None
+    if trig_t is not None:
+        try:
+            loc = df.index.get_loc(pd.Timestamp(trig_t))
+            if isinstance(loc, slice):
+                loc = loc.start
+            elif isinstance(loc, np.ndarray):
+                loc = int(loc[0]) if len(loc) else None
+            if loc is not None:
+                trig_row = df.iloc[int(loc)]
+        except (KeyError, TypeError, ValueError, IndexError):
+            trig_row = None
+    if trig_row is not None:
+        sweep_px = float(sweep_l or 0)
+        if is_bearish:
+            trig_ext = float(trig_row["high"])
+            win_ext = float(win["high"].max())
+            if trig_ext + 1e-12 < win_ext:
+                return False, (
+                    f"trigger high {trig_ext} < window high {win_ext} @ {htf_s}"
+                )
+            if sweep_px > 0 and win_ext <= sweep_px + 1e-12:
+                return False, (
+                    f"window high {win_ext} did not sweep {sweep_px} @ {htf_s}"
+                )
+        else:
+            trig_ext = float(trig_row["low"])
+            win_ext = float(win["low"].min())
+            if trig_ext - 1e-12 > win_ext:
+                return False, (
+                    f"trigger low {trig_ext} > window low {win_ext} @ {htf_s}"
+                )
+            if sweep_px > 0 and win_ext >= sweep_px - 1e-12:
+                return False, (
+                    f"window low {win_ext} did not sweep {sweep_px} @ {htf_s}"
+                )
+
+    det = CISDDetector(htf_ratio=int(htf_ratio))
+    df_htf = det.resample_to_htf(df)
+    idx = _htf_loc_for_time(df_htf, str(pd.Timestamp(htf_ts)))
+    if idx is None or idx < 1 or idx >= len(df_htf) - 1:
+        return True, "htf not closed in resample"
+    bar_min = max(
+        1, int(round((df.index[1] - df.index[0]).total_seconds() / 60.0)),
+    )
+    flags = _htf_closed_sweep_flags(
+        df_htf, idx, df=df, htf_ratio=int(htf_ratio), tf_minutes=bar_min,
+    )
+    if flags is None:
+        return True, "incomplete closed window"
+    has_high, has_low, _dbg = flags
+    if is_bearish and not has_high:
+        return False, f"no high-sweep on HTF close {htf_s}"
+    if (not is_bearish) and not has_low:
+        return False, f"no low-sweep on HTF close {htf_s}"
+    return True, "ok"
+
+
 def _htf_closed_sweep_flags(
     df_htf: pd.DataFrame,
     closed_idx: int,
@@ -9385,6 +9478,31 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             ),
         )
         return False
+
+    htf_s   = str(sig.get("htf_time") or "")
+    trig_s  = str(sig.get("trigger_bar_time") or sig.get("trigger_bar_at") or "")
+    sweep_l = float(sig.get("htf_sweep_level") or sig.get("sweep_level") or 0.0)
+    df_now  = state.df_cache.get(f"{sk}|{tf_name}")
+    if df_now is None:
+        df_now = await fetch_ohlcv(
+            str(tf_cfg.get("timeframe") or "30m"),
+            int(tf_cfg.get("ohlcv") or 500),
+        )
+    if df_now is not None and len(df_now) >= 50:
+        ok_sw, why_sw = _sweep_valid_for_setup(
+            df_now, int(tf_cfg.get("htf_ratio") or 0), htf_s, trig_s, sweep_l, direction,
+        )
+        if not ok_sw:
+            logger.info(f"SKIP sweep invalid [{tf_name}] {sk} {direction}: {why_sw}")
+            await _notify_signal_skip(
+                sig, tf_name, "skipped_sweep_invalid",
+                header=(
+                    f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — "
+                    "свип триггер-бара не подтверждён закрытием окна"
+                ),
+                detail=why_sw,
+            )
+            return False
 
     parent_pos = _find_open_position_for_pyramid(direction, tf_name)
     is_pyramid = parent_pos is not None
