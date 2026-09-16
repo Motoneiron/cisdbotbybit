@@ -3802,96 +3802,60 @@ def _htf_window_ltf_bars(
 
 
 def _sweep_valid_for_setup(
-    df: pd.DataFrame,
-    htf_ratio: int,
-    htf_s: str,
-    trig_s: str,
-    sweep_l: float,
-    direction: str,
+    df_ltf: pd.DataFrame, htf_ratio: int, htf_time: str, trigger_bar_at: str,
+    sweep_level: float, direction: str,
 ) -> tuple[bool, str]:
-    """Мягко: False только если HTF-окно закрыто и свип триггера не подтверждён.
+    """Мягкая проверка свипа сетапа перед выставлением заявки.
 
-    Нет данных / окно ещё открыто / неполное закрытие → True (сетап не режем).
+    HTF-окно сетапа (htf_time — свеча, свипнувшая предыдущую) ещё НЕ закрыто
+    или окно неполное (рестарт) -> проверку не делаем (True).
+    Окно закрыто -> два условия:
+      1) триггер-бар ЭТОГО сетапа пробил sweep_level (LONG: low < level; SHORT: high > level);
+      2) свеча окна закрылась обратно за уровнем (LONG: close > level; SHORT: close < level).
+    Экстремум предыдущей HTF-свечи пишем в лог для диагностики (не гейт).
+    Нет данных/бар не нашли -> True с пометкой в логе.
     """
-    if df is None or len(df) < 2 or int(htf_ratio or 0) <= 0:
-        return True, "no data"
-    htf_ts = _bar_time_to_utc(str(htf_s or ""))
-    if htf_ts is None:
-        return True, "no htf_time"
-    last_t = pd.Timestamp(df.index[-1])
-    if getattr(last_t, "tzinfo", None) is not None:
-        last_t = last_t.replace(tzinfo=None)
-    rule = f"{int(htf_ratio)}min"
-    try:
-        forming_htf = last_t.floor(rule)
-    except Exception:
-        return True, "bad index"
-    if htf_ts >= forming_htf:
-        return True, "window still forming"
-
-    is_bearish = direction == "SHORT"
-    win_end = htf_ts + pd.Timedelta(minutes=int(htf_ratio))
-    win = df[(df.index >= htf_ts) & (df.index < win_end)]
-    if len(win) == 0:
-        return True, "empty window"
-
-    trig_t = _bar_time_to_utc(str(trig_s or ""))
-    trig_row = None
-    if trig_t is not None:
-        try:
-            loc = df.index.get_loc(pd.Timestamp(trig_t))
-            if isinstance(loc, slice):
-                loc = loc.start
-            elif isinstance(loc, np.ndarray):
-                loc = int(loc[0]) if len(loc) else None
-            if loc is not None:
-                trig_row = df.iloc[int(loc)]
-        except (KeyError, TypeError, ValueError, IndexError):
-            trig_row = None
-    if trig_row is not None:
-        sweep_px = float(sweep_l or 0)
-        if is_bearish:
-            trig_ext = float(trig_row["high"])
-            win_ext = float(win["high"].max())
-            if trig_ext + 1e-12 < win_ext:
-                return False, (
-                    f"trigger high {trig_ext} < window high {win_ext} @ {htf_s}"
-                )
-            if sweep_px > 0 and win_ext <= sweep_px + 1e-12:
-                return False, (
-                    f"window high {win_ext} did not sweep {sweep_px} @ {htf_s}"
-                )
-        else:
-            trig_ext = float(trig_row["low"])
-            win_ext = float(win["low"].min())
-            if trig_ext - 1e-12 > win_ext:
-                return False, (
-                    f"trigger low {trig_ext} > window low {win_ext} @ {htf_s}"
-                )
-            if sweep_px > 0 and win_ext >= sweep_px - 1e-12:
-                return False, (
-                    f"window low {win_ext} did not sweep {sweep_px} @ {htf_s}"
-                )
-
+    if not htf_time or not trigger_bar_at or sweep_level <= 0:
+        return True, "нет htf/trigger/sweep — проверку пропускаем"
+    long = direction == "LONG"
+    win = pd.Timestamp(str(htf_time))
     det = CISDDetector(htf_ratio=int(htf_ratio))
-    df_htf = det.resample_to_htf(df)
-    idx = _htf_loc_for_time(df_htf, str(pd.Timestamp(htf_ts)))
-    if idx is None or idx < 1 or idx >= len(df_htf) - 1:
-        return True, "htf not closed in resample"
-    bar_min = max(
-        1, int(round((df.index[1] - df.index[0]).total_seconds() / 60.0)),
-    )
-    flags = _htf_closed_sweep_flags(
-        df_htf, idx, df=df, htf_ratio=int(htf_ratio), tf_minutes=bar_min,
-    )
-    if flags is None:
-        return True, "incomplete closed window"
-    has_high, has_low, _dbg = flags
-    if is_bearish and not has_high:
-        return False, f"no high-sweep on HTF close {htf_s}"
-    if (not is_bearish) and not has_low:
-        return False, f"no low-sweep on HTF close {htf_s}"
-    return True, "ok"
+    df_htf = det.resample_to_htf(df_ltf)
+    if df_htf is None or len(df_htf) < 2:
+        return True, "нет HTF-данных — проверку пропускаем"
+    pos = int(df_htf.index.searchsorted(win))
+    if pos >= len(df_htf) or df_htf.index[pos] != win:
+        return True, f"окно {win} не найдено в HTF — проверку пропускаем"
+
+    # окно сетапа ещё формируется (последний bucket) -> не проверяем (мягкий режим)
+    if pos >= len(df_htf) - 1:
+        return True, f"окно {win} не закрыто — проверку свипа пропускаем"
+    step = int((df_ltf.index[1] - df_ltf.index[0]).total_seconds() // 60) if len(df_ltf) >= 2 else 30
+    expected = max(1, int(htf_ratio) // max(step, 1))
+    n = _htf_window_ltf_bars(df_ltf, win, int(htf_ratio))
+    if n < expected:
+        return True, f"окно {win} неполное ({n}/{expected} баров) — проверку пропускаем"
+
+    ts = pd.Timestamp(str(trigger_bar_at))
+    if ts not in df_ltf.index:
+        return True, f"триггер-бар {trigger_bar_at} не найден в df — проверку пропускаем"
+    tr = df_ltf.loc[ts]
+    tr_ext = float(tr["low"]) if long else float(tr["high"])
+    if not ((tr_ext < sweep_level) if long else (tr_ext > sweep_level)):
+        return False, (f"триггер {ts} не пробил уровень: "
+                       f"{'low' if long else 'high'}={tr_ext:g} vs {sweep_level:g}")
+
+    c1 = df_htf.iloc[pos]
+    close1 = float(c1["close"])
+    ok = (close1 > sweep_level) if long else (close1 < sweep_level)
+    prev_txt = ""
+    if pos > 0:
+        prev = df_htf.iloc[pos - 1]
+        prev_ext = float(prev["low"]) if long else float(prev["high"])
+        prev_txt = f" | prev {df_htf.index[pos-1]} {'low' if long else 'high'}={prev_ext:g}"
+    dbg = (f"триггер {ts} {'low' if long else 'high'}={tr_ext:g} | "
+           f"close HTF {win}={close1:g}{prev_txt} | level={sweep_level:g}")
+    return ok, dbg
 
 
 def _htf_closed_sweep_flags(
