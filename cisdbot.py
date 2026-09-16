@@ -3809,9 +3809,10 @@ def _sweep_valid_for_setup(
 
     HTF-окно сетапа (htf_time — свеча, свипнувшая предыдущую) ещё НЕ закрыто
     или окно неполное (рестарт) -> проверку не делаем (True).
-    Окно закрыто -> два условия:
+    Окно закрыто -> три условия:
       1) триггер-бар ЭТОГО сетапа пробил sweep_level (LONG: low < level; SHORT: high > level);
-      2) свеча окна закрылась обратно за уровнем (LONG: close > level; SHORT: close < level).
+      2) свеча окна закрылась обратно за уровнем (LONG: close > level; SHORT: close < level);
+      3) триггер до сих пор экстремум окна (LONG: min low; SHORT: max high).
     Экстремум предыдущей HTF-свечи пишем в лог для диагностики (не гейт).
     Нет данных/бар не нашли -> True с пометкой в логе.
     """
@@ -3841,9 +3842,20 @@ def _sweep_valid_for_setup(
         return True, f"триггер-бар {trigger_bar_at} не найден в df — проверку пропускаем"
     tr = df_ltf.loc[ts]
     tr_ext = float(tr["low"]) if long else float(tr["high"])
+    side = "low" if long else "high"
     if not ((tr_ext < sweep_level) if long else (tr_ext > sweep_level)):
         return False, (f"триггер {ts} не пробил уровень: "
-                       f"{'low' if long else 'high'}={tr_ext:g} vs {sweep_level:g}")
+                       f"{side}={tr_ext:g} vs {sweep_level:g}")
+
+    win_bars = det.get_ltf_candles_inside_htf(df_ltf, win)
+    win_ext_txt = ""
+    if len(win_bars) > 0:
+        win_ext = float(win_bars["low"].min()) if long else float(win_bars["high"].max())
+        win_ext_txt = f" | window {side}={win_ext:g}"
+        if (tr_ext - 1e-12 > win_ext) if long else (tr_ext + 1e-12 < win_ext):
+            return False, (
+                f"триггер {ts} не экстремум окна: {side}={tr_ext:g} vs {win_ext:g}"
+            )
 
     c1 = df_htf.iloc[pos]
     close1 = float(c1["close"])
@@ -3852,9 +3864,9 @@ def _sweep_valid_for_setup(
     if pos > 0:
         prev = df_htf.iloc[pos - 1]
         prev_ext = float(prev["low"]) if long else float(prev["high"])
-        prev_txt = f" | prev {df_htf.index[pos-1]} {'low' if long else 'high'}={prev_ext:g}"
-    dbg = (f"триггер {ts} {'low' if long else 'high'}={tr_ext:g} | "
-           f"close HTF {win}={close1:g}{prev_txt} | level={sweep_level:g}")
+        prev_txt = f" | prev {df_htf.index[pos-1]} {side}={prev_ext:g}"
+    dbg = (f"триггер {ts} {side}={tr_ext:g} | "
+           f"close HTF {win}={close1:g}{win_ext_txt}{prev_txt} | level={sweep_level:g}")
     return ok, dbg
 
 
@@ -9452,7 +9464,12 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             str(tf_cfg.get("timeframe") or "30m"),
             int(tf_cfg.get("ohlcv") or 500),
         )
-    if df_now is not None and len(df_now) >= 50:
+    n_bars = 0 if df_now is None else len(df_now)
+    if df_now is None or n_bars < 50:
+        logger.info(
+            f"sweep check skipped: мало данных [{tf_name}] {sk} {direction} n={n_bars}"
+        )
+    else:
         ok_sw, why_sw = _sweep_valid_for_setup(
             df_now, int(tf_cfg.get("htf_ratio") or 0), htf_s, trig_s, sweep_l, direction,
         )
@@ -9467,6 +9484,14 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
                 detail=why_sw,
             )
             return False
+        if "пропускаем" in why_sw:
+            logger.info(
+                f"sweep check skipped [{tf_name}] {sk} {direction}: {why_sw}"
+            )
+        else:
+            logger.info(
+                f"sweep check ok [{tf_name}] {sk} {direction}: {why_sw}"
+            )
 
     parent_pos = _find_open_position_for_pyramid(direction, tf_name)
     is_pyramid = parent_pos is not None
