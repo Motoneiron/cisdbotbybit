@@ -1128,6 +1128,18 @@ def save_bot_state():
             str(k): dict(v) if isinstance(v, dict) else {"direction": str(v)}
             for k, v in (state.htf_taken or {}).items()
         },
+        "htf_sweep_lock": {
+            str(k): {
+                "trigger_extreme": float(v.get("trigger_extreme") or 0),
+                "sweep_level": float(v.get("sweep_level") or 0),
+                "trigger_idx": int(v.get("trigger_idx") or -1),
+                "htf_time": str(v.get("htf_time") or ""),
+                "stop": float(v.get("stop") or 0),
+                "tp": float(v.get("tp") or 0),
+                "symbol_key": str(v.get("symbol_key") or ""),
+            }
+            for k, v in (state.htf_sweep_lock or {}).items() if isinstance(v, dict)
+        },
         "tasks_halted": not state.tasks_live.is_set(),
     })
 
@@ -1232,6 +1244,22 @@ def load_bot_state():
         else:
             cleaned_ht[k] = {"direction": str(v), "trade_num": None, "at": ""}
     state.htf_taken = cleaned_ht
+    sl_raw = d.get("htf_sweep_lock") if isinstance(d.get("htf_sweep_lock"), dict) else {}
+    cleaned_sl: dict[str, dict] = {}
+    for k, v in sl_raw.items():
+        if not k or not isinstance(k, str) or not isinstance(v, dict):
+            continue
+        cleaned_sl[k] = {
+            "trigger_extreme": float(v.get("trigger_extreme") or 0),
+            "sweep_level": float(v.get("sweep_level") or 0),
+            "trigger_idx": int(v.get("trigger_idx") or -1),
+            "htf_time": str(v.get("htf_time") or ""),
+            "stop": float(v.get("stop") or 0),
+            "tp": float(v.get("tp") or 0),
+            "symbol_key": str(v.get("symbol_key") or ""),
+        }
+    state.htf_sweep_lock = cleaned_sl
+    logger.info(f"htf_sweep_lock restore: {len(state.htf_sweep_lock)}")
     if d.get("tasks_halted"):
         state.tasks_live.clear()
         state.running.clear()
@@ -2367,7 +2395,7 @@ def _active_same_setup_conflict(sig: dict, tf_name: str) -> Optional[str]:
             return f"FILL in progress #{pl.trade_num}"
         if pl.status == "filled" and not _filled_pending_stale(pl):
             return f"FILLED pending #{pl.trade_num}"
-    leg_k = _setup_leg_lock_key(sp["tf"], direction, sl, tp)
+    leg_k = _setup_leg_lock_key(sp["tf"], direction, sl, tp, symbol_key=sk)
     if leg_k in state.htf_sweep_lock:
         return f"setup lock {leg_k}"
     return None
@@ -4068,11 +4096,18 @@ async def _invalidate_pending_no_htf_inter_sweep(
             _journal_log_pending_cancelled(pl)
             if float(pl.sweep_level or 0) > 0:
                 state.htf_sweep_lock.pop(
-                    _htf_sweep_lock_key(pl.tf, pl.direction, float(pl.sweep_level)),
+                    _htf_sweep_lock_key(
+                        pl.tf, pl.direction, float(pl.sweep_level),
+                        symbol_key=_pos_symbol_key(pl),
+                        htf_time=htf_s,
+                    ),
                     None,
                 )
             state.htf_sweep_lock.pop(
-                _setup_leg_lock_key(pl.tf, pl.direction, pl.stop_price, pl.tp_price),
+                _setup_leg_lock_key(
+                    pl.tf, pl.direction, pl.stop_price, pl.tp_price,
+                    symbol_key=_pos_symbol_key(pl),
+                ),
                 None,
             )
             await send_telegram(
@@ -4188,15 +4223,27 @@ def _resolve_cand_trigger_idx(df: pd.DataFrame, cand: dict) -> int | None:
 def _htf_sweep_lock_key(
     tf_name: str, direction: str, sweep_level: float,
     symbol_key: Optional[str] = None,
+    htf_time: str = "",
 ) -> str:
-    """Ключ lock по symbol+tf+direction+sweep."""
+    """Ключ lock: symbol+tf+direction+sweep+HTF-окно (равенство экстремума — не пересвип)."""
     sk = symbol_key or active_symbol_key()
     sweep_r = _round_sweep_level(sweep_level, sk)
-    return f"{sk}|{tf_name}|{direction}|sweep={sweep_r:.0f}"
+    dec = _price_decimals(symbol_profile(sk)["price_tick"])
+    k = f"{sk}|{tf_name}|{direction}|sweep={sweep_r:.{dec}f}"
+    if htf_time:
+        try:
+            ht = str(pd.Timestamp(htf_time))
+        except Exception:
+            ht = str(htf_time)
+        k += f"|htf={ht}"
+    return k
 
 
-def _setup_leg_lock_key(tf_name: str, direction: str, stop: float, tp: float) -> str:
-    sk = active_symbol_key()
+def _setup_leg_lock_key(
+    tf_name: str, direction: str, stop: float, tp: float,
+    symbol_key: Optional[str] = None,
+) -> str:
+    sk = symbol_key or active_symbol_key()
     sl_r = _round_price(stop, sk)
     tp_r = _round_price(tp, sk)
     dec = _price_decimals(symbol_profile(sk)["price_tick"])
@@ -4398,27 +4445,34 @@ def _mark_htf_sweep_consumed(
     stop: float = 0.0,
     tp: float = 0.0,
     trigger_idx: int = -1,
+    persist: bool = True,
+    symbol_key: Optional[str] = None,
 ) -> None:
     if float(sweep_level or 0) <= 0:
         return
-    k = _htf_sweep_lock_key(tf_name, direction, sweep_level)
-    state.htf_sweep_lock[k] = {
+    sk = symbol_key or active_symbol_key()
+    k = _htf_sweep_lock_key(
+        tf_name, direction, sweep_level, symbol_key=sk, htf_time=htf_time,
+    )
+    rec = {
         "trigger_extreme": float(trigger_extreme),
         "sweep_level": float(sweep_level),
         "trigger_idx": int(trigger_idx),
         "htf_time": str(htf_time or ""),
         "stop": float(stop),
         "tp": float(tp),
+        "symbol_key": sk,
     }
+    state.htf_sweep_lock[k] = rec
     if stop > 0 and tp > 0:
-        state.htf_sweep_lock[_setup_leg_lock_key(tf_name, direction, stop, tp)] = {
-            "trigger_extreme": float(trigger_extreme),
-            "sweep_level": float(sweep_level),
-            "htf_time": str(htf_time or ""),
-        }
+        state.htf_sweep_lock[
+            _setup_leg_lock_key(tf_name, direction, stop, tp, symbol_key=sk)
+        ] = dict(rec)
+    if persist:
+        save_bot_state()
     logger.info(
-        f"HTF sweep lock: {direction} [{htf_time}] "
-        f"ext={trigger_extreme:.1f} sweep={sweep_level:.1f}"
+        f"HTF sweep lock: {sk} {direction} [{htf_time}] "
+        f"ext={trigger_extreme:g} sweep={sweep_level:g}"
     )
 
 
@@ -4483,15 +4537,15 @@ def _prune_htf_sweep_locks(tf_name: str, keep_htf_times: set) -> None:
     """Снять sweep lock, если его HTF-окно ушло из keep и нет open/pending на ноге."""
     if not keep_htf_times:
         return
-    prefix = f"{tf_name}|"
+    removed = False
     for k, lock in list(state.htf_sweep_lock.items()):
-        if not k.startswith(prefix) or "|sweep=" not in k:
+        if "|sweep=" not in str(k):
             continue
-        parts = k.split("|", 2)
-        if len(parts) < 2:
+        parts = str(k).split("|")
+        if len(parts) < 4:
             continue
-        direction = parts[1]
-        if direction not in ("LONG", "SHORT"):
+        sk, k_tf, direction = parts[0], parts[1], parts[2]
+        if k_tf != tf_name or direction not in ("LONG", "SHORT"):
             continue
         lock_htf = str(lock.get("htf_time") or "")
         if _htf_time_in_keep_set(lock_htf, keep_htf_times):
@@ -4499,22 +4553,33 @@ def _prune_htf_sweep_locks(tf_name: str, keep_htf_times: set) -> None:
         if _lock_has_active_work(tf_name, direction, lock):
             continue
         logger.info(
-            f"HTF sweep lock prune: {direction} [{lock_htf}] "
+            f"HTF sweep lock prune: {sk} {direction} [{lock_htf}] "
             f"sweep={float(lock.get('sweep_level') or 0):.1f} — окно закрыто, нет open/pending"
         )
-        _clear_htf_sweep_lock_entry(tf_name, direction, lock)
+        _clear_htf_sweep_lock_entry(tf_name, direction, lock, symbol_key=sk)
+        removed = True
+    if removed:
+        save_bot_state()
 
 
-def _clear_htf_sweep_lock_entry(tf_name: str, direction: str, lock: dict) -> None:
+def _clear_htf_sweep_lock_entry(
+    tf_name: str, direction: str, lock: dict,
+    symbol_key: Optional[str] = None,
+) -> None:
+    sk = symbol_key or str(lock.get("symbol_key") or "") or active_symbol_key()
     sweep_lvl = float(lock.get("sweep_level") or 0)
+    ht = str(lock.get("htf_time") or "")
     if sweep_lvl > 0:
         state.htf_sweep_lock.pop(
-            _htf_sweep_lock_key(tf_name, direction, sweep_lvl), None,
+            _htf_sweep_lock_key(
+                tf_name, direction, sweep_lvl, symbol_key=sk, htf_time=ht,
+            ),
+            None,
         )
     sl, tp = float(lock.get("stop") or 0), float(lock.get("tp") or 0)
     if sl > 0 and tp > 0:
         state.htf_sweep_lock.pop(
-            _setup_leg_lock_key(tf_name, direction, sl, tp), None,
+            _setup_leg_lock_key(tf_name, direction, sl, tp, symbol_key=sk), None,
         )
 
 
@@ -5072,21 +5137,23 @@ def detect_signals(
             _drop_sweep_candidate(tf_name, direction, htf_s, "trigger vol высокий")
             continue
 
-        lock_k = _htf_sweep_lock_key(tf_name, direction, sweep_lvl)
+        lock_k = _htf_sweep_lock_key(
+            tf_name, direction, sweep_lvl, htf_time=htf_s,
+        )
         lock = state.htf_sweep_lock.get(lock_k)
         if lock is not None:
             if _is_resweep_extreme(direction, trigger_extreme, lock["trigger_extreme"]):
                 logger.info(
                     f"detect:   -> пересвип {direction} [{htf_s}]: "
-                    f"lock={lock['trigger_extreme']:.1f} fresh={trigger_extreme:.1f}"
+                    f"lock={lock['trigger_extreme']:g} fresh={trigger_extreme:g}"
                 )
                 _clear_htf_sweep_lock_entry(tf_name, direction, lock)
             else:
                 skipped_resweep_wait += 1
                 logger.info(
                     f"detect:   -> ждём пересвип [{htf_s}] {direction}: "
-                    f"lock={lock['trigger_extreme']:.1f} now={trigger_extreme:.1f} "
-                    f"sweep={sweep_lvl:.1f}"
+                    f"lock={lock['trigger_extreme']:g} now={trigger_extreme:g} "
+                    f"sweep={sweep_lvl:g}"
                 )
                 continue
 
@@ -8516,6 +8583,7 @@ async def _finalize_position_close(
             state.htf_sweep_lock.pop(
                 _setup_leg_lock_key(
                     pos.tf, pos.direction, pos.stop_price, pos.tp_price,
+                    symbol_key=_pos_symbol_key(pos),
                 ),
                 None,
             )
@@ -10766,11 +10834,17 @@ async def _try_arm_cisd_cross_candidates(now: datetime) -> None:
             continue
 
         eff_extreme = _trigger_extreme_at(df, anchor_idx, is_bearish)
-        lock_k = _htf_sweep_lock_key(tf_name, direction, sweep_lvl)
+        lock_k = _htf_sweep_lock_key(
+            tf_name, direction, sweep_lvl, htf_time=htf_s,
+        )
         lock = state.htf_sweep_lock.get(lock_k)
         if lock is not None and not _is_resweep_extreme(
             direction, eff_extreme, lock["trigger_extreme"],
         ):
+            logger.info(
+                f"cisd_cross: ждём пересвип [{htf_s}] {direction}: "
+                f"lock={lock['trigger_extreme']:g} now={eff_extreme:g}"
+            )
             continue
 
         sweep_close_idx = det.find_first_sweep_close_confirm_bar(
@@ -10991,12 +11065,16 @@ async def limit_monitor():
                 if float(pl.sweep_level or 0) > 0:
                     state.htf_sweep_lock.pop(
                         _htf_sweep_lock_key(
-                            pl.tf, pl.direction, float(pl.sweep_level), symbol_key=sk,
+                            pl.tf, pl.direction, float(pl.sweep_level),
+                            symbol_key=sk, htf_time=htf_t,
                         ),
                         None,
                     )
                 state.htf_sweep_lock.pop(
-                    _setup_leg_lock_key(pl.tf, pl.direction, pl.stop_price, pl.tp_price),
+                    _setup_leg_lock_key(
+                        pl.tf, pl.direction, pl.stop_price, pl.tp_price,
+                        symbol_key=sk,
+                    ),
                     None,
                 )
                 logger.info(
@@ -14015,6 +14093,78 @@ def _reconcile_htf_taken_from_live() -> None:
             }
 
 
+def _reconcile_htf_sweep_lock_from_live() -> None:
+    """После рестарта: closed/open/pending дополняют lock с диска (стоп ≈ экстремум триггера)."""
+    added = 0
+
+    def _seed(sk: str, tf_name: str, direction: str, htf: str,
+              sweep: float, ext: float, stop: float, tp: float) -> None:
+        nonlocal added
+        if float(sweep or 0) <= 0 or float(ext or 0) == 0:
+            return
+        k = _htf_sweep_lock_key(
+            tf_name, direction, sweep, symbol_key=sk, htf_time=htf,
+        )
+        old = state.htf_sweep_lock.get(k)
+        if old is not None:
+            old_ext = float(old.get("trigger_extreme") or 0)
+            if not _is_resweep_extreme(direction, ext, old_ext):
+                return
+        _mark_htf_sweep_consumed(
+            tf_name, direction, htf,
+            trigger_extreme=float(ext),
+            sweep_level=float(sweep),
+            stop=float(stop or 0),
+            tp=float(tp or 0),
+            persist=False,
+            symbol_key=sk,
+        )
+        added += 1
+
+    # Закрытые первыми: после рестарта лок окна не теряется, если сделка уже закрыта.
+    for p in state.positions:
+        if not str(p.status or "").startswith("closed"):
+            continue
+        _seed(
+            _pos_symbol_key(p), p.tf, p.direction,
+            _htf_time_for_position(p),
+            float(p.sweep_level or 0),
+            float(p.stop_price or 0),
+            float(p.stop_price or 0),
+            float(p.tp_price or 0),
+        )
+    for p in state.positions:
+        if p.status != "open":
+            continue
+        _seed(
+            _pos_symbol_key(p), p.tf, p.direction,
+            _htf_time_for_position(p),
+            float(p.sweep_level or 0),
+            float(p.stop_price or 0),
+            float(p.stop_price or 0),
+            float(p.tp_price or 0),
+        )
+    for pl in state.pending_limits:
+        active = (
+            pl.status == "pending"
+            or pl.id in state._fill_in_progress
+            or (pl.status == "filled" and not _filled_pending_stale(pl))
+        )
+        if not active:
+            continue
+        _seed(
+            _pos_symbol_key(pl), pl.tf, pl.direction,
+            _htf_time_for_pending(pl, pl.tf),
+            float(pl.sweep_level or 0),
+            float(pl.stop_price or 0),
+            float(pl.stop_price or 0),
+            float(pl.tp_price or 0),
+        )
+    if added:
+        save_bot_state()
+        logger.info(f"htf_sweep_lock reconcile from live: +{added}")
+
+
 def _same_htf_open_or_pending(
     direction: str,
     htf_time: str,
@@ -14575,11 +14725,12 @@ async def main():
     state.positions      = load_positions()
     _reconcile_htf_taken_from_live()
     _reconcile_htf_taken_drop_orphans()
+    _reconcile_htf_sweep_lock_from_live()
     n_pending = sum(1 for p in state.pending_limits if p.status == "pending")
     n_open    = sum(1 for p in state.positions if p.status == "open")
     logger.info(
         f"Загружено: {n_pending} pending, {n_open} open | ТФ: {tf_label(state.active_tf)} "
-        f"| htf_taken={len(state.htf_taken)}"
+        f"| htf_taken={len(state.htf_taken)} | htf_sweep_lock={len(state.htf_sweep_lock)}"
     )
 
     _trade_log_month = utcnow().strftime("%Y-%m")
