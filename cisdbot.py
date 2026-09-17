@@ -564,6 +564,8 @@ class BotState:
         # Кандидаты свипов для режима "2 HTF окна": храним только живые сетапы из текущего/предыдущего HTF-окна.
         # Не переживает рестарт (осознанно), чтобы не поднимать backlog.
         self.sweep_candidates: dict[str, dict] = {}
+        # Pending id → (old_sweep, new_sweep): снять лимитку после detect, до нового сигнала.
+        self._resweep_cancel_queue: list[dict] = []
         # После первого сетапа в HTF-окне — ждём пересвип (глубже trigger), иначе detect молчит.
         self.htf_sweep_lock: dict[str, dict] = {}
         # Один принятый триггер на HTF-окно (tf|htf_time) — opposite/2nd CISD не берём.
@@ -3811,8 +3813,9 @@ def _drop_sweep_candidate(
     tf_name: str, direction: str, htf_s: str, reason: str,
     symbol_key: Optional[str] = None,
 ) -> None:
-    state.sweep_candidates.pop(_cand_key(tf_name, direction, htf_s, symbol_key), None)
-    logger.info(f"detect:   -> кандидат снят [{htf_s}] {direction}: {reason}")
+    sk = symbol_key or active_symbol_key()
+    state.sweep_candidates.pop(_cand_key(tf_name, direction, htf_s, sk), None)
+    logger.info(f"detect:   -> кандидат снят [{htf_s}] {sk} {direction}: {reason}")
 
 
 def _htf_sweep_validate_key(tf_name: str, htf_time: str, symbol_key: Optional[str] = None) -> str:
@@ -4281,32 +4284,105 @@ def _sync_cand_trigger(
     cand["trigger_extreme"] = _trigger_extreme_at(df, int(trigger_idx), is_bearish)
 
 
+def _cand_beats(direction: str, a_ext: float, b_ext: float, a_sweep: float, b_sweep: float) -> bool:
+    """True если A строго глубже B по экстремуму или по уровню свипа (равенство — нет)."""
+    return _is_resweep_extreme(direction, a_ext, b_ext) or _is_resweep_level(
+        direction, a_sweep, b_sweep,
+    )
+
+
+def _queue_resweep_cancel_pending(cand: dict, old_sweep: float, new_sweep: float) -> None:
+    """Пометить висящую лимитку кандидата на отмену (позиция не трогается)."""
+    sk = _cand_symbol_key(cand)
+    tf_name = str(cand.get("tf") or "")
+    direction = str(cand.get("direction") or "")
+    htf = str(cand.get("htf_time") or "")
+    if not tf_name or not direction:
+        return
+    for pl in state.pending_limits:
+        if pl.status != "pending":
+            continue
+        if pl.id in state._fill_in_progress:
+            continue
+        if pl.tf != tf_name or pl.direction != direction:
+            continue
+        if _pos_symbol_key(pl) != sk:
+            continue
+        pl_htf = pl.htf_time or _htf_time_for_pending(pl, tf_name)
+        if htf and not _htf_times_match(pl_htf, htf):
+            continue
+        rec = {
+            "id": pl.id,
+            "old_sweep": float(old_sweep or 0),
+            "new_sweep": float(new_sweep or 0),
+        }
+        if any(q.get("id") == pl.id for q in state._resweep_cancel_queue):
+            continue
+        state._resweep_cancel_queue.append(rec)
+
+
 def _upsert_sweep_candidate(k: str, incoming: dict) -> None:
-    """Создать или обновить кандидата, если появился более глубокий trigger."""
+    """Создать или обновить кандидата; более глубокий свип снимает мелких по всем окнам."""
+    sk = str(incoming.get("symbol_key") or active_symbol_key())
+    tf_name = str(incoming.get("tf") or "")
+    direction = str(incoming.get("direction") or "")
+    new_ext = float(incoming.get("trigger_extreme") or 0)
+    new_sweep = float(incoming.get("sweep_level") or 0)
+
+    siblings = []
+    for ok, ocand in list(state.sweep_candidates.items()):
+        if ok == k:
+            continue
+        if str(ocand.get("tf") or "") != tf_name:
+            continue
+        if str(ocand.get("direction") or "") != direction:
+            continue
+        if _cand_symbol_key(ocand, ok) != sk:
+            continue
+        old_ext = float(ocand.get("trigger_extreme") or 0)
+        old_sweep = float(ocand.get("sweep_level") or 0)
+        inc_beats = _cand_beats(direction, new_ext, old_ext, new_sweep, old_sweep)
+        sib_beats = _cand_beats(direction, old_ext, new_ext, old_sweep, new_sweep)
+        siblings.append((ocand, old_ext, old_sweep, inc_beats, sib_beats))
+
+    if any(sib_beats and not inc_beats for _, _, _, inc_beats, sib_beats in siblings):
+        logger.info(
+            f"detect:   -> кандидат не берём {sk} {direction} "
+            f"[{incoming.get('htf_time')}] sweep={_fmt_px(new_sweep, sk)} "
+            f"— живой глубже"
+        )
+        return
+
+    for ocand, old_ext, old_sweep, inc_beats, sib_beats in siblings:
+        if inc_beats and not sib_beats:
+            _queue_resweep_cancel_pending(ocand, old_sweep, new_sweep)
+            _drop_sweep_candidate(
+                tf_name, direction, str(ocand.get("htf_time") or ""),
+                f"пересвип уровнем {_fmt_px(old_sweep, sk)} → {_fmt_px(new_sweep, sk)}",
+                symbol_key=sk,
+            )
+
     existing = state.sweep_candidates.get(k)
     if existing is None:
         state.sweep_candidates[k] = incoming
         logger.info(
-            f"detect:   -> кандидат {incoming.get('direction')} "
+            f"detect:   -> кандидат {sk} {direction} "
             f"[{incoming.get('htf_time')}] "
-            f"sweep={float(incoming.get('sweep_level') or 0):.1f} "
+            f"sweep={_fmt_px(new_sweep, sk)} "
             f"tr={incoming.get('trigger_time')} "
-            f"ext={float(incoming.get('trigger_extreme') or 0):.1f}"
+            f"ext={_fmt_px(new_ext, sk)}"
         )
         return
-    direction = str(incoming.get("direction") or "")
-    new_ext = float(incoming.get("trigger_extreme") or 0)
     old_ext = float(existing.get("trigger_extreme") or 0)
-    new_sweep = float(incoming.get("sweep_level") or 0)
     old_sweep = float(existing.get("sweep_level") or 0)
-    if _is_resweep_extreme(direction, new_ext, old_ext) or _is_resweep_level(
-        direction, new_sweep, old_sweep,
-    ):
+    if _cand_beats(direction, new_ext, old_ext, new_sweep, old_sweep):
+        _queue_resweep_cancel_pending(existing, old_sweep, new_sweep)
         state.sweep_candidates[k] = incoming
         logger.info(
-            f"detect:   -> кандидат обновлён {direction} [{incoming.get('htf_time')}] "
-            f"sweep={new_sweep:.1f} tr={incoming.get('trigger_time')} "
-            f"ext={new_ext:.1f} (было sweep={old_sweep:.1f} ext={old_ext:.1f})"
+            f"detect:   -> кандидат обновлён {sk} {direction} [{incoming.get('htf_time')}] "
+            f"sweep={_fmt_px(new_sweep, sk)} tr={incoming.get('trigger_time')} "
+            f"ext={_fmt_px(new_ext, sk)} "
+            f"(было sweep={_fmt_px(old_sweep, sk)} ext={_fmt_px(old_ext, sk)})"
         )
 
 
@@ -5025,6 +5101,7 @@ def detect_signals(
         is_bearish = direction == "SHORT"
         sweep_lvl = float(cand.get("sweep_level") or 0)
         htf_s = str(cand.get("htf_time") or "")
+        cand_sk = str(cand.get("symbol_key") or active_symbol_key())
         try:
             htf_anchor = pd.Timestamp(cand["htf_time"])
         except Exception:
@@ -5044,22 +5121,23 @@ def detect_signals(
                     direction, new_lvl, old_lvl,
                 ):
                     _sync_cand_from_sweep(cand, relaxed, df)
-                    state.sweep_candidates[_cand_key(tf_name, direction, htf_s)] = cand
+                    state.sweep_candidates[_cand_key(tf_name, direction, htf_s, cand_sk)] = cand
                     sweep_lvl = new_lvl
                     logger.info(
-                        f"detect:   -> кандидат пересвип [{htf_s}] {direction}: "
-                        f"sweep {old_lvl:.1f}→{new_lvl:.1f} ext {old_ext:.1f}→{new_ext:.1f}"
+                        f"detect:   -> кандидат пересвип [{htf_s}] {cand_sk} {direction}: "
+                        f"sweep {_fmt_px(old_lvl, cand_sk)}→{_fmt_px(new_lvl, cand_sk)} "
+                        f"ext {_fmt_px(old_ext, cand_sk)}→{_fmt_px(new_ext, cand_sk)}"
                     )
 
         trigger_idx = _resolve_cand_trigger_idx(df, cand)
         if trigger_idx is None:
-            _drop_sweep_candidate(tf_name, direction, htf_s, "trigger вне окна df")
+            _drop_sweep_candidate(tf_name, direction, htf_s, "trigger вне окна df", cand_sk)
             skipped_cand_drop += 1
             continue
         try:
             trigger_extreme = float(cand["trigger_extreme"])
         except (TypeError, ValueError, KeyError):
-            _drop_sweep_candidate(tf_name, direction, htf_s, "нет trigger кандидата")
+            _drop_sweep_candidate(tf_name, direction, htf_s, "нет trigger кандидата", cand_sk)
             skipped_cand_drop += 1
             continue
 
@@ -5068,13 +5146,27 @@ def detect_signals(
             df, trigger_idx, last_closed, is_bearish,
         ):
             eff = _deepest_bar_iloc(df, trigger_idx, last_closed, is_bearish)
+            try:
+                win0 = pd.Timestamp(htf_s)
+                win1 = win0 + pd.Timedelta(minutes=int(htf_ratio))
+                eff_ts = pd.Timestamp(df.index[int(eff)])
+            except Exception:
+                win0 = win1 = eff_ts = None
+            if eff_ts is not None and not (win0 <= eff_ts < win1):
+                _drop_sweep_candidate(
+                    tf_name, direction, htf_s,
+                    f"trigger ушёл в чужой свип {eff_ts}",
+                    symbol_key=cand_sk,
+                )
+                skipped_cand_drop += 1
+                continue
             _sync_cand_trigger(cand, df, eff, is_bearish)
-            state.sweep_candidates[_cand_key(tf_name, direction, htf_s)] = cand
+            state.sweep_candidates[_cand_key(tf_name, direction, htf_s, cand_sk)] = cand
             trigger_idx = eff
             trigger_extreme = float(cand["trigger_extreme"])
             logger.info(
-                f"detect:   -> кандидат trigger сдвинут [{htf_s}] {direction}: "
-                f"tr={cand['trigger_time']} ext={trigger_extreme:.1f}"
+                f"detect:   -> кандидат trigger сдвинут [{htf_s}] {cand_sk} {direction}: "
+                f"tr={cand['trigger_time']} ext={_fmt_px(trigger_extreme, cand_sk)}"
             )
 
         if min_sweep_atr > 0 and not sweep_min_atr_ok(
@@ -5272,7 +5364,7 @@ def detect_signals(
             skipped_no_sweep_close += 1
             logger.info(
                 f"detect:   -> нет close-свипа на {tf_cfg.get('timeframe', '?')} "
-                f"(tr={trigger_idx} sweep={sweep_lvl:.1f} htf={htf_s})"
+                f"(tr={trigger_idx} sweep={_fmt_px(sweep_lvl, cand_sk)} htf={htf_s})"
                 + (
                     f"; {confirm_tf} MSS есть (close={confirm_close:.1f}), ждём 5m close-свип"
                     if ltf_mss_early else ""
@@ -5281,7 +5373,7 @@ def detect_signals(
             continue
 
         logger.info(
-            f"detect: свип {direction} sweep={sweep_lvl:.1f} "
+            f"detect: свип {cand_sk} {direction} sweep={_fmt_px(sweep_lvl, cand_sk)} "
             f"trigger_idx={trigger_idx} close_arm={sweep_close_idx} "
             f"htf={htf_s}"
         )
@@ -11778,6 +11870,66 @@ async def _autotrade_signals(signals: list, tf_name: str) -> int:
     return placed
 
 
+async def _flush_resweep_pending_cancels() -> int:
+    """Снять лимитки, помеченные detect при более глубоком свипе. Позиции не трогаем."""
+    queue = list(getattr(state, "_resweep_cancel_queue", None) or [])
+    state._resweep_cancel_queue = []
+    if not queue:
+        return 0
+    by_id = {str(q.get("id") or ""): q for q in queue if q.get("id")}
+    cancelled = 0
+    prefix = _mode_prefix() + " "
+    for pl in list(state.pending_limits):
+        meta = by_id.get(pl.id)
+        if meta is None or pl.status != "pending":
+            continue
+        if pl.id in state._fill_in_progress:
+            continue
+        tfl = tf_label(pl.tf)
+        sk = _pos_symbol_key(pl)
+        old_s = float(meta.get("old_sweep") or 0)
+        new_s = float(meta.get("new_sweep") or 0)
+        if pl.order_id and not state.paper and not await _cancel_pending_entry(pl):
+            await _alert_cancel_fail(
+                pl,
+                f"🚨 ЛИМИТКА #{pl.trade_num} — пересвип, ордер НЕ снят!\n"
+                f"ID: {pl.id}  |  order: {pl.order_id}\n"
+                f"Отмени вручную на Bybit",
+            )
+            continue
+        pl.status = "cancelled_resweep"
+        _journal_log_pending_cancelled(pl)
+        htf_t = pl.htf_time or _htf_time_for_pending(pl, pl.tf)
+        if float(pl.sweep_level or 0) > 0:
+            state.htf_sweep_lock.pop(
+                _htf_sweep_lock_key(
+                    pl.tf, pl.direction, float(pl.sweep_level),
+                    symbol_key=sk, htf_time=htf_t,
+                ),
+                None,
+            )
+        state.htf_sweep_lock.pop(
+            _setup_leg_lock_key(
+                pl.tf, pl.direction, pl.stop_price, pl.tp_price, symbol_key=sk,
+            ),
+            None,
+        )
+        logger.info(
+            f"RESWEEP CANCEL [{tfl}] {sk} {pl.direction} #{pl.trade_num}: "
+            f"sweep {_fmt_px(old_s, sk)} → {_fmt_px(new_s, sk)}"
+        )
+        await send_telegram(
+            f"{prefix}❌ ЛИМИТКА #{pl.trade_num} ОТМЕНЕНА — пересвип [{tfl}]\n"
+            f"ID: {pl.id}  |  {pl.direction}\n"
+            f"Свип {_fmt_px(old_s, sk)} → {_fmt_px(new_s, sk)}"
+        )
+        cancelled += 1
+    if cancelled:
+        save_pending(state.pending_limits)
+        save_bot_state()
+    return cancelled
+
+
 async def _run_detect_and_trade(
     tf_name: str,
     df: pd.DataFrame,
@@ -11793,6 +11945,7 @@ async def _run_detect_and_trade(
         df_confirm=df_confirm,
         min_sweep_atr=_min_sweep_atr(),
     )
+    await _flush_resweep_pending_cancels()
     if signals:
         signals.sort(key=lambda s: s.get("timestamp"), reverse=True)
     kept = []
@@ -12244,6 +12397,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             df_confirm=df_confirm,
             min_sweep_atr=_min_sweep_atr(),
         )
+        await _flush_resweep_pending_cancels()
         if signals:
             signals.sort(key=lambda s: s.get("timestamp"), reverse=True)
     signals_raw = list(signals)
@@ -12380,6 +12534,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     df_confirm=df2_confirm,
                     min_sweep_atr=_min_sweep_atr(),
                 )
+                await _flush_resweep_pending_cancels()
                 if sigs2:
                     sigs2.sort(key=lambda s: s.get("timestamp"), reverse=True)
             if await _reply_start_in_progress(update, tf_name, tfl, sigs2 or signals_raw):
