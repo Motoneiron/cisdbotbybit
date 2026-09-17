@@ -182,10 +182,11 @@ CONFIG = {
     "min_notional_usdt":   5.0,   # Bybit minNotional linear
     "min_stop_pct":        0.5,   # сигналы со стопом < 0.5% не торгуем
     "vwap_gate_enabled":   False, # vwap-гейт выключен (на tf8 режет +840R прибыльных сделок)
+    "slope_gate_enabled":  False, # тренд-гейт EMA3 1H; выкл: честный закрытый 1H не подтвердил −R (см. TASK)
     "hedge_mode":          False, # one-way: 1 позиция на пару
     "emergency_stop_pct":  0.3,    # % за стоп-ценой → принудительное закрытие маркетом
     "min_rr":              0.2,    # min R:R (reward/risk); MARKET retest — от текущей цены
-    "slope_ema_threshold_pct": 0.0,  # мёртвая зона slope EMA (%); 0 = выкл; /prog_ema
+    "slope_ema_threshold_pct": 0.02,  # мёртвая зона slope EMA (%); 0.02 = боковик разрешён обеим сторонам
     "slope_ema_spans": {},           # override span по htf_ratio ("60","120"); /prog_ema ema
     "slope_timing_mode": "hermes",   # hermes = htf_floor+offsets (как бэктест); trigger = @триггер
     "slope_cisd_arm_block_htf_windows": 2,  # cisd_cross arm ban после slope skip (HTF окон)
@@ -362,8 +363,10 @@ DETECT_FILTERS_DEFAULT = {
 
 # Slope EMA: профиль по HTF активного ТФ (None — фильтр не применяется)
 SLOPE_EMA_PROFILES: dict[int, dict] = {
+    16:  {"span": 3, "ohlcv_tf": "1h", "label": "1H"},   # 8H/30m в барах
     60:  {"span": 2, "ohlcv_tf": "1h", "label": "1H"},   # 1m/5m/10m → 1H
     120: {"span": 3, "ohlcv_tf": "2h", "label": "2H"},   # 10m → 2H
+    480: {"span": 3, "ohlcv_tf": "1h", "label": "1H"},   # tf8: htf_ratio=480 мин (8H)
 }
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -805,6 +808,7 @@ class PendingLimit:
         self.quality_stop_mult: float = 1.0
         self.quality_stop_model: str = ""
         self.vwap_dev: float = 0.0
+        self.slope_pct: Optional[float] = None
 
     def to_dict(self):
         d = {
@@ -840,6 +844,8 @@ class PendingLimit:
             "quality_stop_original": self.quality_stop_original,
             "quality_stop_mult": self.quality_stop_mult,
             "quality_stop_model": self.quality_stop_model or None,
+            "vwap_dev": self.vwap_dev,
+            "slope_pct": self.slope_pct,
         }
         if self.trigger_bar_at:
             d["trigger_bar_at"] = self.trigger_bar_at.isoformat()
@@ -887,6 +893,11 @@ class PendingLimit:
         p.quality_stop_mult = float(d.get("quality_stop_mult") or 1)
         p.quality_stop_model = str(d.get("quality_stop_model") or "")
         p.vwap_dev = float(d.get("vwap_dev") or 0)
+        sp = d.get("slope_pct")
+        try:
+            p.slope_pct = float(sp) if sp is not None and sp != "" else None
+        except (TypeError, ValueError):
+            p.slope_pct = None
         if p.status == "pending":
             p.force_market = False
             p.cisd_cross_market = False
@@ -938,6 +949,7 @@ class Position:
         self.quality_stop_mult: float = 1.0
         self.quality_stop_model: str = ""
         self.vwap_dev: float = 0.0
+        self.slope_pct: Optional[float] = None
         self.confirm_bar_time: str = ""
         self.closed_bar_at: str = ""  # open-time последнего закрытого бара ТФ на момент входа
         self.px_min_since_entry: float = 0.0
@@ -997,6 +1009,8 @@ class Position:
         d["quality_stop_mult"] = self.quality_stop_mult
         if self.quality_stop_model:
             d["quality_stop_model"] = self.quality_stop_model
+        d["vwap_dev"] = float(self.vwap_dev or 0)
+        d["slope_pct"] = self.slope_pct
         d["closed_bar_at"] = self.closed_bar_at or None
         d["px_min_since_entry"] = self.px_min_since_entry or None
         d["px_max_since_entry"] = self.px_max_since_entry or None
@@ -1046,6 +1060,12 @@ class Position:
         p.quality_stop_original = _safe_float(d.get("quality_stop_original"))
         p.quality_stop_mult = float(d.get("quality_stop_mult") or 1)
         p.quality_stop_model = str(d.get("quality_stop_model") or "")
+        p.vwap_dev = float(d.get("vwap_dev") or 0)
+        sp = d.get("slope_pct")
+        try:
+            p.slope_pct = float(sp) if sp is not None and sp != "" else None
+        except (TypeError, ValueError):
+            p.slope_pct = None
         p.closed_bar_at = str(d.get("closed_bar_at") or "")
         p.px_min_since_entry = float(d.get("px_min_since_entry") or 0)
         p.px_max_since_entry = float(d.get("px_max_since_entry") or 0)
@@ -1205,7 +1225,10 @@ def load_bot_state():
     state.slope_filter_enabled = False  # v5.2: slope-фильтр снят
     if "slope_ema_threshold_pct" in d:
         try:
-            CONFIG["slope_ema_threshold_pct"] = float(d["slope_ema_threshold_pct"])
+            th = float(d["slope_ema_threshold_pct"])
+            # 0.0 в старом bot_state = «фильтр выкл»; гейт держит мёртвую зону 0.02
+            if th > 0:
+                CONFIG["slope_ema_threshold_pct"] = th
         except (TypeError, ValueError):
             pass
     if "slope_ema_spans" in d and isinstance(d["slope_ema_spans"], dict):
@@ -1281,6 +1304,7 @@ def load_bot_state():
     logger.info(
         f"Загружено состояние: пара={symbol_profile()['label']}, ТФ={state.active_tf}, "
         f"paper={state.paper}, slope_filter={state.slope_filter_enabled}, "
+        f"slope_gate={'on' if CONFIG.get('slope_gate_enabled', False) else 'off'}, "
         f"detect_filters={'vwap' if CONFIG.get('vwap_gate_enabled', True) else 'off'}, "
         + " | ".join(
             f"{tf}: вход={_fmt_h(CONFIG[tf]['limit_h'])} выход={_fmt_h(CONFIG[tf]['position_h'])}"
@@ -6323,6 +6347,7 @@ def _pending_journal_record(pl: "PendingLimit", event: str, **extra) -> dict:
         "signal_time": getattr(pl, "confirm_bar_time", "") or pl.htf_time or None,
         "htf_time": pl.htf_time or None,
         "vwap_dev": float(getattr(pl, "vwap_dev", 0) or 0),
+        "slope_pct": getattr(pl, "slope_pct", None),
         "pending_created_at": pl.created_at.isoformat(),
         "pending_timeout_at": pl.timeout_at.isoformat(),
         "position_timeout_at": (
@@ -6375,6 +6400,7 @@ def _position_journal_record(pos: Position, event: str = "closed", **extra) -> d
         "signal_time": getattr(pos, "confirm_bar_time", "") or pos.htf_time or None,
         "htf_time": pos.htf_time or None,
         "vwap_dev": float(getattr(pos, "vwap_dev", 0) or 0),
+        "slope_pct": getattr(pos, "slope_pct", None),
         "pending_created_at": (
             pos.pending_created_at.isoformat() if pos.pending_created_at else None
         ),
@@ -6428,6 +6454,7 @@ def _copy_pending_meta_to_position(pl: "PendingLimit", pos: Position) -> None:
     pos.quality_stop_mult = pl.quality_stop_mult
     pos.quality_stop_model = pl.quality_stop_model
     pos.vwap_dev = float(getattr(pl, "vwap_dev", 0) or 0)
+    pos.slope_pct = getattr(pl, "slope_pct", None)
     pos.confirm_bar_time = str(getattr(pl, "confirm_bar_time", "") or "")
 
 
@@ -6467,6 +6494,8 @@ def _journal_log_signal_skipped(
             "cisd_level": sig.get("cisd_level"),
             "sweep_level": sig.get("htf_sweep_level"),
             "fib_1x": sig.get("fib_1x"),
+            "vwap_dev": sig.get("vwap_dev"),
+            "slope_pct": sig.get("slope_pct"),
             "skip_reason": skip_reason,
             "sig_hash": sig.get("hash"),
         })
@@ -8843,7 +8872,9 @@ def _set_slope_ema_span(target: int | str, span: int) -> list[int]:
             continue
         overrides[str(ratio)] = span
         ohlcv_tf = SLOPE_EMA_PROFILES[ratio]["ohlcv_tf"]
-        _slope_ohlcv_cache.pop(ohlcv_tf, None)
+        for k in list(_slope_ohlcv_cache):
+            if k == ohlcv_tf or str(k).endswith(f"|{ohlcv_tf}"):
+                _slope_ohlcv_cache.pop(k, None)
     CONFIG["slope_ema_spans"] = overrides
     return ratios
 
@@ -9026,8 +9057,13 @@ def _ohlcv_bar_timedelta(timeframe: str) -> pd.Timedelta:
 
 def _closed_ohlcv_before(
     df: Optional[pd.DataFrame], as_of, bar_delta: pd.Timedelta,
+    *, inclusive: bool = True,
 ) -> Optional[pd.DataFrame]:
-    """Бары OHLCV, полностью закрытые на момент as_of (open + bar_delta <= as_of)."""
+    """Бары OHLCV, полностью закрытые на момент as_of.
+
+    inclusive=True: close_time = open + bar_delta <= as_of.
+    inclusive=False: бар, закрывающийся ровно в as_of, ещё не считается закрытым.
+    """
     if df is None or len(df) < 1:
         return None
     try:
@@ -9039,7 +9075,8 @@ def _closed_ohlcv_before(
     idx = pd.DatetimeIndex(df.index)
     if idx.tz is not None:
         idx = idx.tz_convert("UTC").tz_localize(None)
-    mask = idx + bar_delta <= ts
+    close_t = idx + bar_delta
+    mask = close_t <= ts if inclusive else close_t < ts
     closed = df.loc[mask]
     return closed if len(closed) >= 1 else None
 
@@ -9137,15 +9174,95 @@ def _slope_filter_ok(
 async def _get_slope_ohlcv_cached(ohlcv_tf: str, span: int) -> Optional[pd.DataFrame]:
     cache_s = 90
     now = time.time()
-    slot = _slope_ohlcv_cache.setdefault(ohlcv_tf, {"df": None, "ts": 0.0})
+    sk = active_symbol_key()
+    key = f"{sk}|{ohlcv_tf}"
+    slot = _slope_ohlcv_cache.setdefault(key, {"df": None, "ts": 0.0})
     cached = slot.get("df")
     if cached is not None and now - float(slot.get("ts") or 0) < cache_s:
         return cached
-    df = await fetch_ohlcv(ohlcv_tf, limit=span + 4)
+    df = await fetch_ohlcv(ohlcv_tf, limit=max(span + 4, 48))
     if df is not None:
         slot["df"] = df
         slot["ts"] = now
     return df
+
+
+def _slope_gate_threshold() -> float:
+    """Мёртвая зона тренд-гейта. 0 в CONFIG = наследие «выкл», для гейта это 0.02%."""
+    try:
+        th = float(CONFIG.get("slope_ema_threshold_pct", 0.02))
+    except (TypeError, ValueError):
+        th = 0.02
+    return 0.02 if th <= 0 else th
+
+
+def _slope_gate_anchor(sig: dict) -> pd.Timestamp:
+    """Якорь окна ожидания входа: момент постановки лимитки, не начало HTF-окна."""
+    raw = sig.get("slope_as_of")
+    if raw:
+        try:
+            ts = pd.Timestamp(raw)
+            if ts.tzinfo is not None:
+                ts = ts.tz_convert("UTC").tz_localize(None)
+            return ts
+        except Exception:
+            pass
+    return pd.Timestamp(utcnow())
+
+
+def _slope_pct_from_ohlcv(
+    df: Optional[pd.DataFrame],
+    as_of,
+    span: int = 3,
+    ohlcv_tf: str = "1h",
+) -> Optional[float]:
+    """Наклон EMA по последнему 1H-бару с close_time < as_of (бар на якоре ещё открыт)."""
+    bar_delta = _ohlcv_bar_timedelta(ohlcv_tf)
+    closed = _closed_ohlcv_before(df, as_of, bar_delta, inclusive=False)
+    need = max(int(span), 2) + 1
+    if closed is None or len(closed) < need:
+        return None
+    series = _slope_hermes_series(closed, span)
+    if series is None or len(series) < 1:
+        return None
+    v = series.iloc[-1]
+    if v is None or (isinstance(v, float) and np.isnan(v)):
+        return None
+    return float(v)
+
+
+def _slope_gate_reason(
+    direction: str, slope_pct: Optional[float], ok: bool, threshold: float,
+) -> str:
+    if slope_pct is None:
+        return "slope: нет данных — fail-open"
+    trend = _slope_trend_label(slope_pct, threshold)
+    base = f"slope={slope_pct:+.3f}%/1H ({trend})"
+    if ok:
+        return base
+    return f"{base} — {direction} запрещён"
+
+
+async def _slope_gate_for_sig(
+    sig: dict, tf_name: str,
+) -> tuple[bool, Optional[float], str]:
+    """Тренд-гейт EMA3 1H. Нет данных / ошибка → fail-open."""
+    th = _slope_gate_threshold()
+    direction = str(sig.get("direction") or "")
+    try:
+        as_of = _slope_gate_anchor(sig)
+        df = await _get_slope_ohlcv_cached("1h", 3)
+        slope_pct = _slope_pct_from_ohlcv(df, as_of, span=3, ohlcv_tf="1h")
+        if slope_pct is None:
+            logger.warning(
+                f"slope gate fail-open [{tf_name}]: нет закрытых 1H к {as_of}"
+            )
+            return True, None, "slope: нет данных — fail-open"
+        ok = _slope_filter_ok_hermes(direction, slope_pct, th)
+        return ok, slope_pct, _slope_gate_reason(direction, slope_pct, ok, th)
+    except Exception as e:
+        logger.warning(f"slope gate fail-open [{tf_name}]: {e}")
+        return True, None, f"slope: ошибка — fail-open ({e})"
 
 
 def _slope_filter_desc(tf_name: str) -> str:
@@ -9570,6 +9687,23 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
         await _notify_signal_skip(
             sig, tf_name, "skipped_max_positions",
             header=f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — лимит 7 позиций",
+        )
+        return False
+
+    ok_slope, slope_pct, slope_reason = await _slope_gate_for_sig(sig, tf_name)
+    if slope_pct is not None:
+        sig["slope_pct"] = slope_pct
+    if CONFIG.get("slope_gate_enabled", False) and not ok_slope and slope_pct is not None:
+        logger.info(
+            f"SKIP slope trend: {direction} {sk} slope={slope_pct:+.3f}% [{tf_name}]"
+        )
+        await _notify_signal_skip(
+            sig, tf_name, "skipped_slope_trend",
+            header=(
+                f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — "
+                f"тренд против ({slope_pct:+.3f}%/1H)"
+            ),
+            detail=slope_reason,
         )
         return False
 
@@ -10002,6 +10136,11 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     pl.defer_entry = False
     pl.entry_is_plan = False
     pl.vwap_dev = float(sig.get("vwap_dev") or 0)
+    sp = sig.get("slope_pct")
+    try:
+        pl.slope_pct = float(sp) if sp is not None and sp != "" else None
+    except (TypeError, ValueError):
+        pl.slope_pct = None
     pl.quality_score = float(sig.get("quality_score") or 0)
     pl.quality_stop_original = _safe_float(sig.get("quality_stop_original"))
     pl.quality_stop_mult = float(sig.get("quality_stop_mult") or 1)
@@ -12721,11 +12860,20 @@ async def cmd_pairs(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def cmd_slope(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Slope EMA отключён в v5.2."""
-    state.slope_filter_enabled = False
+    """Статус тренд-гейта EMA3 1H."""
+    state.slope_filter_enabled = False  # legacy v5.2 arming не включать
+    enabled = bool(CONFIG.get("slope_gate_enabled", False))
+    th = _slope_gate_threshold()
+    onoff = "включён" if enabled else "выключен"
+    df = await _get_slope_ohlcv_cached("1h", 3)
+    slope_pct = _slope_pct_from_ohlcv(df, pd.Timestamp(utcnow()), span=3)
+    if slope_pct is None:
+        slope_s = "наклон: нет данных"
+    else:
+        trend = _slope_trend_label(slope_pct, th)
+        slope_s = f"наклон сейчас: {slope_pct:+.3f}%/1H ({trend})"
     await update.message.reply_text(
-        "📐 Slope EMA фильтр отключён в этой версии бота.\n"
-        "Вход только после MSS → STOP-LIMIT на CISD."
+        f"📐 Slope-гейт {onoff}: EMA3 1H, порог {th:g}%\n{slope_s}"
     )
 
 
