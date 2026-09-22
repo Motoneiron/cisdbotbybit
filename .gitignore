@@ -23,6 +23,8 @@ shadow_positions.json
 pending_limits.json
 shadow_pending.json
 signals_cache.json
+sweep_state.json
+sweep_state.json.tmp
 trades.json
 shadow_trades.json
 trades_*.jsonl

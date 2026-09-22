@@ -5,11 +5,13 @@ CISD BOT v6.0-bybit — Bybit USDT linear, 6 пар × tf7 SHADOW, SHADOW/LIVE
 tf7 (канон 22.09.2026): MSS на 5m, фильтры A+V+D, лимитка 10 мин, позиция 12 ч, только SHADOW.
 По умолчанию SHADOW (dry_run): реальные котировки, виртуальные сделки, ордеров нет.
 Не запускать вместе с MEXC-cisdbot: один TELEGRAM_TOKEN.
+Рядом с CISD крутится свип (sweep_engine): 10 пар, 4ч и 8ч, только бумага.
 Деплой: /opt/cisdbotbybit, systemd cisdbotbybit.service, SSH-хост cisdbotbybit.
   /resume /start — запустить сканер
   /stop   — пауза или полная остановка
   /mode   — SHADOW ↔ LIVE (с подтверждением); /paper — алиас
   /status /stats /pairs
+  /sweep  — статус свипа; /sweep stats; /sweep close
 """
 
 import asyncio
@@ -457,6 +459,7 @@ def _cancel_start_confirm_timer(sig_hash: str):
 # ДЕТЕКТОР
 # ============================================================
 from detectors.cisd_htf import CISDDetector
+import sweep_engine
 
 # ============================================================
 # BYBIT USDT LINEAR (REST, unified v5)
@@ -3359,6 +3362,7 @@ BOT_COMMANDS = [
     BotCommand("stats",  "📈 Статистика по парам и ТФ"),
     BotCommand("pairs",  "🪙 Активные пары"),
     BotCommand("close",  "🔒 Закрыть позицию / отменить лимитку"),
+    BotCommand("sweep",  "🧪 Свип: статус, stats, close"),
     BotCommand("fee",    "💰 Maker / taker fee %"),
 ]
 
@@ -3393,6 +3397,41 @@ async def cmd_start_noop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         )
 
 
+async def cmd_sweep(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Свип: статус, статистика или закрытие бумажных сделок."""
+    arg = ""
+    if context.args:
+        arg = str(context.args[0]).lower()
+    if arg == "stats":
+        text = await sweep_engine.stats_block()
+        if update.message:
+            await update.message.reply_text(text)
+        return
+    if arg == "close":
+        if update.message:
+            await update.message.reply_text(
+                "Закрыть все сделки свипа и снять его лимитки?",
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("Да, закрыть свип", callback_data="sweepclose:yes")],
+                    [InlineKeyboardButton("Нет", callback_data="sweepclose:no")],
+                ]),
+            )
+        return
+    text = await sweep_engine.status_block()
+    if update.message:
+        await update.message.reply_text(text)
+
+
+async def callback_sweep_close(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    q = update.callback_query
+    await q.answer()
+    if q.data != "sweepclose:yes":
+        await q.edit_message_text("Свип оставил как есть.")
+        return
+    notes = await sweep_engine.close_all()
+    await q.edit_message_text("Свип закрыт.\n" + ("\n".join(notes) if notes else "Открытого не было."))
+
+
 def _build_tg_application() -> Application:
     app = Application.builder().token(TELEGRAM_TOKEN).build()
     app.add_handler(TypeHandler(Update, _tg_gate), group=-1)
@@ -3409,6 +3448,8 @@ def _build_tg_application() -> Application:
     app.add_handler(CommandHandler("pairs",  cmd_pairs))
     app.add_handler(CommandHandler("pair",   cmd_pairs))
     app.add_handler(CommandHandler("close",  cmd_close))
+    app.add_handler(CommandHandler("sweep",  cmd_sweep))
+    app.add_handler(CallbackQueryHandler(callback_sweep_close, pattern=r"^sweepclose:"))
     app.add_handler(CommandHandler("tf",     cmd_tf))
     app.add_handler(CommandHandler("timeout", cmd_timeout))
     app.add_handler(CommandHandler("filters", cmd_filters))
@@ -3489,7 +3530,7 @@ async def telegram_connect_loop():
                 f"{'▶ RUNNING' if state.running.is_set() else '⏸ PAUSED'}\n"
                 f"{'─' * 28}\n"
                 f"{len(ACTIVE_SYMBOL_KEYS)} пар × {CONFIG['tf7']['label']} | LIMIT TP=1R\n"
-                f"Команды: /start  /stop  /mode  /status  /stats  /pairs"
+                f"Команды: /start  /stop  /mode  /status  /stats  /pairs  /sweep"
             )
             # Держим задачу живой, пока polling работает
             while getattr(_tg_app.updater, "running", False):
@@ -12551,6 +12592,10 @@ async def ctl_status() -> dict:
         + (pos_lines or "  —")
         + f"\nPending лимиток: {n_pending}"
         + (pend_lines or "  —")
+        + "\n"
+        + ("─" * 30)
+        + "\n"
+        + await sweep_engine.status_block()
     )
     return {
         "text": text,
@@ -15207,6 +15252,12 @@ async def main():
     _tg_app = _build_tg_application()
     logger.info("Торговые задачи стартуют сразу; Telegram подключится в фоне")
 
+    sweep_engine.bind(
+        notify=send_telegram,
+        scanner_on=lambda: state.running.is_set(),
+        tasks_on=lambda: state.tasks_live.is_set(),
+        base_dir=BASE_DIR,
+    )
     ctl_server.configure(
         token_path=CTL_TOKEN_FILE,
         on_start=ctl_start,
@@ -15248,6 +15299,7 @@ async def main():
         asyncio.create_task(supervised(limit_monitor,         "limit_monitor"),   name="limit_monitor"),
         asyncio.create_task(supervised(position_monitor,      "position_monitor"), name="position_monitor"),
         asyncio.create_task(supervised(exchange_sync_loop,    "exchange_sync"),   name="exchange_sync"),
+        asyncio.create_task(supervised(sweep_engine.run,      "sweep"),           name="sweep"),
         asyncio.create_task(supervised(telegram_connect_loop, "telegram"),        name="telegram"),
     ]
     try:
