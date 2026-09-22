@@ -10,3 +10,7 @@ tf7 снова в сканере, только SHADOW (в LIVE ордера не
 - vwap, slope, KC, MACD, stoch и min-stop 0,5 % не менялись.
 
 Ф2 (shadow на сервере) — после того, как сервер снова доступен.
+
+## 2026-09-22 — состав книги
+
+Из сканера убраны BTC, ETH, BNB, XRP и tf8. Остались SOL, DOGE, KAS, ADA, LINK, LTC и только tf7.

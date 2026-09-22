@@ -1,5 +1,5 @@
 """
-CISD BOT v6.0-bybit — Bybit USDT linear, 10 пар × tf7 SHADOW + tf8, SHADOW/LIVE
+CISD BOT v6.0-bybit — Bybit USDT linear, 6 пар × tf7 SHADOW, SHADOW/LIVE
 ====================================================================
 Стратегия: LIMIT-only на cisd_level, TP=1R, 1 поз/пара, max 7.
 tf7 (канон 22.09.2026): MSS на 5m, фильтры A+V+D, лимитка 10 мин, позиция 12 ч, только SHADOW.
@@ -74,7 +74,7 @@ BYBIT_API_SECRET = os.environ.get("BYBIT_API_SECRET", "").strip()
 TELEGRAM_TOKEN   = os.environ.get("TELEGRAM_TOKEN", "").strip()
 TELEGRAM_CHAT_ID = int(os.environ.get("TELEGRAM_CHAT_ID", "0") or "0")
 
-SYMBOL = "BTC/USDT:USDT"  # legacy; для скриптов — см. active_symbol()
+SYMBOL = "SOL/USDT:USDT"  # legacy; для скриптов — см. active_symbol()
 
 # qtyStep / tickSize сверены с Bybit GET /v5/market/instruments-info (linear) 08.09.2026
 _BYBIT_FEES = {"maker_fee": 0.00036, "taker_fee": 0.001}
@@ -163,7 +163,7 @@ SYMBOL_PROFILES: dict[str, dict] = {
 }
 DEFAULT_SYMBOL_KEY = "SOL"
 ACTIVE_SYMBOL_KEYS = (
-    "SOL", "BTC", "ETH", "DOGE", "KAS", "ADA", "BNB", "LINK", "LTC", "XRP",
+    "SOL", "DOGE", "KAS", "ADA", "LINK", "LTC",
 )
 _CCXT_TO_SYMBOL_KEY = {p["symbol"]: k for k, p in SYMBOL_PROFILES.items()}
 
@@ -346,10 +346,10 @@ CONFIG = {
 }
 
 TF_KEYS = ("tf0", "tf1", "tf2", "tf3", "tf4", "tf5", "tf6", "tf7", "tf8")
-# tf7 снова в сканере: SHADOW, канон 22.09.2026 (A+V+D, MSS 5m, 10 мин / 12 ч).
-# В LIVE не выводить, пока shadow_only=True.
-ACTIVE_TF_KEYS = ("tf7", "tf8")
-SCAN_TF_KEYS   = ("tf7", "tf8")
+# tf7 в сканере: SHADOW, канон 22.09.2026 (A+V+D, MSS 5m, 10 мин / 12 ч).
+# tf8 снят. В LIVE tf7 не выводить, пока shadow_only=True.
+ACTIVE_TF_KEYS = ("tf7",)
+SCAN_TF_KEYS   = ("tf7",)
 OHLCV_5M_BARS = 1000  # один запрос 5m на пару за цикл
 # tf4 (10m→1H): особый паттерн «2 бара HTF + подтверждение баром 3»
 TF4_BAR3_PATTERN_TF = "tf4"
@@ -549,7 +549,7 @@ class BotState:
         self.pending_limits: list   = []
         self.positions: list        = []
         self.paper_balance: float   = CONFIG["paper_balance"]
-        self.active_tf: str         = "tf8"
+        self.active_tf: str         = "tf7"
         self.active_symbol_key: str  = DEFAULT_SYMBOL_KEY  # для fetch/detect текущего цикла
         self.fees_by_symbol: dict[str, dict] = {}
         self._trade_counter: int    = 0
@@ -1181,7 +1181,7 @@ def load_bot_state():
     """Загружает активный ТФ, режим и таймауты с диска."""
     d = load_json(BOT_STATE_FILE, {})
     if "active_tf" in d and d["active_tf"] in TF_KEYS:
-        state.active_tf = d["active_tf"] if d["active_tf"] in ACTIVE_TF_KEYS else "tf8"
+        state.active_tf = d["active_tf"] if d["active_tf"] in ACTIVE_TF_KEYS else "tf7"
     if "fees_by_symbol" in d and isinstance(d["fees_by_symbol"], dict):
         cleaned_fees: dict[str, dict] = {}
         for k, v in d["fees_by_symbol"].items():
@@ -1220,7 +1220,7 @@ def load_bot_state():
             )
         )
     sym_key = d.get("active_symbol", DEFAULT_SYMBOL_KEY)
-    if sym_key not in SYMBOL_PROFILES:
+    if sym_key not in ACTIVE_SYMBOL_KEYS:
         sym_key = DEFAULT_SYMBOL_KEY
     _apply_symbol_key(sym_key)
     if "paper" in d:
@@ -3488,7 +3488,7 @@ async def telegram_connect_loop():
                 f"Режим: {_mode_prefix()} | "
                 f"{'▶ RUNNING' if state.running.is_set() else '⏸ PAUSED'}\n"
                 f"{'─' * 28}\n"
-                f"{len(ACTIVE_SYMBOL_KEYS)} пар × {CONFIG['tf8']['label']} | LIMIT TP=1R vwap\n"
+                f"{len(ACTIVE_SYMBOL_KEYS)} пар × {CONFIG['tf7']['label']} | LIMIT TP=1R\n"
                 f"Команды: /start  /stop  /mode  /status  /stats  /pairs"
             )
             # Держим задачу живой, пока polling работает
@@ -4830,7 +4830,7 @@ def _filters_live_lines() -> list[str]:
         f"  tf7 ATR  {'ON' if f7['atr_enabled'] else 'OFF'}  (sweep/ATR ≥ {sw:.2f})",
         f"  tf7 VOL  {'ON' if f7['vol_enabled'] else 'OFF'}  (vol/SMA{ma} ≤ {vr:.1f})",
         f"  tf7 D    {'ON' if f7['d_enabled'] else 'OFF'}  (пн/ср/пт: touches≥5)",
-        "  tf8      OFF  (поток без A/V/D)",
+        "  tf8      снят",
     ]
 
 
@@ -5916,7 +5916,7 @@ async def price_stream():
 
 async def _price_rest_poll():
     """REST-поллинг цен всех активных пар каждые 4с."""
-    logger.info("REST price poll: запущен (10 пар)")
+    logger.info(f"REST price poll: запущен ({len(ACTIVE_SYMBOL_KEYS)} пар)")
     keys = list(ACTIVE_SYMBOL_KEYS)
     i = 0
     while True:
@@ -12407,7 +12407,7 @@ async def signal_scanner():
         await state.running.wait()
         try:
             peek = await fetch_ohlcv(
-                "5m", 3, symbol=SYMBOL_PROFILES["BTC"]["symbol"],
+                "5m", 3, symbol=SYMBOL_PROFILES[DEFAULT_SYMBOL_KEY]["symbol"],
             )
             if peek is None or len(peek) < 1:
                 await asyncio.sleep(5)
@@ -12981,7 +12981,7 @@ async def callback_mode(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await q.edit_message_text(
             f"Режим → {_mode_prefix()}\n"
             f"Реальные ордера на Bybit. {len(ACTIVE_SYMBOL_KEYS)} пар × "
-            f"{CONFIG['tf8']['label']}, риск 1%, плечо 20x isolated."
+            f"{CONFIG['tf7']['label']}, риск 1%, плечо 20x isolated."
         )
         logger.info("/mode LIVE")
         return
@@ -13006,7 +13006,7 @@ async def cmd_pairs(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"{_mode_prefix()} активные пары ({len(ACTIVE_SYMBOL_KEYS)}):\n"
         + "\n".join(lines)
-        + f"\n\nСканер: все сразу, ТФ {CONFIG['tf8']['label']}.\n"
+        + f"\n\nСканер: все сразу, ТФ {CONFIG['tf7']['label']}.\n"
         f"Позиций: {_open_pending_count()} / {CONFIG['max_positions']}"
     )
 
@@ -13753,7 +13753,8 @@ async def on_fee_text_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ============================================================
 def _pair_keyboard() -> InlineKeyboardMarkup:
     rows: list[list[InlineKeyboardButton]] = []
-    for key, prof in SYMBOL_PROFILES.items():
+    for key in ACTIVE_SYMBOL_KEYS:
+        prof = SYMBOL_PROFILES[key]
         mark = "✅ " if key == active_symbol_key() else ""
         rows.append([
             InlineKeyboardButton(
@@ -13788,7 +13789,7 @@ async def callback_pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     new_key = parts[2]
-    if new_key not in SYMBOL_PROFILES:
+    if new_key not in ACTIVE_SYMBOL_KEYS:
         await query.edit_message_text("⚠️ Неизвестная пара")
         return
 
