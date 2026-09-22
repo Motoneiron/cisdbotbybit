@@ -1,7 +1,8 @@
 """
-CISD BOT v6.0-bybit — Bybit USDT linear, 10 пар × tf8, SHADOW/LIVE
+CISD BOT v6.0-bybit — Bybit USDT linear, 10 пар × tf7 SHADOW + tf8, SHADOW/LIVE
 ====================================================================
-Стратегия ТЗ v6: LIMIT-only на cisd_level, TP=1R, vwap-фильтр, 1 поз/пара, max 7.
+Стратегия: LIMIT-only на cisd_level, TP=1R, 1 поз/пара, max 7.
+tf7 (канон 22.09.2026): MSS на 5m, фильтры A+V+D, лимитка 10 мин, позиция 12 ч, только SHADOW.
 По умолчанию SHADOW (dry_run): реальные котировки, виртуальные сделки, ордеров нет.
 Не запускать вместе с MEXC-cisdbot: один TELEGRAM_TOKEN.
 Деплой: /opt/cisdbotbybit, systemd cisdbotbybit.service, SSH-хост cisdbotbybit.
@@ -312,9 +313,10 @@ CONFIG = {
     },
     "tf7": {
         "timeframe":  "5m",
+        # MSS main-5m, канон 22.09.2026: подтверждение на главном ТФ, без 1m.
         "htf_ratio":  240,   # 4H HTF (5m×48 баров)
-        "limit_h":    20 / 60,  # 20 мин = 4 бара 5m
-        "position_h": 16,       # 16 ч = 192 бара 5m
+        "limit_h":    10 / 60,  # 10 мин = 2 бара 5m
+        "position_h": 12,       # 12 ч = 144 бара 5m
         "ohlcv":      1000,
         "scan_s":     15,
         "scan_m":     5,
@@ -322,6 +324,13 @@ CONFIG = {
         "economic_gate_mode": "off",
         "max_fee_r": 0.25,
         "market_min_net_rr": 0.80,
+        # До Ф2 и решения владельца tf7 не ставит ордера на биржу.
+        "shadow_only": True,
+        "detect_filters": {
+            "atr_enabled": True,
+            "vol_enabled": True,
+            "d_enabled": True,
+        },
     },
     "tf8": {
         "timeframe":  "30m",
@@ -337,8 +346,10 @@ CONFIG = {
 }
 
 TF_KEYS = ("tf0", "tf1", "tf2", "tf3", "tf4", "tf5", "tf6", "tf7", "tf8")
-ACTIVE_TF_KEYS = ("tf8",)   # tf7 снят: на Bybit убит комиссиями + узкими стопами
-SCAN_TF_KEYS   = ("tf8",)   # что сканирует автосканер; чтобы вернуть tf7 — дописать в оба кортежа
+# tf7 снова в сканере: SHADOW, канон 22.09.2026 (A+V+D, MSS 5m, 10 мин / 12 ч).
+# В LIVE не выводить, пока shadow_only=True.
+ACTIVE_TF_KEYS = ("tf7", "tf8")
+SCAN_TF_KEYS   = ("tf7", "tf8")
 OHLCV_5M_BARS = 1000  # один запрос 5m на пару за цикл
 # tf4 (10m→1H): особый паттерн «2 бара HTF + подтверждение баром 3»
 TF4_BAR3_PATTERN_TF = "tf4"
@@ -354,7 +365,7 @@ TRIGGER_VOL_FILTER = {
     "max_ratio": 2.5,
 }
 
-# Detect-фильтры v6: только vwap. ATR / VOL(SMA) / D / QSZ / PSL / QSTOP вырезаны.
+# Глобальный дефолт: фильтры выкл. A+V+D включены только в CONFIG["tf7"]["detect_filters"].
 DETECT_FILTERS_DEFAULT = {
     "atr_enabled": False,
     "vol_enabled": False,
@@ -1729,14 +1740,22 @@ async def _backfill_exchange_position_id(pos: "Position") -> bool:
 
 def _has_opposite_open_position(
     direction: str, symbol_key: Optional[str] = None,
+    tf_name: Optional[str] = None,
 ) -> bool:
     """Есть ли open/pending в противоположном направлении (one-way: блокирует вход)."""
     opp = "SHORT" if direction == "LONG" else "LONG"
     sk = symbol_key if symbol_key is not None else active_symbol_key()
-    if _bot_open_in_direction(opp, symbol_key=sk):
-        return True
+    for p in state.positions:
+        if (
+            p.status == "open"
+            and p.direction == opp
+            and _pos_symbol_key(p) == sk
+            and _same_exec_book(tf_name, getattr(p, "tf", None))
+        ):
+            return True
     return any(
         p.status == "pending" and p.direction == opp and _pos_symbol_key(p) == sk
+        and _same_exec_book(tf_name, getattr(p, "tf", None))
         for p in state.pending_limits
     )
 
@@ -4706,28 +4725,48 @@ def _sig_hash_stable(
     ).hexdigest()[:16]
 
 
-def _detect_filter_flags() -> dict:
+def _tf_shadow_only(tf_name: Optional[str]) -> bool:
+    """tf7 до Ф2: сигналы копятся как SHADOW, ордер на биржу не ставится."""
+    return bool(CONFIG.get(tf_name or "", {}).get("shadow_only"))
+
+
+def _treat_as_paper(tf_name: Optional[str] = None) -> bool:
+    """Весь бот в SHADOW или профиль, который нельзя выводить в LIVE."""
+    return bool(state.paper) or _tf_shadow_only(tf_name)
+
+
+def _detect_filter_flags(tf_name: Optional[str] = None) -> dict:
+    """A+V+D только у tf7. Остальные профили — выкл, поток не меняется."""
+    raw = {}
+    if tf_name:
+        raw = CONFIG.get(tf_name, {}).get("detect_filters") or {}
+    if not isinstance(raw, dict):
+        raw = {}
     return {
-        "atr_enabled": False,
-        "vol_enabled": False,
-        "d_enabled": False,
+        "atr_enabled": bool(raw.get("atr_enabled", False)),
+        "vol_enabled": bool(raw.get("vol_enabled", False)),
+        "d_enabled": bool(raw.get("d_enabled", False)),
     }
 
 
-def _min_sweep_atr() -> float:
-    return 0.0
+def _min_sweep_atr(tf_name: Optional[str] = None) -> float:
+    if not _detect_filter_flags(tf_name)["atr_enabled"]:
+        return 0.0
+    return max(0.0, float(SWEEP_ATR_FILTER.get("min_atr") or 0.0))
 
 
 def _trigger_vol_ma() -> int:
     return max(1, int(TRIGGER_VOL_FILTER.get("ma") or 20))
 
 
-def _trigger_vol_max_ratio() -> float:
-    return 0.0
+def _trigger_vol_max_ratio(tf_name: Optional[str] = None) -> float:
+    if not _detect_filter_flags(tf_name)["vol_enabled"]:
+        return 0.0
+    return max(0.0, float(TRIGGER_VOL_FILTER.get("max_ratio") or 0.0))
 
 
 def _trigger_vol_max_ratio_cfg() -> float:
-    return 0.0
+    return max(0.0, float(TRIGGER_VOL_FILTER.get("max_ratio") or 0.0))
 
 
 def _quality_size_enabled() -> bool:
@@ -4771,27 +4810,45 @@ def _apply_quality_stop_to_signal(sig: dict, tf_name: str) -> bool:
 
 
 def _detect_filters_profile_name(flags: Optional[dict] = None) -> str:
-    return "vwap ON" if CONFIG.get("vwap_gate_enabled", True) else "vwap OFF (фильтров нет)"
+    f = flags or _detect_filter_flags("tf7")
+    a, v, d = f["atr_enabled"], f["vol_enabled"], f["d_enabled"]
+    if a and v and d:
+        return "tf7 A+V+D"
+    return "фильтры выкл"
 
 
 def _filters_live_lines() -> list[str]:
     on = bool(CONFIG.get("vwap_gate_enabled", True))
+    f7 = _detect_filter_flags("tf7")
+    sw = max(0.0, float(SWEEP_ATR_FILTER.get("min_atr") or 0.0))
+    vr = _trigger_vol_max_ratio_cfg()
+    ma = _trigger_vol_ma()
     return [
         "Фильтры:",
         ("  vwap     ON   режет  SHORT vd≤0, LONG vd≥0" if on
-         else "  vwap     OFF  гейт выключен — берём все сигналы"),
+         else "  vwap     OFF  гейт выключен"),
+        f"  tf7 ATR  {'ON' if f7['atr_enabled'] else 'OFF'}  (sweep/ATR ≥ {sw:.2f})",
+        f"  tf7 VOL  {'ON' if f7['vol_enabled'] else 'OFF'}  (vol/SMA{ma} ≤ {vr:.1f})",
+        f"  tf7 D    {'ON' if f7['d_enabled'] else 'OFF'}  (пн/ср/пт: touches≥5)",
+        "  tf8      OFF  (поток без A/V/D)",
     ]
 
 
 def _filters_status_text() -> str:
     return "\n".join(_filters_live_lines() + [
         "",
-        "ATR / VOL(SMA) / D / QSZ / PSL / QSTOP вырезаны.",
+        "QSZ / PSL / QSTOP выключены. vwap на tf7 не включаем.",
     ])
 
 
 def _trigger_filters_desc() -> str:
-    return "vwap=ON" if CONFIG.get("vwap_gate_enabled", True) else "vwap=OFF"
+    f7 = _detect_filter_flags("tf7")
+    vw = "vwap=ON" if CONFIG.get("vwap_gate_enabled", True) else "vwap=OFF"
+    return (
+        f"{vw}  tf7 ATR={'ON' if f7['atr_enabled'] else 'OFF'} "
+        f"VOL={'ON' if f7['vol_enabled'] else 'OFF'} "
+        f"D={'ON' if f7['d_enabled'] else 'OFF'}"
+    )
 
 
 def _apply_vol_or_touches_gate(
@@ -4812,11 +4869,73 @@ def _apply_vol_or_touches_gate(
     touch_atr14,
     trigger_vol_max_ok,
 ) -> tuple[Optional[str], Optional[int], bool]:
-    """ATR/VOL вырезаны: только vwap дальше по пайплайну."""
-    _ = (df, trigger_idx, direction, sweep_level, htf_time, htf_ratio,
-         trigger_extreme, tf_name, d_enabled, vol_enabled, vol_max,
-         vol_ratios, vol_ma, touch_atr14, trigger_vol_max_ok)
-    return None, None, False
+    """Матрица VOL/D. Если оба выкл — сразу выход, как до возврата фильтров."""
+    if not d_enabled and not vol_enabled:
+        return None, None, False
+    from backtest.touch_filter import (
+        TOUCH_MIN,
+        is_soft_dow,
+        need_touches_check,
+        need_vol_check,
+        prior_touches_at_trigger,
+        touches_ok,
+    )
+
+    soft = bool(is_soft_dow(df.index[trigger_idx]))
+    prior_n: Optional[int] = None
+    trigger_time = str(pd.Timestamp(df.index[trigger_idx]))
+
+    if need_touches_check(d_enabled=d_enabled, soft=soft):
+        prior_n = prior_touches_at_trigger(
+            df,
+            direction=direction,
+            level=sweep_level,
+            htf_time=htf_time,
+            trigger_idx=trigger_idx,
+            htf_minutes=htf_ratio,
+            atr14=touch_atr14,
+        )
+        if not touches_ok(prior_n, min_touches=TOUCH_MIN):
+            nt_txt = "n/a" if prior_n is None else str(prior_n)
+            _queue_pre_signal_filter_skip(
+                tf_name=tf_name,
+                direction=direction,
+                category="skipped_soft_dow_touches",
+                filter_title="soft-DOW touches",
+                trigger_time=trigger_time,
+                htf_time=htf_time,
+                sweep_level=sweep_level,
+                trigger_extreme=trigger_extreme,
+                detail=f"prior_touches = {nt_txt} < min {TOUCH_MIN} (soft DOW UTC)",
+                symbol_key=active_symbol_key(),
+            )
+            return "skipped_soft_dow_touches", prior_n, soft
+        return None, prior_n, soft
+
+    if need_vol_check(vol_enabled=vol_enabled, d_enabled=d_enabled, soft=soft):
+        if vol_max > 0 and trigger_vol_max_ok is not None and not trigger_vol_max_ok(
+            vol_ratios, trigger_idx, max_ratio=vol_max,
+        ):
+            vr = None
+            if vol_ratios is not None and 0 <= trigger_idx < len(vol_ratios):
+                raw = vol_ratios.iloc[trigger_idx]
+                if not pd.isna(raw):
+                    vr = float(raw)
+            vr_txt = f"{vr:.2f}" if vr is not None else "n/a"
+            _queue_pre_signal_filter_skip(
+                tf_name=tf_name,
+                direction=direction,
+                category="skipped_trigger_vol",
+                filter_title="trigger vol",
+                trigger_time=trigger_time,
+                htf_time=htf_time,
+                sweep_level=sweep_level,
+                trigger_extreme=trigger_extreme,
+                detail=f"vol/SMA{vol_ma} = {vr_txt} > max {vol_max:.2f}",
+                symbol_key=active_symbol_key(),
+            )
+            return "skipped_trigger_vol", prior_n, soft
+    return None, prior_n, soft
 
 
 def _fmt_bar_msk(ts) -> str:
@@ -4939,8 +5058,9 @@ def detect_signals(
     min_sweep_atr: float = 0.0,
 ) -> list:
     """
-    Сигнал после HTF-свипа + MSS confirm. Вход: LIMIT/STOP-LIMIT на cisd_level.
-    confirm_timeframe (если задан): MSS на LTF; серия/триггер — на timeframe (tf5: 5m, tf7: 1m).
+    Сигнал после HTF-свипа + MSS confirm. Вход: LIMIT на cisd_level, TP=1R.
+    confirm_timeframe (если задан): MSS на LTF; серия/триггер — на timeframe (tf5: 5m).
+    tf7: MSS main-5m, канон 22.09.2026, без LTF-подтверждения.
     Закрытый MSS на LTF → лимитка без ожидания close-свипа на main TF.
     Без MSS — сигнал не создаём.
     """
@@ -5003,16 +5123,33 @@ def detect_signals(
     skipped_high_vol = 0
     skipped_soft_touches = 0
     seen_physical: set[str] = set()
-    min_sweep_atr = 0.0
-    vol_enabled = False
-    vol_max = 0.0
+    filt = _detect_filter_flags(tf_name)
+    d_enabled = filt["d_enabled"]
+    vol_enabled = filt["vol_enabled"]
+    if min_sweep_atr <= 0:
+        min_sweep_atr = _min_sweep_atr(tf_name)
+    vol_max = _trigger_vol_max_ratio(tf_name)
     sweep_atr14 = None
     vol_ratios = None
     touch_atr14 = None
     sweep_atr_ratio_fn = None
     trigger_vol_max_ok = None
-    vol_ma = 20
-    d_enabled = False
+    if min_sweep_atr > 0:
+        from backtest.sweep_atr_filter import (
+            compute_atr14, sweep_atr_ratio, sweep_min_atr_ok,
+        )
+
+        sweep_atr14 = compute_atr14(df)
+        sweep_atr_ratio_fn = sweep_atr_ratio
+    if vol_enabled and vol_max > 0:
+        from backtest.volume_filter import trigger_vol_max_ok, volume_ratio_series
+
+        vol_ratios = volume_ratio_series(df, _trigger_vol_ma())
+    if d_enabled:
+        from backtest.touch_filter import atr14_ewm
+
+        touch_atr14 = atr14_ewm(df)
+    vol_ma = _trigger_vol_ma()
 
     # 1) upsert кандидаты из текущего HTF-окна
     for sweep in sweeps:
@@ -5742,9 +5879,9 @@ def detect_signals(
                 ),
             },
             "detect_filters": {
-                "atr": False,
-                "vol": False,
-                "d": False,
+                "atr": bool(filt["atr_enabled"]),
+                "vol": bool(filt["vol_enabled"]),
+                "d": bool(filt["d_enabled"]),
             },
         })
 
@@ -6665,8 +6802,8 @@ async def _adopt_exchange_protection_by_price(pos: "Position") -> bool:
 
 
 async def place_sl_tp_for_position(pos: "Position") -> tuple[bool, bool]:
-    """SL+TP через stoporder/place (как в UI MEXC): market SL + limit TP."""
-    if state.paper:
+    """SL+TP через stoporder/place: market SL + limit TP."""
+    if _treat_as_paper(getattr(pos, "tf", None)):
         return True, True
 
     if pos.stop_price > 0:
@@ -9570,20 +9707,35 @@ def _format_sig_timestamp(sig: dict) -> str:
         return str(raw)[:16]
 
 
-def _pair_busy(symbol_key: str) -> bool:
-    """У пары уже есть open-позиция или pending-лимитка (любой ТФ)."""
+def _same_exec_book(tf_a: Optional[str], tf_b: Optional[str]) -> bool:
+    """SHADOW-only профиль не делит слот пары с LIVE-профилем."""
+    if not tf_a or not tf_b:
+        return True
+    return _treat_as_paper(tf_a) == _treat_as_paper(tf_b)
+
+
+def _pair_busy(symbol_key: str, tf_name: Optional[str] = None) -> bool:
+    """У пары уже есть open или pending в той же книге (SHADOW или LIVE)."""
     for p in state.positions:
         if p.status == "open" and _pos_symbol_key(p) == symbol_key:
-            return True
+            if _same_exec_book(tf_name, getattr(p, "tf", None)):
+                return True
     for pl in state.pending_limits:
         if pl.status == "pending" and _pos_symbol_key(pl) == symbol_key:
-            return True
+            if _same_exec_book(tf_name, getattr(pl, "tf", None)):
+                return True
     return False
 
 
-def _open_pending_count() -> int:
-    n_open = sum(1 for p in state.positions if p.status == "open")
-    n_pend = sum(1 for p in state.pending_limits if p.status == "pending")
+def _open_pending_count(tf_name: Optional[str] = None) -> int:
+    n_open = sum(
+        1 for p in state.positions
+        if p.status == "open" and _same_exec_book(tf_name, getattr(p, "tf", None))
+    )
+    n_pend = sum(
+        1 for p in state.pending_limits
+        if p.status == "pending" and _same_exec_book(tf_name, getattr(p, "tf", None))
+    )
     return n_open + n_pend
 
 
@@ -9675,14 +9827,14 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     sk = active_symbol_key()
     sig.setdefault("symbol_key", sk)
 
-    if _pair_busy(sk):
+    if _pair_busy(sk, tf_name):
         logger.info(f"SKIP pair busy: {sk} {direction} [{tf_name}]")
         await _notify_signal_skip(
             sig, tf_name, "skipped_pair_busy",
             header=f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — пара {symbol_profile(sk)['label']} занята",
         )
         return False
-    if _open_pending_count() >= int(CONFIG.get("max_positions") or 7):
+    if _open_pending_count(tf_name) >= int(CONFIG.get("max_positions") or 7):
         logger.info(f"SKIP max positions: {direction} [{tf_name}]")
         await _notify_signal_skip(
             sig, tf_name, "skipped_max_positions",
@@ -9794,7 +9946,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
     if not is_pyramid:
         _apply_quality_stop_to_signal(sig, tf_name)
 
-    if not is_pyramid and not _allow_both_directions() and _has_opposite_open_position(direction):
+    if not is_pyramid and not _allow_both_directions() and _has_opposite_open_position(direction, tf_name=tf_name):
         opp = "SHORT" if direction == "LONG" else "LONG"
         logger.info(
             f"SKIP OPPOSITE: {direction} [{tf_name}] — open/pending {opp} (one-way)"
@@ -10233,7 +10385,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             f"tp={_fmt_px(sig['tp'])} | {contracts} ctr"
         )
 
-    if not state.paper:
+    if not _treat_as_paper(tf_name):
         px_chk = price_live or get_price() or 0.0
         if _should_defer_entry(
             pl.direction, entry_kind_pre, pl.entry_price, px_chk,
@@ -10335,7 +10487,7 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
 
 async def _try_place_pending_entry(pl: "PendingLimit") -> bool:
     """Поставить entry-ордер на биржу сразу (live). True если order_id есть."""
-    if state.paper or pl.status != "pending" or pl.order_id:
+    if _treat_as_paper(pl.tf) or pl.status != "pending" or pl.order_id:
         return bool(pl.order_id)
 
     # До постановки: TP уже ходили после confirm → не входим.
@@ -10814,7 +10966,7 @@ async def _finalize_limit_fill(pl: PendingLimit, avg_price: float,
             logger.info(
                 f"positionId #{pl.trade_num} {pl.direction}: {pos.exchange_position_id}"
             )
-        if not state.paper:
+        if not _treat_as_paper(pl.tf):
             if await _await_position_on_exchange(pos):
                 if pos.exchange_position_id:
                     save_positions(state.positions)
@@ -10824,10 +10976,10 @@ async def _finalize_limit_fill(pl: PendingLimit, avg_price: float,
                     f"— SL/TP отложены до exchange_seen"
                 )
         sl_ok, tp_ok = (False, False)
-        if state.paper or _position_exchange_confirmed(pos):
+        if _treat_as_paper(pl.tf) or _position_exchange_confirmed(pos):
             sl_ok, tp_ok = await place_sl_tp_for_position(pos)
 
-        if not state.paper and pl.htf_time:
+        if not _treat_as_paper(pl.tf) and pl.htf_time:
             ban_h = _manual_setup_ban_hash(
                 tf=pl.tf,
                 direction=pl.direction,
@@ -11178,7 +11330,7 @@ async def limit_monitor():
             ohlc_high = cached.get("high")
 
             # Таймаут лимитки — только если ордер уже на бирже (paper: не defer)
-            armed = bool(pl.order_id) or (state.paper and not pl.defer_entry)
+            armed = bool(pl.order_id) or (_treat_as_paper(pl.tf) and not pl.defer_entry)
             if now >= pl.timeout_at and armed:
                 if pl.order_id and not await _cancel_pending_entry(pl):
                     await _alert_cancel_fail(
@@ -11321,12 +11473,12 @@ async def limit_monitor():
                 continue
 
             # Выставляем ордер на бирже (если ещё нет) — live
-            if not state.paper and pl.order_id is None:
+            if not _treat_as_paper(pl.tf) and pl.order_id is None:
                 await _try_place_pending_entry(pl)
                 continue
 
-            # ── PAPER MODE: проверяем цену вместо ордера ──────────────
-            if state.paper:
+            # ── PAPER / SHADOW-ONLY: проверяем цену вместо ордера ──────────────
+            if _treat_as_paper(pl.tf):
                 cisd_p = pl.cisd_level or pl.entry_price
                 # SHADOW: fill только по новому закрытому бару или live-цене.
                 # Бар, уже закрытый на момент лимитки, не считается ретестом.
@@ -11644,7 +11796,7 @@ async def position_monitor():
 
         backfilled_pid = False
         for p in open_pos:
-            if not state.paper and not p.exchange_position_id:
+            if not _treat_as_paper(p.tf) and not p.exchange_position_id:
                 if await _backfill_exchange_position_id(p):
                     backfilled_pid = True
         if backfilled_pid:
@@ -11655,8 +11807,8 @@ async def position_monitor():
             sign = 1 if p.direction == "LONG" else -1
             price = get_price(_pos_symbol_key(p))
 
-            # ── PAPER MODE: проверяем цену напрямую ───────────────────
-            if state.paper:
+            # ── PAPER / SHADOW-ONLY: проверяем цену напрямую ───────────────────
+            if _treat_as_paper(p.tf):
                 sk = _pos_symbol_key(p)
                 if price is None:
                     continue
@@ -11953,7 +12105,7 @@ async def sync_positions_on_start():
     issues = []
     restored = []
     for pos in state.positions:
-        if pos.status != "open":
+        if pos.status != "open" or _tf_shadow_only(getattr(pos, "tf", None)):
             continue
         for attr, label in [("stop_order_id", "стоп"), ("tp_order_id", "тейк")]:
             oid = getattr(pos, attr)
@@ -11990,7 +12142,7 @@ async def _autotrade_signals(signals: list, tf_name: str) -> int:
         return 0
     placed = 0
     for sig in signals:
-        if _open_pending_count() >= int(CONFIG.get("max_positions") or 7):
+        if _open_pending_count(tf_name) >= int(CONFIG.get("max_positions") or 7):
             break
         sk = str(sig.get("symbol_key") or active_symbol_key())
         htf = _htf_time_for_sig(sig, tf_name)
@@ -12082,7 +12234,7 @@ async def _run_detect_and_trade(
         df, state.processed,
         htf_ratio=tf_cfg["htf_ratio"], tf_name=tf_name,
         df_confirm=df_confirm,
-        min_sweep_atr=_min_sweep_atr(),
+        min_sweep_atr=_min_sweep_atr(tf_name),
     )
     await _flush_resweep_pending_cancels()
     if signals:
@@ -12534,7 +12686,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             df, state.processed,
             htf_ratio=tf_cfg["htf_ratio"], tf_name=tf_name,
             df_confirm=df_confirm,
-            min_sweep_atr=_min_sweep_atr(),
+            min_sweep_atr=_min_sweep_atr(tf_name),
         )
         await _flush_resweep_pending_cancels()
         if signals:
@@ -12671,7 +12823,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     df2, set(),
                     htf_ratio=tf_cfg["htf_ratio"], tf_name=tf_name,
                     df_confirm=df2_confirm,
-                    min_sweep_atr=_min_sweep_atr(),
+                    min_sweep_atr=_min_sweep_atr(tf_name),
                 )
                 await _flush_resweep_pending_cancels()
                 if sigs2:
@@ -14825,6 +14977,8 @@ async def sync_exchange_state() -> tuple[int, int]:
 
         found = False
         for pos in state.positions:
+            if _tf_shadow_only(getattr(pos, "tf", None)):
+                continue
             if (
                 pos.status == "open"
                 and pos.direction == direction
@@ -14859,6 +15013,8 @@ async def sync_exchange_state() -> tuple[int, int]:
                 continue
 
             matched_pl = _find_pending_for_exchange(direction, entry_price)
+            if matched_pl is not None and _tf_shadow_only(getattr(matched_pl, "tf", None)):
+                matched_pl = None
             if matched_pl is not None:
                 if matched_pl.status == "pending":
                     await _finalize_limit_fill(
@@ -15011,10 +15167,12 @@ async def main():
     mode_str = "SHADOW" if state.paper else "LIVE"
     logger.info("=" * 58)
     logger.info(
-        f"CISD BOT v6.0-bybit — {len(ACTIVE_SYMBOL_KEYS)} пар × tf8 | {mode_str}"
+        f"CISD BOT v6.0-bybit — {len(ACTIVE_SYMBOL_KEYS)} пар × "
+        f"{'+'.join(ACTIVE_TF_KEYS)} | {mode_str}"
     )
     logger.info(
-        f"LIMIT-only TP=1R vwap | leverage {CONFIG['leverage']}x isolated | "
+        f"LIMIT-only TP=1R | tf7 SHADOW A+V+D 10м/12ч | "
+        f"leverage {CONFIG['leverage']}x isolated | "
         f"max {CONFIG['max_positions']} pos"
     )
     logger.info("=" * 58)
