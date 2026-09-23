@@ -73,6 +73,8 @@ BYBIT_API_SECRET = os.environ.get("BYBIT_API_SECRET", "").strip()
 
 TELEGRAM_TOKEN   = os.environ.get("TELEGRAM_TOKEN", "").strip()
 TELEGRAM_CHAT_ID = int(os.environ.get("TELEGRAM_CHAT_ID", "0") or "0")
+# Только Telegram. Bybit этот адрес не использует.
+TELEGRAM_PROXY   = os.environ.get("TELEGRAM_PROXY", "").strip()
 
 SYMBOL = "SOL/USDT:USDT"  # legacy; для скриптов — см. active_symbol()
 
@@ -471,8 +473,13 @@ exchange = ccxt.bybit({
         "defaultSubType": "linear",
         "recvWindow": 10000,
         "adjustForTimeDifference": True,
+        "aiohttp_trust_env": False,
     },
 })
+# requests подхватывает HTTP(S)_PROXY из окружения. Для Bybit это выключаем.
+_bybit_sess = getattr(exchange, "session", None)
+if _bybit_sess is not None:
+    _bybit_sess.trust_env = False
 
 
 def _position_idx(direction: str) -> int:
@@ -3394,7 +3401,11 @@ async def cmd_start_noop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 
 def _build_tg_application() -> Application:
-    app = Application.builder().token(TELEGRAM_TOKEN).build()
+    builder = Application.builder().token(TELEGRAM_TOKEN)
+    if TELEGRAM_PROXY:
+        builder = builder.proxy(TELEGRAM_PROXY).get_updates_proxy(TELEGRAM_PROXY)
+        logger.info(f"Telegram через прокси {TELEGRAM_PROXY}; Bybit напрямую")
+    app = builder.build()
     app.add_handler(TypeHandler(Update, _tg_gate), group=-1)
     app.add_handler(CommandHandler("start",  cmd_start))
     app.add_handler(CommandHandler("resume", cmd_start))
