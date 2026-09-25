@@ -27,6 +27,8 @@ sys.path.insert(0, r"D:/PYTHON/CISDBOT")
 
 OUT = r"D:/PYTHON/cisdbotbybit/RUNS/temp/h1_confirm_htf"
 REPORT = r"D:/PYTHON/cisdbotbybit/RUNS/temp/H1_CONFIRM_HTF_2026-09-25.md"
+OUT_OFF = r"D:/PYTHON/cisdbotbybit/RUNS/temp/h1_4h_nofilter"
+REPORT_OFF = r"D:/PYTHON/cisdbotbybit/RUNS/temp/H1_4H_NOFILTER_2026-09-25.md"
 PAIRS = ["SOL", "DOGE", "KAS", "ADA", "LINK", "LTC"]
 YEARS = {
     2023: ("2023-01-01", "2023-12-31"),
@@ -37,6 +39,7 @@ YEARS = {
 KAS_SKIP = set()
 HTF = {"1H": 60, "2H": 120, "3H": 180, "4H": 240}
 AVD = {"atr_enabled": True, "vol_enabled": True, "d_enabled": True}
+FILT_OFF = {"atr_enabled": False, "vol_enabled": False, "d_enabled": False}
 PROFILE = "h1c"
 
 import backtest.config as _cfg  # noqa: E402
@@ -255,6 +258,116 @@ def write_report(tr: pd.DataFrame) -> None:
         f.write(text)
 
 
+def one_off(task):
+    """1h → 4H, без фильтров A+V+D. Тот же тейк 1R и часовое закрытие."""
+    sym, year = task
+    dst = os.path.join(OUT_OFF, f"4H_{sym}_{year}.pkl")
+    if os.path.exists(dst):
+        return f"skip 4H {sym} {year}"
+    _patch_tp1r()
+    since, until = YEARS[year]
+    t0 = time.time()
+    from backtest.bot_aligned import run_bot_aligned_backtest
+
+    try:
+        res = run_bot_aligned_backtest(
+            since=since,
+            until=until,
+            profile=PROFILE,
+            symbol=sym,
+            limit_bars=1,
+            pos_bars=12,
+            htf_ratio=240,
+            detect_filters=FILT_OFF,
+            fee_model="bybit",
+            max_positions=5,
+            entry_kind_mode="limit_only",
+            market_fill_mode="signal_ref",
+            cancel_fib2=False,
+            mss_on_ltf=False,
+            save=False,
+            quiet=True,
+        )
+    except Exception as e:
+        return f"FAIL 4H {sym} {year}: {e!r}"
+    rows = []
+    for t in res.get("trades") or []:
+        rows.append({
+            "sym": sym,
+            "year": year,
+            "outcome": t.get("outcome"),
+            "direction": t.get("direction"),
+            "r": float(t.get("r_net")),
+        })
+    os.makedirs(OUT_OFF, exist_ok=True)
+    with open(dst + ".tmp", "wb") as f:
+        pickle.dump(rows, f)
+    os.replace(dst + ".tmp", dst)
+    return f"OK 4H {sym} {year}: {len(rows)} сделок sec={time.time() - t0:.0f}"
+
+
+def write_off_report() -> None:
+    rows = []
+    for sym in PAIRS:
+        for year in YEARS:
+            p = os.path.join(OUT_OFF, f"4H_{sym}_{year}.pkl")
+            if os.path.exists(p):
+                rows.extend(pickle.load(open(p, "rb")))
+    tr = pd.DataFrame(rows)
+    recent = tr[tr.year >= 2024] if len(tr) else tr
+    lines = [
+        "# 1h → 4H без фильтров (25.09.2026)",
+        "",
+        "Та же сборка, что 5m→4H, только серия на часе: сигнал после закрытия часовой свечи, "
+        "старшее окно 4H, тейк 1R, лимит на CISD, комиссия Bybit. Фильтры A+V+D выключены.",
+        "",
+        "Лимитка 1 час, удержание 12 часов. Пары сканера: SOL, DOGE, KAS, ADA, LINK, LTC. "
+        "2026 обрезан 23 июня.",
+        "",
+        "С фильтрами на этом же окне за 2024–26 было −0,096 R на сделку (1 210 сделок).",
+        "",
+        "## 2024–26",
+        "",
+        "| срез | сделки | доля тейков | avg R | сумма R | t | тейк/стоп/время |",
+        "|---|---:|---:|---:|---:|---:|---:|",
+        f"| все | {_line(recent)} |",
+    ]
+    if len(recent):
+        for direction in ("LONG", "SHORT"):
+            g = recent[recent.direction == direction]
+            lines.append(f"| {direction} | {_line(g)} |")
+    lines.append("")
+    lines.append("## По годам")
+    lines.append("")
+    lines.append("| год | сделки | avg R | сумма R | t |")
+    lines.append("|---|---:|---:|---:|---:|")
+    for year in YEARS:
+        g = tr[tr.year == year] if len(tr) else tr
+        if len(g) == 0:
+            lines.append(f"| {year} | 0 | — | — | — |")
+        else:
+            lines.append(
+                f"| {year} | {len(g)} | {_fmt(g.r.mean())} | {_fmt(g.r.sum(), 1)} | {_fmt(_tstat(g.r), 2)} |"
+            )
+    lines.append("")
+    lines.append("## Пары, 2024–26")
+    lines.append("")
+    lines.append("| пара | сделки | avg R | сумма R | t |")
+    lines.append("|---|---:|---:|---:|---:|")
+    for sym in PAIRS:
+        g = recent[recent.sym == sym] if len(recent) else recent
+        if len(g) == 0:
+            lines.append(f"| {sym} | 0 | — | — | — |")
+        else:
+            lines.append(
+                f"| {sym} | {len(g)} | {_fmt(g.r.mean())} | {_fmt(g.r.sum(), 1)} | {_fmt(_tstat(g.r), 2)} |"
+            )
+    lines.append("")
+    text = "\n".join(lines) + "\n"
+    with open(REPORT_OFF, "w", encoding="utf-8") as f:
+        f.write(text)
+
+
 def _tasks(only=None):
     tasks = []
     for name in HTF:
@@ -276,6 +389,23 @@ if __name__ == "__main__":
         print(REPORT, flush=True)
     elif args and args[0] == "smoke":
         print(one(("4H", "SOL", 2024)), flush=True)
+    elif args and args[0] == "off":
+        os.makedirs(OUT_OFF, exist_ok=True)
+        nw = int(args[1]) if len(args) > 1 else 8
+        tasks = [(s, y) for s in PAIRS for y in YEARS]
+        print(f"no filters, 1h-4h | tasks: {len(tasks)} | workers: {nw}", flush=True)
+        from multiprocessing import Pool
+
+        t0 = time.time()
+        with Pool(nw) as pool:
+            for msg in pool.imap_unordered(one_off, tasks):
+                print(msg, flush=True)
+        print(f"done in {time.time() - t0:.0f}s", flush=True)
+        write_off_report()
+        print(REPORT_OFF, flush=True)
+    elif args and args[0] == "off-report":
+        write_off_report()
+        print(REPORT_OFF, flush=True)
     else:
         nw = int(args[0]) if args else 8
         tasks = _tasks()
