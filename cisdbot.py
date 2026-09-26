@@ -10007,44 +10007,6 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
         )
         return False
 
-    htf_s   = str(sig.get("htf_time") or "")
-    trig_s  = str(sig.get("trigger_bar_time") or sig.get("trigger_bar_at") or "")
-    sweep_l = float(sig.get("htf_sweep_level") or sig.get("sweep_level") or 0.0)
-    df_now  = state.df_cache.get(f"{sk}|{tf_name}")
-    if df_now is None:
-        df_now = await fetch_ohlcv(
-            str(tf_cfg.get("timeframe") or "30m"),
-            int(tf_cfg.get("ohlcv") or 500),
-        )
-    n_bars = 0 if df_now is None else len(df_now)
-    if df_now is None or n_bars < 50:
-        logger.info(
-            f"sweep check skipped: мало данных [{tf_name}] {sk} {direction} n={n_bars}"
-        )
-    else:
-        ok_sw, why_sw = _sweep_valid_for_setup(
-            df_now, int(tf_cfg.get("htf_ratio") or 0), htf_s, trig_s, sweep_l, direction,
-        )
-        if not ok_sw:
-            logger.info(f"SKIP sweep invalid [{tf_name}] {sk} {direction}: {why_sw}")
-            await _notify_signal_skip(
-                sig, tf_name, "skipped_sweep_invalid",
-                header=(
-                    f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — "
-                    "свип триггер-бара не подтверждён закрытием окна"
-                ),
-                detail=why_sw,
-            )
-            return False
-        if "пропускаем" in why_sw:
-            logger.info(
-                f"sweep check skipped [{tf_name}] {sk} {direction}: {why_sw}"
-            )
-        else:
-            logger.info(
-                f"sweep check ok [{tf_name}] {sk} {direction}: {why_sw}"
-            )
-
     parent_pos = _find_open_position_for_pyramid(direction, tf_name)
     is_pyramid = parent_pos is not None
 
