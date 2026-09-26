@@ -3356,6 +3356,9 @@ def _bar_time_to_utc(ts: str) -> Optional[datetime]:
 _tg_app: Optional[Application] = None
 _tg_online: bool = False
 _task_alert_ts: dict[str, float] = {}
+_flushing_tg: bool = False
+TG_QUEUE_MAX = 100
+PENDING_TG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pending_tg.json")
 
 BOT_COMMANDS = [
     BotCommand("resume", "▶ Запустить / возобновить торговлю"),
@@ -3494,6 +3497,7 @@ async def telegram_connect_loop():
             await _tg_app.updater.start_polling(drop_pending_updates=True)
             _tg_online = True
             logger.info("Telegram подключён, polling запущен")
+            await flush_pending_tg()
             await send_telegram(
                 f"🤖 CISD BOT v6 запущен\n"
                 f"Режим: {_mode_prefix()} | "
@@ -3531,6 +3535,95 @@ def _tg_send_transient(exc: BaseException) -> bool:
     )
 
 
+def _tg_send_permanent(exc: BaseException) -> bool:
+    """Явно-постоянная ошибка отправки: ретрай не поможет, карточку можно выбросить."""
+    blob = (type(exc).__name__ + " " + str(exc)).lower()
+    return any(
+        s in blob
+        for s in ("bad request", "chat not found", "message is too long",
+                  "bot was blocked", "forbidden", "not enough rights")
+    )
+
+
+def _load_pending_tg() -> list:
+    try:
+        with open(PENDING_TG_PATH, encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except FileNotFoundError:
+        return []
+    except Exception as e:
+        logger.warning(f"pending_tg load: {e}")
+        return []
+
+
+def _save_pending_tg() -> None:
+    try:
+        tmp = PENDING_TG_PATH + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(_pending_tg_queue, f, ensure_ascii=False)
+        os.replace(tmp, PENDING_TG_PATH)
+    except Exception as e:
+        logger.error(f"pending_tg save: {e}")
+
+
+def _queue_tg(text: str, had_buttons: bool = False) -> None:
+    """Карточка не ушла — в очередь, дошлём при связи."""
+    _pending_tg_queue.append({
+        "ts": msk(utcnow()).strftime("%H:%M"),
+        "text": (text or "")[:3500],
+        "buttons": bool(had_buttons),
+    })
+    del _pending_tg_queue[:-TG_QUEUE_MAX]
+    _save_pending_tg()
+
+
+async def flush_pending_tg() -> None:
+    global _flushing_tg
+    if _flushing_tg or not _tg_online or _tg_app is None or not _pending_tg_queue:
+        return
+    _flushing_tg = True
+    try:
+        sent = 0
+        while _pending_tg_queue:
+            item = _pending_tg_queue[0]
+            note = (
+                "⚠️ Кнопки этого сообщения недоступны — повтори действие командой.\n"
+                if item.get("buttons") else ""
+            )
+            card = (
+                f"⏳ НЕ ДОСТАВЛЕНО ВОВРЕМЯ (карточка была готова в {item.get('ts', '?')})\n"
+                f"{note}{item.get('text', '')}"
+            )
+            try:
+                await _tg_app.bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=card[:4096])
+            except Exception as e:
+                if _tg_send_permanent(e):
+                    logger.error(f"досылка карточек: отброшена: {e}")
+                    _pending_tg_queue.pop(0)
+                    continue
+                logger.warning(f"досылка карточек: {e}")
+                break
+            _pending_tg_queue.pop(0)
+            sent += 1
+            await asyncio.sleep(0.5)
+        _save_pending_tg()
+        if sent:
+            logger.info(f"досылка карточек: отправлено {sent}")
+    finally:
+        _flushing_tg = False
+
+
+async def tg_queue_flusher() -> None:
+    """Раз в 15 секунд пробует дослать недоставленные карточки."""
+    while True:
+        await asyncio.sleep(15)
+        await flush_pending_tg()
+
+
+_pending_tg_queue: list = _load_pending_tg()
+
+
 async def send_telegram(text: str, reply_markup=None):
     """Отправка в TG + зеркало в CTL event feed. None = в TG не доставлено."""
     try:
@@ -3539,7 +3632,8 @@ async def send_telegram(text: str, reply_markup=None):
         pass
     if not _tg_online or _tg_app is None:
         preview = text.replace("\n", " ")[:120]
-        logger.info(f"[TG offline] {preview}")
+        _queue_tg(text, bool(reply_markup))
+        logger.info(f"[TG offline → очередь] {preview}")
         return None
     delays = (0.0, 1.5, 3.0)
     last_err: BaseException | None = None
@@ -3559,7 +3653,8 @@ async def send_telegram(text: str, reply_markup=None):
                     f"Telegram send retry {i + 1}/{len(delays) - 1}: {e}"
                 )
                 continue
-            logger.error(f"Telegram send: {e}")
+            _queue_tg(text, bool(reply_markup))
+            logger.error(f"Telegram send: {e} — карточка в очередь")
             return None
     if last_err is not None:
         logger.error(f"Telegram send: {last_err}")
@@ -15260,6 +15355,7 @@ async def main():
         asyncio.create_task(supervised(position_monitor,      "position_monitor"), name="position_monitor"),
         asyncio.create_task(supervised(exchange_sync_loop,    "exchange_sync"),   name="exchange_sync"),
         asyncio.create_task(supervised(telegram_connect_loop, "telegram"),        name="telegram"),
+        asyncio.create_task(supervised(tg_queue_flusher,       "tg_queue"),       name="tg_queue"),
     ]
     try:
         await asyncio.gather(*tasks)
