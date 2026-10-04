@@ -20,6 +20,7 @@ import gzip
 import hashlib
 import json
 import logging
+import re
 import math
 import logging.handlers
 import os
@@ -489,6 +490,115 @@ def _log_rejected(text: str) -> None:
         _rejected_logger.info((text or "").replace("\n", " | "))
     except Exception as e:
         logger.error(f"rejected.log: {e}")
+
+
+_REJECT_BUCKETS = {
+    "наклон": "наклон",
+    "slope": "наклон",
+    "время": "время",
+    "dt": "время",
+    "стоп": "стоп",
+    "stop": "стоп",
+    "занято": "занято",
+    "busy": "занято",
+    "vwap": "vwap",
+    "фильтр": "фильтр",
+    "прочее": "прочее",
+}
+
+
+def _reject_bucket(reason: str) -> str:
+    r = (reason or "").lower()
+    if "наклон" in r or "ema" in r or "slope" in r:
+        return "наклон"
+    if "свип" in r or "конфирм" in r:
+        return "время"
+    if "стоп" in r:
+        return "стоп"
+    if "занят" in r:
+        return "занято"
+    if "vwap" in r:
+        return "vwap"
+    if "atr" in r or "vol" in r or "touch" in r or "касани" in r:
+        return "фильтр"
+    return "прочее"
+
+
+def _rejected_log_paths() -> list[str]:
+    paths = []
+    for i in range(5, 0, -1):
+        p = f"{REJECTED_LOG}.{i}"
+        if os.path.isfile(p):
+            paths.append(p)
+    if os.path.isfile(REJECTED_LOG):
+        paths.append(REJECTED_LOG)
+    return paths
+
+
+def _parse_rejected_line(line: str) -> Optional[dict]:
+    """Строка rejected.log → время, пара, сторона, короткая причина."""
+    line = (line or "").strip()
+    if "⛔" not in line:
+        return None
+    m = re.match(r"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})(?:,\d+)?\s+(.*)$", line)
+    if not m:
+        return None
+    try:
+        ts = datetime.strptime(m.group(1), "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        return None
+    body = m.group(2)
+    first = body.split(" | ", 1)[0]
+    reason = first.split(" — ", 1)[1].strip() if " — " in first else first.strip()
+    if len(reason) > 72:
+        reason = reason[:69] + "…"
+    direction = "LONG" if "LONG" in first else ("SHORT" if "SHORT" in first else "?")
+    symbol = ""
+    mark = "Инструмент: "
+    pos = body.find(mark)
+    if pos >= 0:
+        symbol = body[pos + len(mark):].split(" | ", 1)[0].split("/")[0].strip()
+    if not symbol:
+        m = re.search(r"\b([A-Z0-9]{2,10})/USDT\b", first)
+        if m:
+            symbol = m.group(1)
+    if not symbol:
+        symbol = "?"
+    return {
+        "ts": ts,
+        "symbol": symbol,
+        "direction": direction,
+        "reason": reason,
+        "bucket": _reject_bucket(reason),
+    }
+
+
+def _load_rejected(
+    *,
+    hours: float = 24,
+    symbol: Optional[str] = None,
+    bucket: Optional[str] = None,
+) -> list[dict]:
+    """Отсев за окно, новые в конце. Время лога — местные часы сервера."""
+    cutoff = datetime.now() - timedelta(hours=float(hours))
+    want_sym = (symbol or "").upper()
+    rows: list[dict] = []
+    for path in _rejected_log_paths():
+        try:
+            with open(path, encoding="utf-8", errors="replace") as f:
+                for line in f:
+                    row = _parse_rejected_line(line)
+                    if row is None or row["ts"] < cutoff:
+                        continue
+                    if want_sym and row["symbol"] != want_sym:
+                        continue
+                    if bucket and row["bucket"] != bucket:
+                        continue
+                    rows.append(row)
+        except OSError:
+            continue
+    rows.sort(key=lambda r: r["ts"])
+    return rows
 
 # /start: временное хранилище сигналов для inline-кнопок yes/no
 _pending_start_signals: dict[str, dict] = {}
@@ -3417,6 +3527,7 @@ BOT_COMMANDS = [
     BotCommand("status", "📊 Статус: позиции, баланс"),
     BotCommand("stats",  "📈 Статистика по парам и ТФ"),
     BotCommand("pairs",  "🪙 Активные пары"),
+    BotCommand("rejected", "⛔ Отсеянные кандидаты"),
     BotCommand("close",  "🔒 Закрыть позицию / отменить лимитку"),
     BotCommand("fee",    "💰 Maker / taker fee %"),
 ]
@@ -3471,6 +3582,8 @@ def _build_tg_application() -> Application:
     app.add_handler(CommandHandler("price",  cmd_price))
     app.add_handler(CommandHandler("pairs",  cmd_pairs))
     app.add_handler(CommandHandler("pair",   cmd_pairs))
+    app.add_handler(CommandHandler("rejected", cmd_rejected))
+    app.add_handler(CommandHandler("skip", cmd_rejected))
     app.add_handler(CommandHandler("close",  cmd_close))
     app.add_handler(CommandHandler("tf",     cmd_tf))
     app.add_handler(CommandHandler("timeout", cmd_timeout))
@@ -3553,7 +3666,7 @@ async def telegram_connect_loop():
                 f"{'▶ RUNNING' if state.running.is_set() else '⏸ PAUSED'}\n"
                 f"{'─' * 28}\n"
                 f"{len(ACTIVE_SYMBOL_KEYS)} пар × {CONFIG['tf1']['label']} | LIMIT 1ч TP=1R\n"
-                f"Команды: /start  /stop  /mode  /status  /stats  /pairs"
+                f"Команды: /start  /stop  /mode  /status  /stats  /pairs  /rejected"
             )
             # Держим задачу живой, пока polling работает
             while getattr(_tg_app.updater, "running", False):
@@ -13142,6 +13255,96 @@ async def callback_mode(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.info("/mode SHADOW")
         return
     await q.edit_message_text("Неизвестная команда")
+
+
+def _parse_rejected_args(args: list[str]) -> tuple[float, int, Optional[str], Optional[str]]:
+    """Часы окна, сколько строк, пара, корзина причины."""
+    hours = 24.0
+    limit = 12
+    symbol = None
+    bucket = None
+    for raw in args or []:
+        a = str(raw).strip()
+        if not a:
+            continue
+        low = a.lower().replace("ё", "е")
+        if low in _REJECT_BUCKETS:
+            bucket = _REJECT_BUCKETS[low]
+            continue
+        key = a.upper()
+        if key in SYMBOL_PROFILES:
+            symbol = key
+            continue
+        if low.endswith("д") or low.endswith("d"):
+            try:
+                hours = max(1.0, float(low[:-1]) * 24.0)
+            except ValueError:
+                pass
+            continue
+        if low.endswith("ч") or low.endswith("h"):
+            try:
+                hours = max(1.0, float(low[:-1]))
+            except ValueError:
+                pass
+            continue
+        if a.isdigit():
+            limit = max(1, min(40, int(a)))
+    return hours, limit, symbol, bucket
+
+
+async def cmd_rejected(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Сводка отсева: счёт по причинам и короткие строки, новые сверху."""
+    if update.message is None:
+        return
+    hours, limit, symbol, bucket = _parse_rejected_args(list(context.args or []))
+    rows = _load_rejected(hours=hours, symbol=symbol, bucket=bucket)
+    window = f"{hours:.0f}ч" if hours < 48 else f"{hours / 24:.0f}д"
+    title_bits = [f"за {window}"]
+    if symbol:
+        title_bits.append(symbol)
+    if bucket:
+        title_bits.append(bucket)
+    title = ", ".join(title_bits)
+    if not rows:
+        await update.message.reply_text(
+            f"Отсева {title} нет.\n"
+            f"Фильтр: /rejected SOL · /rejected наклон · /rejected 20 · /rejected 48ч"
+        )
+        return
+    counts: dict[str, int] = {}
+    for row in rows:
+        counts[row["bucket"]] = counts.get(row["bucket"], 0) + 1
+    ranked = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+    summary = " · ".join(f"{name} {n}" for name, n in ranked)
+    shown = list(reversed(rows[-limit:]))
+    lines = [
+        f"Отсев {title}: {len(rows)}",
+        summary,
+        "",
+        f"Последние {len(shown)}, новые сверху:",
+    ]
+    for row in shown:
+        ts = row["ts"]
+        if ts.date() == datetime.now().date():
+            when = ts.strftime("%H:%M")
+        else:
+            when = ts.strftime("%d.%m %H:%M")
+        side = "L" if row["direction"] == "LONG" else ("S" if row["direction"] == "SHORT" else "?")
+        lines.append(f"{when}  {row['symbol']:<5} {side}  {row['reason']}")
+    if len(rows) > len(shown):
+        lines.append(f"…ещё {len(rows) - len(shown)}, в логе rejected.log")
+    lines.append("")
+    lines.append("Фильтр: /rejected SOL · /rejected наклон · /rejected 20 · /rejected 48ч")
+    text = "\n".join(lines)
+    # Telegram режет сообщение на 4096 символов.
+    while text:
+        chunk = text[:4000]
+        if len(text) > 4000:
+            cut = chunk.rfind("\n")
+            if cut > 500:
+                chunk = chunk[:cut]
+        await update.message.reply_text(chunk)
+        text = text[len(chunk):].lstrip("\n")
 
 
 async def cmd_pairs(update: Update, context: ContextTypes.DEFAULT_TYPE):
