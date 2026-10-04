@@ -1,8 +1,10 @@
 """
-CISD BOT v6.0-bybit — Bybit USDT linear, 6 пар × tf7 SHADOW, SHADOW/LIVE
+CISD BOT v6.1-bybit — кандидат v2, 10 пар × tf1 SHADOW
 ====================================================================
-Стратегия: LIMIT-only на cisd_level, TP=1R, 1 поз/пара, max 7.
-tf7 (канон 22.09.2026): MSS на 5m, фильтры A+V+D, лимитка 10 мин, позиция 12 ч, только SHADOW.
+Стратегия: LIMIT на cisd_level, TP=1R, 1 поз/пара, max 7.
+tf1 (кандидат v2, 04.10.2026): CISD 15m → 4H, фильтры A/V/D выкл,
+лимитка 1 ч, позиция 16 ч, стоп ≥ 1.5%, гейт EMA21 (якорь lc),
+свип→конфирм ≥ 2 ч. Только SHADOW, пока нет форварда.
 По умолчанию SHADOW (dry_run): реальные котировки, виртуальные сделки, ордеров нет.
 Не запускать вместе с MEXC-cisdbot: один TELEGRAM_TOKEN.
 Деплой: /opt/cisdbotbybit, systemd cisdbotbybit.service, SSH-хост cisdbotbybit.
@@ -162,10 +164,27 @@ SYMBOL_PROFILES: dict[str, dict] = {
         "sweep_bucket": 0.001,
         **_BYBIT_FEES,
     },
+    "AVAX": {
+        "symbol": "AVAX/USDT:USDT",
+        "label": "AVAX/USDT",
+        "contract_value": 0.1,   # qtyStep Bybit linear, 04.10.2026
+        "price_tick": 0.001,
+        "sweep_bucket": 0.01,
+        **_BYBIT_FEES,
+    },
+    "GRAM": {
+        # бывший TON, на Bybit linear переименован в GRAMUSDT (04.10.2026)
+        "symbol": "GRAM/USDT:USDT",
+        "label": "GRAM/USDT",
+        "contract_value": 0.1,   # qtyStep
+        "price_tick": 0.001,
+        "sweep_bucket": 0.01,
+        **_BYBIT_FEES,
+    },
 }
 DEFAULT_SYMBOL_KEY = "SOL"
 ACTIVE_SYMBOL_KEYS = (
-    "SOL", "DOGE", "KAS", "ADA", "LINK", "LTC",
+    "SOL", "DOGE", "KAS", "ADA", "LINK", "LTC", "XRP", "BTC", "AVAX", "GRAM",
 )
 _CCXT_TO_SYMBOL_KEY = {p["symbol"]: k for k, p in SYMBOL_PROFILES.items()}
 
@@ -183,9 +202,10 @@ CONFIG = {
     "min_balance_usdt":    20.0,
     "min_contracts":       1,
     "min_notional_usdt":   5.0,   # Bybit minNotional linear
-    "min_stop_pct":        0.5,   # сигналы со стопом < 0.5% не торгуем
+    "min_stop_pct":        1.5,   # кандидат v2: стоп < 1.5% от входа — пропуск
     "vwap_gate_enabled":   False, # vwap-гейт выключен (на tf8 режет +840R прибыльных сделок)
-    "slope_gate_enabled":  False, # тренд-гейт EMA3 1H; выкл: честный закрытый 1H не подтвердил −R (см. TASK)
+    "slope_gate_enabled":  True,  # кандидат v2: EMA21 15m, якорь lc, порог ±0.02%
+    "dt_sw_min":           120,   # кандидат v2: свип → конфирм не короче 2 часов
     "hedge_mode":          False, # one-way: 1 позиция на пару
     "emergency_stop_pct":  0.3,    # % за стоп-ценой → принудительное закрытие маркетом
     "min_rr":              0.2,    # min R:R (reward/risk); MARKET retest — от текущей цены
@@ -254,12 +274,19 @@ CONFIG = {
     "tf1": {
         "timeframe":  "15m",
         "htf_ratio":  240,
-        "limit_h":    5,     # 5H ожидание входа
-        "position_h": 16,    # 16H ожидание выхода
+        "limit_h":    1,     # кандидат v2: 1 ч на лимитку
+        "position_h": 16,    # 16 ч на позицию
         "ohlcv":      500,
         "scan_s":     20,
         "scan_m":     15,
         "label":      "15m → 4H",
+        # Первый этап — только SHADOW, форвард ещё не пройден.
+        "shadow_only": True,
+        "detect_filters": {
+            "atr_enabled": False,
+            "vol_enabled": False,
+            "d_enabled": False,
+        },
     },
     "tf2": {
         "timeframe":  "1h",
@@ -348,10 +375,9 @@ CONFIG = {
 }
 
 TF_KEYS = ("tf0", "tf1", "tf2", "tf3", "tf4", "tf5", "tf6", "tf7", "tf8")
-# tf7 в сканере: SHADOW, канон 22.09.2026 (A+V+D, MSS 5m, 10 мин / 12 ч).
-# tf8 снят. В LIVE tf7 не выводить, пока shadow_only=True.
-ACTIVE_TF_KEYS = ("tf7",)
-SCAN_TF_KEYS   = ("tf7",)
+# Кандидат v2: только tf1, SHADOW. tf7 снят со сканера.
+ACTIVE_TF_KEYS = ("tf1",)
+SCAN_TF_KEYS   = ("tf1",)
 OHLCV_5M_BARS = 1000  # один запрос 5m на пару за цикл
 # tf4 (10m→1H): особый паттерн «2 бара HTF + подтверждение баром 3»
 TF4_BAR3_PATTERN_TF = "tf4"
@@ -443,6 +469,26 @@ logging.getLogger("telegram.ext._utils.networkloop").setLevel(logging.CRITICAL)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
 
 logger = logging.getLogger("cisd_bot")
+
+# Отсеянные кандидаты сюда, в Telegram их не шлём.
+REJECTED_LOG = os.path.join(BASE_DIR, "rejected.log")
+_rejected_logger = logging.getLogger("cisd_rejected")
+_rejected_logger.setLevel(logging.INFO)
+_rejected_logger.propagate = False
+if not _rejected_logger.handlers:
+    _rej_handler = logging.handlers.RotatingFileHandler(
+        REJECTED_LOG, maxBytes=5 * 1024 * 1024, backupCount=5, encoding="utf-8",
+    )
+    _rej_handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
+    _rejected_logger.addHandler(_rej_handler)
+
+
+def _log_rejected(text: str) -> None:
+    """Карточка отсева — только в rejected.log, без Telegram."""
+    try:
+        _rejected_logger.info((text or "").replace("\n", " | "))
+    except Exception as e:
+        logger.error(f"rejected.log: {e}")
 
 # /start: временное хранилище сигналов для inline-кнопок yes/no
 _pending_start_signals: dict[str, dict] = {}
@@ -556,7 +602,7 @@ class BotState:
         self.pending_limits: list   = []
         self.positions: list        = []
         self.paper_balance: float   = CONFIG["paper_balance"]
-        self.active_tf: str         = "tf7"
+        self.active_tf: str         = "tf1"
         self.active_symbol_key: str  = DEFAULT_SYMBOL_KEY  # для fetch/detect текущего цикла
         self.fees_by_symbol: dict[str, dict] = {}
         self._trade_counter: int    = 0
@@ -1188,7 +1234,7 @@ def load_bot_state():
     """Загружает активный ТФ, режим и таймауты с диска."""
     d = load_json(BOT_STATE_FILE, {})
     if "active_tf" in d and d["active_tf"] in TF_KEYS:
-        state.active_tf = d["active_tf"] if d["active_tf"] in ACTIVE_TF_KEYS else "tf7"
+        state.active_tf = d["active_tf"] if d["active_tf"] in ACTIVE_TF_KEYS else "tf1"
     if "fees_by_symbol" in d and isinstance(d["fees_by_symbol"], dict):
         cleaned_fees: dict[str, dict] = {}
         for k, v in d["fees_by_symbol"].items():
@@ -1234,9 +1280,12 @@ def load_bot_state():
         state.paper = bool(d["paper"])
         if state.paper and not state.running.is_set():
             state.running.set()
+    # Кандидат v2: пока shadow_only, рестарт не выводит профиль в LIVE.
+    if _tf_shadow_only(state.active_tf):
+        state.paper = True
     for tf, vals in d.get("timeouts", {}).items():
         if tf in ACTIVE_TF_KEYS:
-            continue  # tf7/tf8 таймауты фиксированы ТЗ
+            continue  # таймауты активного ТФ фиксированы ТЗ
         if tf in CONFIG:
             if "limit_h"    in vals: CONFIG[tf]["limit_h"]    = float(vals["limit_h"])
             if "position_h" in vals: CONFIG[tf]["position_h"] = float(vals["position_h"])
@@ -3503,7 +3552,7 @@ async def telegram_connect_loop():
                 f"Режим: {_mode_prefix()} | "
                 f"{'▶ RUNNING' if state.running.is_set() else '⏸ PAUSED'}\n"
                 f"{'─' * 28}\n"
-                f"{len(ACTIVE_SYMBOL_KEYS)} пар × {CONFIG['tf7']['label']} | LIMIT TP=1R\n"
+                f"{len(ACTIVE_SYMBOL_KEYS)} пар × {CONFIG['tf1']['label']} | LIMIT 1ч TP=1R\n"
                 f"Команды: /start  /stop  /mode  /status  /stats  /pairs"
             )
             # Держим задачу живой, пока polling работает
@@ -4924,37 +4973,23 @@ def _detect_filters_profile_name(flags: Optional[dict] = None) -> str:
 
 
 def _filters_live_lines() -> list[str]:
-    on = bool(CONFIG.get("vwap_gate_enabled", True))
-    f7 = _detect_filter_flags("tf7")
-    sw = max(0.0, float(SWEEP_ATR_FILTER.get("min_atr") or 0.0))
-    vr = _trigger_vol_max_ratio_cfg()
-    ma = _trigger_vol_ma()
     return [
-        "Фильтры:",
-        ("  vwap     ON   режет  SHORT vd≤0, LONG vd≥0" if on
-         else "  vwap     OFF  гейт выключен"),
-        f"  tf7 ATR  {'ON' if f7['atr_enabled'] else 'OFF'}  (sweep/ATR ≥ {sw:.2f})",
-        f"  tf7 VOL  {'ON' if f7['vol_enabled'] else 'OFF'}  (vol/SMA{ma} ≤ {vr:.1f})",
-        f"  tf7 D    {'ON' if f7['d_enabled'] else 'OFF'}  (пн/ср/пт: touches≥5)",
-        "  tf8      снят",
+        "Кандидат v2, tf1, SHADOW:",
+        "  15m → 4H, лимитка 1ч, позиция 16ч, тейк 1R",
+        "  ATR / объём / касания выкл",
+        "  стоп короче 1.5% — пропуск",
+        "  гейт EMA21 по 15m, якорь последнего закрытого бара, порог 0.02%",
+        "  от свипа до конфирма меньше 2ч — пропуск",
+        "  отсев пишется в rejected.log, в Telegram не уходит",
     ]
 
 
 def _filters_status_text() -> str:
-    return "\n".join(_filters_live_lines() + [
-        "",
-        "QSZ / PSL / QSTOP выключены. vwap на tf7 не включаем.",
-    ])
+    return "\n".join(_filters_live_lines())
 
 
 def _trigger_filters_desc() -> str:
-    f7 = _detect_filter_flags("tf7")
-    vw = "vwap=ON" if CONFIG.get("vwap_gate_enabled", True) else "vwap=OFF"
-    return (
-        f"{vw}  tf7 ATR={'ON' if f7['atr_enabled'] else 'OFF'} "
-        f"VOL={'ON' if f7['vol_enabled'] else 'OFF'} "
-        f"D={'ON' if f7['d_enabled'] else 'OFF'}"
-    )
+    return "tf1 ATR=OFF VOL=OFF D=OFF  EMA21-lc  dt≥2ч"
 
 
 def _apply_vol_or_touches_gate(
@@ -5151,7 +5186,7 @@ def _queue_pre_signal_filter_skip(
         f"prefilter skip: {sk} {dir_s} [{tf_name}] {title} | "
         f"sweep={sweep_v} ext={ext_v} | {detail_s.replace(chr(10), ' | ')}"
     )
-    _schedule_coro(_send_skip_tg_or_release(str(dedup), str(msg)))
+    _log_rejected(msg)
 
 
 def detect_signals(
@@ -9486,23 +9521,68 @@ def _slope_gate_reason(
     return f"{base} — {direction} запрещён"
 
 
+# Кандидат v2: EMA21 по 15m. Порог 0.02% = доля 0.0002.
+# Якорь lc как в stop_timing_run tf1v2: slope_arr[i-1] после
+# выравнивания по времени закрытия = наклон бара i-2,
+# где i — последний закрытый бар (в ccxt последняя свеча ещё формируется).
+LC_EMA_SPAN = 21
+LC_SLOPE_THR_PCT = 0.02
+
+
+def _lc_slope_pct(df: Optional[pd.DataFrame]) -> Optional[float]:
+    """Наклон EMA21 в процентах на якоре lc. Мало баров или NaN → None."""
+    if df is None or len(df) < LC_EMA_SPAN + 5:
+        return None
+    i = _last_closed_bar_iloc(df)
+    k = i - 2
+    if k < LC_EMA_SPAN:
+        return None
+    close = pd.to_numeric(df["close"], errors="coerce")
+    ema = close.ewm(span=LC_EMA_SPAN, adjust=False, min_periods=LC_EMA_SPAN).mean()
+    slope = ema / ema.shift(1) - 1.0
+    v = slope.iloc[k]
+    if v is None or pd.isna(v):
+        return None
+    return float(v) * 100.0
+
+
+def _confirm_gap_minutes(sig: dict) -> Optional[float]:
+    """Минуты от бара свипа до бара конфирма. Нет времён → None."""
+    tr = str(sig.get("trigger_bar_time") or sig.get("trigger_bar_at") or "")
+    cb = str(sig.get("confirm_bar_time") or "")
+    if not tr or not cb:
+        return None
+    try:
+        return (pd.Timestamp(cb) - pd.Timestamp(tr)).total_seconds() / 60.0
+    except Exception:
+        return None
+
+
 async def _slope_gate_for_sig(
     sig: dict, tf_name: str,
 ) -> tuple[bool, Optional[float], str]:
-    """Тренд-гейт EMA3 1H. Нет данных / ошибка → fail-open."""
-    th = _slope_gate_threshold()
+    """Гейт EMA21 15m, якорь lc. Нет данных → fail-open (не режем)."""
     direction = str(sig.get("direction") or "")
+    th = LC_SLOPE_THR_PCT
+    sk = str(sig.get("symbol_key") or active_symbol_key())
     try:
-        as_of = _slope_gate_anchor(sig)
-        df = await _get_slope_ohlcv_cached("1h", 3)
-        slope_pct = _slope_pct_from_ohlcv(df, as_of, span=3, ohlcv_tf="1h")
+        df = state.df_cache.get(f"{sk}|{tf_name}")
+        if df is None:
+            tf = str(CONFIG.get(tf_name, {}).get("timeframe") or "15m")
+            n = int(CONFIG.get(tf_name, {}).get("ohlcv") or 500)
+            df = await fetch_ohlcv(tf, n, symbol=symbol_profile(sk)["symbol"])
+        slope_pct = _lc_slope_pct(df)
         if slope_pct is None:
-            logger.warning(
-                f"slope gate fail-open [{tf_name}]: нет закрытых 1H к {as_of}"
-            )
+            logger.warning(f"slope gate fail-open [{tf_name}] {sk}: нет наклона")
             return True, None, "slope: нет данных — fail-open"
-        ok = _slope_filter_ok_hermes(direction, slope_pct, th)
-        return ok, slope_pct, _slope_gate_reason(direction, slope_pct, ok, th)
+        blocked = (
+            (direction == "LONG" and slope_pct <= th)
+            or (direction == "SHORT" and slope_pct >= -th)
+        )
+        base = f"slope={slope_pct:+.4f}%/15m EMA21"
+        if blocked:
+            return False, slope_pct, f"{base} — {direction} запрещён (порог ±{th:g}%)"
+        return True, slope_pct, base
     except Exception as e:
         logger.warning(f"slope gate fail-open [{tf_name}]: {e}")
         return True, None, f"slope: ошибка — fail-open ({e})"
@@ -9778,25 +9858,9 @@ async def _notify_signal_skip(
     h = str(sig.get("hash") or "")
     if h:
         _mark_signal_skipped(h)
+    _log_rejected(msg)
     if not telegram:
         return
-    phys = _sig_physical_dedup_key(sig, tf_name)
-    ext_k = _sig_extreme_dedup_key(
-        str(sig.get("direction") or ""),
-        tf_name,
-        float(_safe_float(sig.get("trigger_extreme")) or 0),
-        float(sig.get("htf_sweep_level") or 0),
-    )
-    keys = [f"{category}:{phys}", f"{category}:{ext_k}"]
-    if any(k in state.skip_tg_keys for k in keys):
-        return
-    state.skip_tg_keys.update(keys)
-    if len(state.skip_tg_keys) > 400:
-        state.skip_tg_keys = set(list(state.skip_tg_keys)[-200:])
-    ok = await send_telegram(msg)
-    if ok is None and _tg_online and _tg_app is not None:
-        for k in keys:
-            _release_skip_tg_key(k)
 
 
 def _format_sig_timestamp(sig: dict) -> str:
@@ -9959,11 +10023,28 @@ async def create_pending_limit(sig: dict, tf_name: str, trade_num: int = 0) -> b
             sig, tf_name, "skipped_slope_trend",
             header=(
                 f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — "
-                f"тренд против ({slope_pct:+.3f}%/1H)"
+                f"наклон EMA21 против ({slope_pct:+.4f}%/15m)"
             ),
             detail=slope_reason,
         )
         return False
+
+    dt_min = float(CONFIG.get("dt_sw_min") or 0)
+    if dt_min > 0:
+        gap = _confirm_gap_minutes(sig)
+        if gap is None or gap < dt_min:
+            gap_s = "нет времени" if gap is None else f"{gap:.0f} мин"
+            logger.info(
+                f"SKIP dt: {direction} {sk} свип→конфирм {gap_s} < {dt_min:.0f} мин"
+            )
+            await _notify_signal_skip(
+                sig, tf_name, "skipped_dt_sw",
+                header=(
+                    f"⛔ Пропуск {direction} [{tf_label(tf_name)}] — "
+                    f"свип→конфирм {gap_s} < {dt_min:.0f} мин"
+                ),
+            )
+            return False
 
     entry_px = float(sig.get("entry") or 0)
     stop_px = float(sig.get("stop") or 0)
@@ -12295,6 +12376,7 @@ async def _run_detect_and_trade(
     df_confirm: Optional[pd.DataFrame] = None,
     skip_invalidate: bool = False,
 ) -> None:
+    state.df_cache[f"{active_symbol_key()}|{tf_name}"] = df
     tf_cfg = CONFIG[tf_name]
     if not skip_invalidate:
         await _invalidate_pending_no_htf_inter_sweep(tf_name, df)
@@ -12437,28 +12519,19 @@ def _store_closed_ohlc(symbol_key: str, tf_name: str, df: pd.DataFrame) -> None:
     state.last_ohlcv_high = float(last["high"])
 
 
-async def _scan_symbol(
-    sk: str, tf8_due: bool, skip_invalidate: bool = False,
-) -> None:
+async def _scan_symbol(sk: str, skip_invalidate: bool = False) -> None:
     with _use_symbol(sk):
-        df5 = await fetch_ohlcv("5m", OHLCV_5M_BARS)
-        if df5 is None or len(df5) < 50:
-            logger.warning(f"{sk}: нет 5m данных")
+        tf_name = "tf1"
+        tf_cfg = CONFIG[tf_name]
+        df = await fetch_ohlcv(tf_cfg["timeframe"], int(tf_cfg.get("ohlcv") or 500))
+        if df is None or len(df) < 50:
+            logger.warning(f"{sk}: нет 15m данных")
             return
-        state.df_cache[f"{sk}|tf7"] = df5
-        _store_closed_ohlc(sk, "tf7", df5)
-        if "tf7" in SCAN_TF_KEYS:
+        state.df_cache[f"{sk}|{tf_name}"] = df
+        _store_closed_ohlc(sk, tf_name, df)
+        if tf_name in SCAN_TF_KEYS:
             await _run_detect_and_trade(
-                "tf7", df5, df_confirm=None, skip_invalidate=skip_invalidate,
-            )
-
-        df30 = _resample_ohlcv(df5, "30m")
-        if df30 is not None and len(df30) >= 2:
-            state.df_cache[f"{sk}|tf8"] = df30
-            _store_closed_ohlc(sk, "tf8", df30)
-        if df30 is not None and len(df30) >= 20 and "tf8" in SCAN_TF_KEYS:  # ранний детект: tf8 на каждом 5м-скане
-            await _run_detect_and_trade(
-                "tf8", df30, df_confirm=df5, skip_invalidate=skip_invalidate,
+                tf_name, df, df_confirm=None, skip_invalidate=skip_invalidate,
             )
 
 
@@ -12468,39 +12541,34 @@ async def signal_scanner():
         f"Загружено {len(state.processed)} обработанных сигналов | "
         f"сканер {len(ACTIVE_SYMBOL_KEYS)} пар × {', '.join(ACTIVE_TF_KEYS)}"
     )
-    last_5m_forming = None
+    last_forming = None
     warmup = True
 
     while True:
         await state.running.wait()
         try:
             peek = await fetch_ohlcv(
-                "5m", 3, symbol=SYMBOL_PROFILES[DEFAULT_SYMBOL_KEY]["symbol"],
+                "15m", 3, symbol=SYMBOL_PROFILES[DEFAULT_SYMBOL_KEY]["symbol"],
             )
             if peek is None or len(peek) < 1:
                 await asyncio.sleep(5)
                 continue
             forming = peek.index[-1]
-            if last_5m_forming is not None and forming == last_5m_forming:
+            if last_forming is not None and forming == last_forming:
                 await asyncio.sleep(5)
                 continue
-            # Новый 5m forming-бар = предыдущий закрыт. tf8 — каждый 5m-скан (ранний детект).
-            tf8_due = True
-            last_5m_forming = forming
+            last_forming = forming
             if warmup:
                 logger.info(
-                    f"Скан 5m close forming={forming}  tf8={'да' if tf8_due else 'нет'} "
-                    f"(прогрев — без HTF-инвалидаций)"
+                    f"Скан 15m close forming={forming} (прогрев — без HTF-инвалидаций)"
                 )
             else:
-                logger.info(
-                    f"Скан 5m close forming={forming}  tf8={'да' if tf8_due else 'нет'}"
-                )
+                logger.info(f"Скан 15m close forming={forming}")
             for sk in ACTIVE_SYMBOL_KEYS:
                 if not state.running.is_set():
                     break
                 try:
-                    await _scan_symbol(sk, tf8_due, skip_invalidate=warmup)
+                    await _scan_symbol(sk, skip_invalidate=warmup)
                 except Exception as e:
                     logger.error(f"scan {sk}: {e}", exc_info=True)
             if warmup:
@@ -13000,6 +13068,12 @@ async def cmd_mode(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """SHADOW ↔ LIVE с подтверждением."""
     n_open = sum(1 for p in state.positions if p.status == "open")
     n_pend = sum(1 for p in state.pending_limits if p.status == "pending")
+    if state.paper and _tf_shadow_only(state.active_tf):
+        await update.message.reply_text(
+            f"Сейчас {_mode_prefix()}\n"
+            f"Кандидат v2 пока только в тени: ордера на биржу не ставятся."
+        )
+        return
     if state.paper:
         await update.message.reply_text(
             f"Сейчас {_mode_prefix()}\n"
@@ -13036,6 +13110,11 @@ async def callback_mode(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await q.edit_message_text("↩ Отменено")
         return
     if action == "live":
+        if _tf_shadow_only(state.active_tf):
+            await q.edit_message_text(
+                "Кандидат v2 пока только SHADOW. В LIVE этот профиль не выводится."
+            )
+            return
         n_open = sum(1 for p in state.positions if p.status == "open")
         if n_open > 0 and state.paper:
             await q.edit_message_text(
@@ -13049,7 +13128,7 @@ async def callback_mode(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await q.edit_message_text(
             f"Режим → {_mode_prefix()}\n"
             f"Реальные ордера на Bybit. {len(ACTIVE_SYMBOL_KEYS)} пар × "
-            f"{CONFIG['tf7']['label']}, риск 1%, плечо 20x isolated."
+            f"{CONFIG['tf1']['label']}, риск 1%, плечо 20x isolated."
         )
         logger.info("/mode LIVE")
         return
@@ -13074,7 +13153,7 @@ async def cmd_pairs(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"{_mode_prefix()} активные пары ({len(ACTIVE_SYMBOL_KEYS)}):\n"
         + "\n".join(lines)
-        + f"\n\nСканер: все сразу, ТФ {CONFIG['tf7']['label']}.\n"
+        + f"\n\nСканер: все сразу, ТФ {CONFIG['tf1']['label']}.\n"
         f"Позиций: {_open_pending_count()} / {CONFIG['max_positions']}"
     )
 
@@ -15236,11 +15315,11 @@ async def main():
     mode_str = "SHADOW" if state.paper else "LIVE"
     logger.info("=" * 58)
     logger.info(
-        f"CISD BOT v6.0-bybit — {len(ACTIVE_SYMBOL_KEYS)} пар × "
+        f"CISD BOT v6.1-bybit — {len(ACTIVE_SYMBOL_KEYS)} пар × "
         f"{'+'.join(ACTIVE_TF_KEYS)} | {mode_str}"
     )
     logger.info(
-        f"LIMIT-only TP=1R | tf7 SHADOW A+V+D 10м/12ч | "
+        f"LIMIT TP=1R | tf1 SHADOW 1ч/16ч EMA21-lc dt≥2ч | "
         f"leverage {CONFIG['leverage']}x isolated | "
         f"max {CONFIG['max_positions']} pos"
     )
