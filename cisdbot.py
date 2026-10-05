@@ -9643,7 +9643,7 @@ LC_SLOPE_THR_PCT = 0.02
 
 
 def _lc_slope_pct(df: Optional[pd.DataFrame]) -> Optional[float]:
-    """Наклон EMA21 в процентах на якоре lc (бар перед конфирмами). Мало баров или NaN → None."""
+    """Наклон EMA21 в процентах на якоре lc: бар C−1. Мало баров или NaN → None."""
     if df is None or len(df) < LC_EMA_SPAN + 5:
         return None
     i = _last_closed_bar_iloc(df)
