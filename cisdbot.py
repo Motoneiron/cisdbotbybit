@@ -9635,19 +9635,19 @@ def _slope_gate_reason(
 
 
 # Кандидат v2: EMA21 по 15m. Порог 0.02% = доля 0.0002.
-# Якорь lc как в stop_timing_run tf1v2: slope_arr[i-1] после
-# выравнивания по времени закрытия = наклон бара i-2,
-# где i — последний закрытый бар (в ccxt последняя свеча ещё формируется).
+# В движке tf1v2 индекс i — бар скана (последняя строка окна). Конфирм C = i−1.
+# Якорь lc: slope_arr[i−1] после выравнивания по close = slope_full[i−2] = бар C−1.
+# Здесь i = последний закрытый бар, то есть C, поэтому якорь = i−1.
 LC_EMA_SPAN = 21
 LC_SLOPE_THR_PCT = 0.02
 
 
 def _lc_slope_pct(df: Optional[pd.DataFrame]) -> Optional[float]:
-    """Наклон EMA21 в процентах на якоре lc. Мало баров или NaN → None."""
+    """Наклон EMA21 в процентах на якоре lc (бар перед конфирмами). Мало баров или NaN → None."""
     if df is None or len(df) < LC_EMA_SPAN + 5:
         return None
     i = _last_closed_bar_iloc(df)
-    k = i - 2
+    k = i - 1
     if k < LC_EMA_SPAN:
         return None
     close = pd.to_numeric(df["close"], errors="coerce")
