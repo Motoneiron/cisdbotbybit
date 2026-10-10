@@ -1,0 +1,3219 @@
+tasks: 134 | workers: 6
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+========================================================================================================================Slope filter: off (как на сервере)
+
+
+Bot-aligned BT | tf7 5m -> 4H | 2020-01-01 -> 2020-12-31============================================================Pending cancel: fib2/TP touched before fill
+
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31Entry: detect_signals + bot entry kinds
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+
+Entry: detect_signals + bot entry kinds
+
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+
+Entry: detect_signals + bot entry kindsSlope filter: off (как на сервере)
+
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+
+Slope filter: off (как на сервере)Slope filter: off (как на сервере)Pending cancel: fib2/TP touched before fill
+
+
+Pending cancel: fib2/TP touched before fill
+============================================================
+Pending cancel: fib2/TP touched before fill============================================================
+
+============================================================
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: BTCUSDT_5m_2020_2026.csv -> 105408 x 5m bars
+Data: BTCUSDT_5m_2020_2026.csv -> 105120 x 5m bars
+Data: BTCUSDT_5m_2020_2026.csv -> 105408 x 5m bars
+Data: BTCUSDT_5m_2020_2026.csv -> 105120 x 5m bars
+Data: BTCUSDT_5m_2020_2026.csv -> 105120 x 5m bars
+Data: BTCUSDT_5m_2020_2026.csv -> 105120 x 5m bars
+Confirm 1m: BTCUSDT_1m_2020_2026.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%Confirm 1m: BTCUSDT_1m_2020_2026.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%Confirm 1m: BTCUSDT_1m_2020_2026.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Confirm 1m: BTCUSDT_1m_2020_2026.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Confirm 1m: BTCUSDT_1m_2020_2026.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%Confirm 1m: BTCUSDT_1m_2020_2026.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 5%  ... 5%  ... 5%  ... 5%  ... 5%  ... 10%  ... 10%  ... 10%  ... 10%  ... 10%  ... 10%  ... 15%  ... 15%  ... 15%  ... 15%  ... 15%  ... 15%  ... 20%  ... 20%  ... 20%  ... 20%  ... 20%  ... 20%  ... 25%  ... 25%  ... 25%  ... 25%  ... 25%  ... 25%  ... 30%  ... 30%  ... 30%  ... 30%  ... 30%  ... 30%  ... 35%  ... 35%  ... 35%  ... 35%  ... 35%  ... 35%  ... 40%  ... 40%  ... 40%  ... 40%  ... 40%  ... 40%  ... 45%  ... 45%  ... 45%  ... 45%  ... 45%  ... 45%  ... 50%  ... 50%  ... 50%  ... 50%  ... 50%  ... 50%  ... 55%  ... 55%  ... 55%  ... 55%  ... 55%  ... 55%  ... 60%  ... 60%  ... 60%  ... 60%  ... 60%  ... 60%  ... 65%  ... 65%  ... 65%  ... 65%  ... 65%  ... 65%  ... 70%  ... 70%  ... 70%  ... 70%  ... 70%  ... 75%  ... 70%  ... 75%  ... 75%  ... 75%  ... 75%  ... 80%  ... 75%  ... 80%  ... 80%  ... 80%  ... 80%  ... 85%  ... 80%  ... 85%  ... 85%  ... 85%  ... 85%  ... 90%  ... 85%  ... 90%  ... 90%  ... 90%  ... 90%  ... 95%  ... 90%  ... 95%  ... 95%  ... 95%  ... 95%  ... 100%
+Сигналов принято в pending: 911 | Сделок: 765 | fib2-cancel: 45
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 765 | TP: 257 | SL: 438 | TIME: 70
+tf7: WR: 33.6% | AvgR: -0.083 | SumR: -63.4 | PF: 0.89
+  2020: 765 sd | WR 34% | SumR -63.4 | PF 0.89
+Entry kinds: {'LIMIT': 600, 'MARKET': 165}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[1/134] +391s OK BTC tf7 2020: trades=765 sec=389
+Data: BTCUSDT_5m_2020_2026.csv -> 40896 x 5m bars
+Confirm 1m: BTCUSDT_1m_2020_2026.csv -> 204480 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 40896 баров (warmup=100, detect_step=12)...
+  ... 0%
+Сигналов принято в pending: 895 | Сделок: 761 | fib2-cancel: 51
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 761 | TP: 271 | SL: 409 | TIME: 81
+tf7: WR: 35.6% | AvgR: +0.033 | SumR: +24.9 | PF: 1.05
+  2022: 761 sd | WR 36% | SumR +24.9 | PF 1.05
+Entry kinds: {'LIMIT': 618, 'MARKET': 143}
+[2/134] +399s OK BTC tf7 2022: trades=761 sec=396
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2020-01-01 -> 2020-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: BTCUSDT_5m_2020_2026.csv -> 17568 x 30m bars
+Confirm 5m: BTCUSDT_5m_2020_2026.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 95%  ... 5%
+Сигналов принято в pending: 891 | Сделок: 745 | fib2-cancel: 60
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 745 | TP: 262 | SL: 387 | TIME: 96
+tf7: WR: 35.2% | AvgR: -0.158 | SumR: -117.4 | PF: 0.80
+  2023: 745 sd | WR 35% | SumR -117.4 | PF 0.80
+Entry kinds: {'LIMIT': 597, 'MARKET': 148}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2021-01-01 -> 2021-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[3/134] +404s OK BTC tf7 2023: trades=745 sec=401
+Data: BTCUSDT_5m_2020_2026.csv -> 17520 x 30m bars
+  ... 10%Confirm 5m: BTCUSDT_5m_2020_2026.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%
+Сигналов принято в pending: 985 | Сделок: 810 | fib2-cancel: 80
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 810 | TP: 326 | SL: 423 | TIME: 61
+tf7: WR: 40.2% | AvgR: -0.108 | SumR: -87.7 | PF: 0.86
+  2025: 810 sd | WR 40% | SumR -87.7 | PF 0.86
+Entry kinds: {'LIMIT': 584, 'MARKET': 226}
+[4/134] +408s OK BTC tf7 2025: trades=810 sec=405
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2022-01-01 -> 2022-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: BTCUSDT_5m_2020_2026.csv -> 17520 x 30m bars
+  ... 100%
+Сигналов принято в pending: 916 | Сделок: 770 | fib2-cancel: 60
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 770 | TP: 266 | SL: 431 | TIME: 73
+tf7: WR: 34.5% | AvgR: -0.079 | SumR: -61.1 | PF: 0.90
+  2024: 770 sd | WR 35% | SumR -61.1 | PF 0.90
+Entry kinds: {'LIMIT': 606, 'MARKET': 164}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2023-01-01 -> 2023-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+[5/134] +410s OK BTC tf7 2024: trades=770 sec=407
+============================================================
+Confirm 5m: BTCUSDT_5m_2020_2026.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 15%Data: BTCUSDT_5m_2020_2026.csv -> 17520 x 30m bars
+Confirm 5m: BTCUSDT_5m_2020_2026.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 5%  ... 20%  ... 5%  ... 25%
+Сигналов принято в pending: 1005 | Сделок: 852 | fib2-cancel: 62
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 852 | TP: 313 | SL: 480 | TIME: 59
+tf7: WR: 36.7% | AvgR: +0.098 | SumR: +83.2 | PF: 1.14
+  2021: 852 sd | WR 37% | SumR +83.2 | PF 1.14
+Entry kinds: {'LIMIT': 675, 'MARKET': 177}
+[6/134] +422s OK BTC tf7 2021: trades=852 sec=420
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 5%Data: BTCUSDT_5m_2020_2026.csv -> 17568 x 30m bars
+  ... 30%  ... 5%Confirm 5m: BTCUSDT_5m_2020_2026.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 35%  ... 10%  ... 10%  ... 40%  ... 10%  ... 45%  ... 5%  ... 10%  ... 15%  ... 50%  ... 15%  ... 55%  ... 15%  ... 15%  ... 60%  ... 10%  ... 20%  ... 65%  ... 20%  ... 70%  ... 20%  ... 20%  ... 15%  ... 75%  ... 25%  ... 80%  ... 25%  ... 85%  ... 25%  ... 25%  ... 20%  ... 90%  ... 30%  ... 30%  ... 95%  ... 100%
+Сигналов принято в pending: 366 | Сделок: 281 | fib2-cancel: 38
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 281 | TP: 104 | SL: 162 | TIME: 15
+tf7: WR: 37.0% | AvgR: -0.143 | SumR: -40.3 | PF: 0.83
+  2026: 281 sd | WR 37% | SumR -40.3 | PF 0.83
+Entry kinds: {'LIMIT': 218, 'MARKET': 63}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2025-01-01 -> 2025-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[7/134] +497s OK BTC tf7 2026: trades=281 sec=106
+  ... 30%Data: BTCUSDT_5m_2020_2026.csv -> 17520 x 30m bars
+  ... 30%Confirm 5m: BTCUSDT_5m_2020_2026.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 25%  ... 35%  ... 35%  ... 35%  ... 35%  ... 5%  ... 30%  ... 40%  ... 40%  ... 10%  ... 40%  ... 40%  ... 35%  ... 45%  ... 45%  ... 45%  ... 15%  ... 45%  ... 40%  ... 50%  ... 50%  ... 50%  ... 20%  ... 50%  ... 55%  ... 45%  ... 55%  ... 55%  ... 25%  ... 55%  ... 60%  ... 50%  ... 60%  ... 30%  ... 60%  ... 60%  ... 65%  ... 55%  ... 65%  ... 35%  ... 65%  ... 65%  ... 60%  ... 70%  ... 70%  ... 40%  ... 70%  ... 65%  ... 70%  ... 75%  ... 75%  ... 75%  ... 45%  ... 70%  ... 80%  ... 75%  ... 80%  ... 80%  ... 50%  ... 75%  ... 85%  ... 80%  ... 85%  ... 85%  ... 55%  ... 80%  ... 90%  ... 85%  ... 90%  ... 90%  ... 85%  ... 60%  ... 95%  ... 90%  ... 95%  ... 65%  ... 95%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 459 | Сделок: 402 | fib2-cancel: 23
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 402 | TP: 39 | SL: 89 | TIME: 274
+tf8: WR: 9.7% | AvgR: +0.022 | SumR: +8.7 | PF: 1.06
+  2020: 402 sd | WR 10% | SumR +8.7 | PF 1.06
+Entry kinds: {'LIMIT': 348, 'MARKET': 54}
+[8/134] +718s OK BTC tf8 2020: trades=402 sec=320
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2026-01-01 -> 2026-12-31
+Symbol: BTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: BTCUSDT_5m_2020_2026.csv -> 6816 x 30m bars
+
+Сигналов принято в pending: 462 | Сделок: 415 | fib2-cancel: 11
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 415 | TP: 49 | SL: 109 | TIME: 257
+tf8: WR: 11.8% | AvgR: +0.022 | SumR: +9.2 | PF: 1.06
+  2022: 415 sd | WR 12% | SumR +9.2 | PF 1.06
+Entry kinds: {'LIMIT': 366, 'MARKET': 49}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2020-01-01 -> 2020-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[9/134] +720s OK BTC tf8 2022: trades=415 sec=312
+Confirm 5m: BTCUSDT_5m_2020_2026.csv -> 40896 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 6816 баров (warmup=100, detect_step=2)...
+  ... 0%Data: ETHUSDT_1m_full_hdr.csv -> 105408 x 5m bars
+  ... 5%
+Сигналов принято в pending: 503 | Сделок: 442 | fib2-cancel: 13
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 442 | TP: 53 | SL: 136 | TIME: 253
+tf8: WR: 12.0% | AvgR: +0.074 | SumR: +32.9 | PF: 1.18
+  2021: 442 sd | WR 12% | SumR +32.9 | PF 1.18
+Entry kinds: {'LIMIT': 364, 'MARKET': 78}
+[10/134] +726s OK BTC tf8 2021: trades=442 sec=322
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 70%  ... 95%Confirm 1m: ETHUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%Data: ETHUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+  ... 10%
+Сигналов принято в pending: 439 | Сделок: 390 | fib2-cancel: 13
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 390 | TP: 42 | SL: 97 | TIME: 251
+tf8: WR: 10.8% | AvgR: -0.123 | SumR: -47.9 | PF: 0.74
+  2023: 390 sd | WR 11% | SumR -47.9 | PF 0.74
+Entry kinds: {'LIMIT': 344, 'MARKET': 46}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[11/134] +733s OK BTC tf8 2023: trades=390 sec=324
+Confirm 1m: ETHUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 15%Data: ETHUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+Confirm 1m: ETHUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 20%  ... 75%  ... 100%
+Сигналов принято в pending: 486 | Сделок: 439 | fib2-cancel: 17
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 439 | TP: 47 | SL: 123 | TIME: 269
+tf8: WR: 10.7% | AvgR: -0.023 | SumR: -10.2 | PF: 0.95
+  2024: 439 sd | WR 11% | SumR -10.2 | PF 0.95
+Entry kinds: {'LIMIT': 378, 'MARKET': 61}
+[12/134] +743s OK BTC tf8 2024: trades=439 sec=321
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 25%Data: ETHUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+  ... 5%  ... 30%Confirm 1m: ETHUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 35%  ... 80%  ... 40%  ... 5%  ... 45%  ... 50%  ... 5%  ... 10%  ... 10%  ... 85%  ... 55%  ... 10%  ... 60%  ... 65%  ... 90%  ... 10%  ... 15%  ... 70%  ... 15%  ... 75%  ... 15%  ... 80%  ... 95%  ... 15%  ... 85%  ... 20%  ... 20%  ... 90%
+Сигналов принято в pending: 508 | Сделок: 450 | fib2-cancel: 23
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 450 | TP: 61 | SL: 131 | TIME: 258
+tf8: WR: 13.6% | AvgR: -0.055 | SumR: -25.0 | PF: 0.88
+  2025: 450 sd | WR 14% | SumR -25.0 | PF 0.88
+Entry kinds: {'LIMIT': 371, 'MARKET': 79}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[13/134] +832s OK BTC tf8 2025: trades=450 sec=335
+  ... 20%  ... 95%Data: ETHUSDT_1m_full_hdr.csv -> 105408 x 5m bars
+Confirm 1m: ETHUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 100%
+Сигналов принято в pending: 176 | Сделок: 156 | fib2-cancel: 4
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 156 | TP: 20 | SL: 38 | TIME: 98
+tf8: WR: 12.8% | AvgR: +0.007 | SumR: +1.1 | PF: 1.02
+  2026: 156 sd | WR 13% | SumR +1.1 | PF 1.02
+Entry kinds: {'LIMIT': 136, 'MARKET': 20}
+[14/134] +841s OK BTC tf8 2026: trades=156 sec=122
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 20%Data: ETHUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+  ... 25%Confirm 1m: ETHUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 25%  ... 25%  ... 5%  ... 25%  ... 30%  ... 5%  ... 30%  ... 30%  ... 10%  ... 30%  ... 35%  ... 10%  ... 35%  ... 35%  ... 15%  ... 15%  ... 35%  ... 40%  ... 40%  ... 40%  ... 20%  ... 20%  ... 45%  ... 40%  ... 45%  ... 45%  ... 25%  ... 25%  ... 50%  ... 45%  ... 50%  ... 50%  ... 30%  ... 30%  ... 55%  ... 50%  ... 55%  ... 35%  ... 35%  ... 55%  ... 60%  ... 55%  ... 60%  ... 40%  ... 40%  ... 60%  ... 65%  ... 60%  ... 65%  ... 45%  ... 45%  ... 65%  ... 70%  ... 65%  ... 70%  ... 50%  ... 70%  ... 50%  ... 75%  ... 70%  ... 75%  ... 55%  ... 75%  ... 55%  ... 80%  ... 75%  ... 80%  ... 80%  ... 60%  ... 85%  ... 60%  ... 80%  ... 85%  ... 85%  ... 65%  ... 65%  ... 90%  ... 85%  ... 90%  ... 90%  ... 70%  ... 70%  ... 95%  ... 95%  ... 90%  ... 95%  ... 75%  ... 75%
+Сигналов принято в pending: 973 | Сделок: 853 | fib2-cancel: 56
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 853 | TP: 345 | SL: 449 | TIME: 59
+tf7: WR: 40.4% | AvgR: +0.258 | SumR: +220.0 | PF: 1.42
+  2021: 853 sd | WR 40% | SumR +220.0 | PF 1.42
+Entry kinds: {'LIMIT': 666, 'MARKET': 187}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[15/134] +1230s OK ETH tf7 2021: trades=853 sec=505
+Data: ETHUSDT_1m_full_hdr.csv -> 63072 x 5m bars
+  ... 95%Confirm 1m: ETHUSDT_1m_full_hdr.csv -> 315360 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 63072 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 100%
+Сигналов принято в pending: 883 | Сделок: 751 | fib2-cancel: 55
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 751 | TP: 281 | SL: 398 | TIME: 72
+tf7: WR: 37.4% | AvgR: +0.130 | SumR: +97.9 | PF: 1.20
+  2020: 751 sd | WR 37% | SumR +97.9 | PF 1.20
+Entry kinds: {'LIMIT': 584, 'MARKET': 167}
+[16/134] +1242s OK ETH tf7 2020: trades=751 sec=522============================================================
+
+Bot-aligned BT | tf8 30m -> 8H | 2020-01-01 -> 2020-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: ETHUSDT_1m_full_hdr.csv -> 17568 x 30m bars
+Confirm 5m: ETHUSDT_1m_full_hdr.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 5%
+Сигналов принято в pending: 894 | Сделок: 756 | fib2-cancel: 51
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 756 | TP: 230 | SL: 450 | TIME: 76
+tf7: WR: 30.4% | AvgR: -0.075 | SumR: -56.8 | PF: 0.90
+  2022: 756 sd | WR 30% | SumR -56.8 | PF 0.90
+Entry kinds: {'LIMIT': 631, 'MARKET': 125}
+[17/134] +1263s OK ETH tf7 2022: trades=756 sec=530
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2021-01-01 -> 2021-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 80%  ... 80%Data: ETHUSDT_1m_full_hdr.csv -> 17520 x 30m bars
+  ... 10%Confirm 5m: ETHUSDT_1m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%
+Сигналов принято в pending: 890 | Сделок: 775 | fib2-cancel: 45
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 775 | TP: 275 | SL: 414 | TIME: 86
+tf7: WR: 35.5% | AvgR: -0.086 | SumR: -66.4 | PF: 0.89
+  2023: 775 sd | WR 35% | SumR -66.4 | PF 0.89
+Entry kinds: {'LIMIT': 659, 'MARKET': 116}
+[18/134] +1279s OK ETH tf7 2023: trades=775 sec=536
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2022-01-01 -> 2022-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 5%Data: ETHUSDT_1m_full_hdr.csv -> 17520 x 30m bars
+  ... 15%Confirm 5m: ETHUSDT_1m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 5%  ... 85%  ... 85%  ... 20%  ... 10%  ... 5%  ... 25%  ... 10%  ... 15%  ... 30%  ... 90%  ... 10%  ... 90%  ... 35%  ... 15%  ... 20%  ... 15%  ... 40%  ... 95%  ... 95%  ... 20%  ... 45%  ... 25%  ... 20%  ... 50%  ... 30%  ... 25%  ... 100%
+Сигналов принято в pending: 907 | Сделок: 784 | fib2-cancel: 52
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 784 | TP: 271 | SL: 443 | TIME: 70
+tf7: WR: 34.6% | AvgR: +0.001 | SumR: +1.0 | PF: 1.00
+  2024: 784 sd | WR 35% | SumR +1.0 | PF 1.00
+Entry kinds: {'LIMIT': 638, 'MARKET': 146}
+[19/134] +1403s OK ETH tf7 2024: trades=784 sec=572============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2023-01-01 -> 2023-12-31
+
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 55%
+Сигналов принято в pending: 904 | Сделок: 763 | fib2-cancel: 65
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 763 | TP: 272 | SL: 420 | TIME: 71
+tf7: WR: 35.6% | AvgR: +0.055 | SumR: +42.0 | PF: 1.08
+  2025: 763 sd | WR 36% | SumR +42.0 | PF 1.08
+Entry kinds: {'LIMIT': 620, 'MARKET': 143}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+[20/134] +1408s OK ETH tf7 2025: trades=763 sec=567
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: ETHUSDT_1m_full_hdr.csv -> 17520 x 30m bars
+  ... 25%Data: ETHUSDT_1m_full_hdr.csv -> 17568 x 30m bars
+Confirm 5m: ETHUSDT_1m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%Confirm 5m: ETHUSDT_1m_full_hdr.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 60%  ... 30%  ... 35%  ... 65%  ... 30%  ... 5%  ... 5%  ... 35%  ... 70%  ... 40%  ... 35%  ... 10%  ... 75%  ... 10%  ... 40%  ... 45%  ... 40%  ... 80%  ... 15%  ... 15%  ... 45%  ... 85%  ... 50%  ... 45%  ... 20%  ... 90%  ... 50%  ... 20%  ... 50%  ... 55%  ... 95%  ... 25%  ... 55%  ... 25%  ... 100%
+Сигналов принято в pending: 523 | Сделок: 439 | fib2-cancel: 36
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 439 | TP: 153 | SL: 250 | TIME: 36
+tf7: WR: 34.9% | AvgR: -0.068 | SumR: -30.0 | PF: 0.91
+  2026: 439 sd | WR 35% | SumR -30.0 | PF 0.91
+Entry kinds: {'LIMIT': 349, 'MARKET': 90}
+============================================================[21/134] +1506s OK ETH tf7 2026: trades=439 sec=276
+
+Bot-aligned BT | tf8 30m -> 8H | 2025-01-01 -> 2025-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 60%  ... 55%Data: ETHUSDT_1m_full_hdr.csv -> 17520 x 30m bars
+  ... 30%Confirm 5m: ETHUSDT_1m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 60%  ... 30%  ... 65%  ... 60%  ... 35%  ... 5%  ... 65%  ... 35%  ... 70%  ... 65%  ... 40%  ... 10%  ... 70%  ... 40%  ... 75%  ... 45%  ... 70%  ... 75%  ... 15%  ... 45%  ... 50%  ... 75%  ... 80%  ... 80%  ... 20%  ... 50%  ... 80%  ... 55%  ... 85%  ... 25%  ... 85%  ... 55%  ... 85%  ... 60%  ... 90%  ... 30%  ... 90%  ... 60%  ... 90%  ... 65%  ... 95%  ... 35%  ... 95%  ... 65%  ... 95%  ... 70%  ... 100%
+Сигналов принято в pending: 476 | Сделок: 427 | fib2-cancel: 18
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 427 | TP: 45 | SL: 102 | TIME: 280
+tf8: WR: 10.5% | AvgR: +0.034 | SumR: +14.5 | PF: 1.09
+  2020: 427 sd | WR 11% | SumR +14.5 | PF 1.09
+Entry kinds: {'LIMIT': 372, 'MARKET': 55}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2026-01-01 -> 2026-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[22/134] +1627s OK ETH tf8 2020: trades=427 sec=385
+  ... 40%Data: ETHUSDT_1m_full_hdr.csv -> 10512 x 30m bars
+
+Сигналов принято в pending: 486 | Сделок: 440 | fib2-cancel: 10
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 440 | TP: 65 | SL: 121 | TIME: 254
+tf8: WR: 14.8% | AvgR: +0.116 | SumR: +50.9 | PF: 1.29
+  2021: 440 sd | WR 15% | SumR +50.9 | PF 1.29
+Entry kinds: {'LIMIT': 379, 'MARKET': 61}
+[23/134] +1631s OK ETH tf8 2021: trades=440 sec=369
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2020-01-01 -> 2020-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 70%Confirm 5m: ETHUSDT_1m_full_hdr.csv -> 63072 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 10512 баров (warmup=100, detect_step=2)...
+  ... 0%Data: DOGEUSDT_1m_full_hdr.csv -> 50292 x 5m bars
+
+Сигналов принято в pending: 451 | Сделок: 411 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 411 | TP: 60 | SL: 106 | TIME: 245
+tf8: WR: 14.6% | AvgR: +0.160 | SumR: +65.7 | PF: 1.44
+  2022: 411 sd | WR 15% | SumR +65.7 | PF 1.44
+Entry kinds: {'LIMIT': 346, 'MARKET': 65}
+[24/134] +1637s OK ETH tf8 2022: trades=411 sec=358
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 75%Confirm 1m: DOGEUSDT_1m_full_hdr.csv -> 251460 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 50292 баров (warmup=100, detect_step=12)...
+  ... 0%Data: DOGEUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+  ... 45%  ... 5%Confirm 1m: DOGEUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 75%  ... 10%  ... 10%  ... 80%  ... 15%  ... 50%  ... 15%  ... 5%  ... 80%  ... 20%  ... 20%  ... 85%  ... 55%  ... 25%  ... 25%  ... 85%  ... 30%  ... 10%  ... 30%  ... 90%  ... 60%  ... 35%  ... 35%  ... 90%  ... 40%  ... 15%  ... 65%  ... 40%  ... 95%  ... 45%  ... 95%  ... 45%  ... 50%
+Сигналов принято в pending: 441 | Сделок: 409 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 409 | TP: 48 | SL: 104 | TIME: 257
+tf8: WR: 11.7% | AvgR: -0.019 | SumR: -7.9 | PF: 0.96
+  2023: 409 sd | WR 12% | SumR -7.9 | PF 0.96
+Entry kinds: {'LIMIT': 366, 'MARKET': 43}
+[25/134] +1725s OK ETH tf8 2023: trades=409 sec=321
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 70%  ... 55%  ... 50%  ... 20%Data: DOGEUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+  ... 100%
+Сигналов принято в pending: 466 | Сделок: 428 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 428 | TP: 45 | SL: 130 | TIME: 253
+tf8: WR: 10.5% | AvgR: -0.006 | SumR: -2.6 | PF: 0.99
+  2024: 428 sd | WR 11% | SumR -2.6 | PF 0.99
+Entry kinds: {'LIMIT': 369, 'MARKET': 59}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)[26/134] +1732s OK ETH tf8 2024: trades=428 sec=324
+
+Pending cancel: fib2/TP touched before fill
+============================================================
+Confirm 1m: DOGEUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 60%  ... 55%Data: DOGEUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+Confirm 1m: DOGEUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 65%  ... 75%  ... 60%  ... 25%  ... 70%  ... 5%  ... 65%  ... 80%  ... 75%  ... 5%  ... 70%  ... 80%  ... 30%  ... 75%  ... 10%  ... 85%  ... 85%  ... 80%  ... 10%  ... 90%  ... 85%  ... 35%  ... 90%  ... 95%  ... 15%  ... 90%  ... 100%
+Сигналов принято в pending: 450 | Сделок: 369 | fib2-cancel: 42
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 369 | TP: 102 | SL: 215 | TIME: 52
+tf7: WR: 27.6% | AvgR: -0.115 | SumR: -42.4 | PF: 0.84
+  2020: 369 sd | WR 28% | SumR -42.4 | PF 0.84
+Entry kinds: {'LIMIT': 310, 'MARKET': 59}
+============================================================[27/134] +1799s OK DOGE tf7 2020: trades=369 sec=168
+
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 15%Data: DOGEUSDT_1m_full_hdr.csv -> 105408 x 5m bars
+  ... 95%  ... 95%Confirm 1m: DOGEUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 40%  ... 20%  ... 100%
+Сигналов принято в pending: 268 | Сделок: 244 | fib2-cancel: 9
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 244 | TP: 21 | SL: 68 | TIME: 155
+tf8: WR: 8.6% | AvgR: -0.092 | SumR: -22.5 | PF: 0.79
+  2026: 244 sd | WR 9% | SumR -22.5 | PF 0.79
+Entry kinds: {'LIMIT': 215, 'MARKET': 29}
+[28/134] +1815s OK ETH tf8 2026: trades=244 sec=188
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: DOGEUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+
+Сигналов принято в pending: 496 | Сделок: 439 | fib2-cancel: 18
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 439 | TP: 51 | SL: 124 | TIME: 264
+tf8: WR: 11.6% | AvgR: +0.024 | SumR: +10.6 | PF: 1.06
+  2025: 439 sd | WR 12% | SumR +10.6 | PF 1.06
+Entry kinds: {'LIMIT': 371, 'MARKET': 68}
+[29/134] +1822s OK ETH tf8 2025: trades=439 sec=316
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 20%Confirm 1m: DOGEUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%Data: DOGEUSDT_1m_full_hdr.csv -> 63072 x 5m bars
+  ... 5%Confirm 1m: DOGEUSDT_1m_full_hdr.csv -> 315360 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 63072 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 45%  ... 25%  ... 5%  ... 5%  ... 25%  ... 10%  ... 10%  ... 50%  ... 30%  ... 15%  ... 10%  ... 30%  ... 20%  ... 15%  ... 55%  ... 35%  ... 25%  ... 15%  ... 35%  ... 30%  ... 20%  ... 60%  ... 35%  ... 40%  ... 20%  ... 40%  ... 25%  ... 40%  ... 45%  ... 65%  ... 45%  ... 25%  ... 50%  ... 30%  ... 45%  ... 55%  ... 70%  ... 50%  ... 30%  ... 60%  ... 35%  ... 50%  ... 65%  ... 55%  ... 75%  ... 35%  ... 70%  ... 40%  ... 75%  ... 55%  ... 60%  ... 80%  ... 40%  ... 80%  ... 45%  ... 85%  ... 60%  ... 65%  ... 45%  ... 90%  ... 85%  ... 50%  ... 95%  ... 70%  ... 65%  ... 50%  ... 100%
+Сигналов принято в pending: 523 | Сделок: 450 | fib2-cancel: 31
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 450 | TP: 171 | SL: 246 | TIME: 33
+tf7: WR: 38.0% | AvgR: +0.104 | SumR: +46.9 | PF: 1.15
+  2026: 450 sd | WR 38% | SumR +46.9 | PF 1.15
+Entry kinds: {'LIMIT': 353, 'MARKET': 97}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2020-01-01 -> 2020-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[30/134] +2041s OK DOGE tf7 2026: trades=450 sec=219
+  ... 90%Data: DOGEUSDT_1m_full_hdr.csv -> 8382 x 30m bars
+Confirm 5m: DOGEUSDT_1m_full_hdr.csv -> 50292 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 8382 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 55%  ... 5%  ... 10%  ... 55%  ... 75%  ... 70%  ... 15%  ... 95%  ... 60%  ... 20%  ... 25%  ... 60%  ... 80%  ... 75%  ... 30%
+Сигналов принято в pending: 856 | Сделок: 730 | fib2-cancel: 52
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 730 | TP: 256 | SL: 380 | TIME: 94
+tf7: WR: 35.1% | AvgR: +0.203 | SumR: +148.4 | PF: 1.34
+  2021: 730 sd | WR 35% | SumR +148.4 | PF 1.34
+Entry kinds: {'LIMIT': 584, 'MARKET': 146}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2021-01-01 -> 2021-12-31
+[31/134] +2097s OK DOGE tf7 2021: trades=730 sec=460
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 65%Data: DOGEUSDT_1m_full_hdr.csv -> 17520 x 30m bars
+  ... 35%Confirm 5m: DOGEUSDT_1m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 40%  ... 65%  ... 85%  ... 45%  ... 80%  ... 5%  ... 70%  ... 50%  ... 55%  ... 10%  ... 70%  ... 90%  ... 60%  ... 75%  ... 85%  ... 15%  ... 65%  ... 70%  ... 75%  ... 20%  ... 75%  ... 95%  ... 80%  ... 80%  ... 90%  ... 85%  ... 25%  ... 80%  ... 90%
+Сигналов принято в pending: 871 | Сделок: 756 | fib2-cancel: 60
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 756 | TP: 258 | SL: 433 | TIME: 65
+tf7: WR: 34.1% | AvgR: +0.044 | SumR: +33.4 | PF: 1.06
+  2022: 756 sd | WR 34% | SumR +33.4 | PF 1.06
+Entry kinds: {'LIMIT': 613, 'MARKET': 143}
+[32/134] +2192s OK DOGE tf7 2022: trades=756 sec=468
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2022-01-01 -> 2022-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 85%Data: DOGEUSDT_1m_full_hdr.csv -> 17520 x 30m bars
+Confirm 5m: DOGEUSDT_1m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 95%  ... 30%  ... 95%  ... 100%
+Сигналов принято в pending: 217 | Сделок: 194 | fib2-cancel: 8
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 194 | TP: 19 | SL: 61 | TIME: 114
+tf8: WR: 9.8% | AvgR: -0.133 | SumR: -25.9 | PF: 0.70
+  2020: 194 sd | WR 10% | SumR -25.9 | PF 0.70
+Entry kinds: {'LIMIT': 167, 'MARKET': 27}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2023-01-01 -> 2023-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[33/134] +2215s OK DOGE tf8 2020: trades=194 sec=174
+  ... 85%Data: DOGEUSDT_1m_full_hdr.csv -> 17520 x 30m bars
+  ... 5%  ... 35%Confirm 5m: DOGEUSDT_1m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 90%
+Сигналов принято в pending: 890 | Сделок: 770 | fib2-cancel: 49
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 770 | TP: 255 | SL: 437 | TIME: 78
+tf7: WR: 33.1% | AvgR: -0.049 | SumR: -37.5 | PF: 0.93
+  2023: 770 sd | WR 33% | SumR -37.5 | PF 0.93
+Entry kinds: {'LIMIT': 630, 'MARKET': 140}
+[34/134] +2240s OK DOGE tf7 2023: trades=770 sec=508
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 10%Data: DOGEUSDT_1m_full_hdr.csv -> 17568 x 30m bars
+  ... 5%  ... 40%  ... 90%Confirm 5m: DOGEUSDT_1m_full_hdr.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 95%  ... 15%  ... 45%  ... 10%  ... 5%  ... 95%  ... 20%  ... 50%  ... 100%
+Сигналов принято в pending: 918 | Сделок: 790 | fib2-cancel: 58
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 790 | TP: 319 | SL: 421 | TIME: 50
+tf7: WR: 40.4% | AvgR: +0.227 | SumR: +179.0 | PF: 1.35
+  2024: 790 sd | WR 40% | SumR +179.0 | PF 1.35
+Entry kinds: {'LIMIT': 598, 'MARKET': 192}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2025-01-01 -> 2025-12-31
+[35/134] +2289s OK DOGE tf7 2024: trades=790 sec=490
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: DOGEUSDT_1m_full_hdr.csv -> 17520 x 30m bars
+  ... 10%  ... 15%Confirm 5m: DOGEUSDT_1m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 25%
+Сигналов принято в pending: 958 | Сделок: 803 | fib2-cancel: 67
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 803 | TP: 288 | SL: 460 | TIME: 55
+tf7: WR: 35.9% | AvgR: +0.088 | SumR: +70.8 | PF: 1.13
+  2025: 803 sd | WR 36% | SumR +70.8 | PF 1.13
+Entry kinds: {'LIMIT': 621, 'MARKET': 182}
+[36/134] +2307s OK DOGE tf7 2025: trades=803 sec=492
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2026-01-01 -> 2026-12-31
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 55%Data: DOGEUSDT_1m_full_hdr.csv -> 10512 x 30m bars
+Confirm 5m: DOGEUSDT_1m_full_hdr.csv -> 63072 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 10512 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 15%  ... 5%  ... 20%  ... 30%  ... 5%  ... 60%  ... 20%  ... 10%  ... 10%  ... 25%  ... 35%  ... 15%  ... 65%  ... 25%  ... 15%  ... 30%  ... 20%  ... 40%  ... 25%  ... 70%  ... 30%  ... 20%  ... 35%  ... 45%  ... 30%  ... 75%  ... 25%  ... 35%  ... 35%  ... 40%  ... 50%  ... 40%  ... 80%  ... 30%  ... 40%  ... 45%  ... 45%  ... 55%  ... 50%  ... 85%  ... 35%  ... 45%  ... 50%  ... 60%  ... 55%  ... 90%  ... 40%  ... 50%  ... 60%  ... 55%  ... 65%  ... 65%  ... 45%  ... 55%  ... 60%  ... 95%  ... 70%  ... 70%  ... 75%  ... 60%  ... 65%  ... 50%
+Сигналов принято в pending: 424 | Сделок: 386 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 386 | TP: 45 | SL: 84 | TIME: 257
+tf8: WR: 11.7% | AvgR: +0.120 | SumR: +46.5 | PF: 1.37
+  2021: 386 sd | WR 12% | SumR +46.5 | PF 1.37
+Entry kinds: {'LIMIT': 329, 'MARKET': 57}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: KAS | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[37/134] +2479s OK DOGE tf8 2021: trades=386 sec=382
+Data: KASUSDT_1m_full_hdr.csv -> 12936 x 5m bars
+Confirm 1m: KASUSDT_1m_full_hdr.csv -> 64680 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 12936 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 80%  ... 5%  ... 75%  ... 10%  ... 15%  ... 20%  ... 65%  ... 25%  ... 30%  ... 55%  ... 35%  ... 70%  ... 85%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 80%  ... 65%  ... 70%  ... 90%  ... 75%  ... 70%  ... 80%  ... 85%  ... 60%  ... 90%  ... 95%  ... 75%  ... 100%
+Сигналов принято в pending: 123 | Сделок: 98 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 98 | TP: 33 | SL: 56 | TIME: 9
+tf7: WR: 33.7% | AvgR: +0.084 | SumR: +8.2 | PF: 1.13
+  2023: 98 sd | WR 34% | SumR +8.2 | PF 1.13
+Entry kinds: {'LIMIT': 78, 'MARKET': 20}
+[38/134] +2508s OK KAS tf7 2023: trades=98 sec=29
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: KAS | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 95%Data: KASUSDT_1m_full_hdr.csv -> 105408 x 5m bars
+Confirm 1m: KASUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 85%  ... 75%  ... 100%
+Сигналов принято в pending: 297 | Сделок: 260 | fib2-cancel: 9
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 260 | TP: 33 | SL: 69 | TIME: 158
+tf8: WR: 12.7% | AvgR: +0.048 | SumR: +12.4 | PF: 1.12
+  2026: 260 sd | WR 13% | SumR +12.4 | PF 1.12
+Entry kinds: {'LIMIT': 223, 'MARKET': 37}
+[39/134] +2518s OK DOGE tf8 2026: trades=260 sec=211
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: KAS | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 65%Data: KASUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+  ... 80%Confirm 1m: KASUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 90%  ... 80%  ... 5%  ... 70%  ... 85%  ... 85%  ... 5%  ... 95%  ... 90%  ... 75%  ... 10%
+Сигналов принято в pending: 435 | Сделок: 396 | fib2-cancel: 13
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 396 | TP: 38 | SL: 112 | TIME: 246
+tf8: WR: 9.6% | AvgR: +0.022 | SumR: +8.6 | PF: 1.06
+  2022: 396 sd | WR 10% | SumR +8.6 | PF 1.06
+Entry kinds: {'LIMIT': 339, 'MARKET': 57}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-12-31
+Symbol: KAS | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[40/134] +2549s OK DOGE tf8 2022: trades=396 sec=357
+Data: KASUSDT_1m_full_hdr.csv -> 63072 x 5m bars
+  ... 90%Confirm 1m: KASUSDT_1m_full_hdr.csv -> 315360 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 63072 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 10%  ... 95%  ... 80%  ... 5%  ... 15%  ... 95%  ... 10%
+Сигналов принято в pending: 448 | Сделок: 395 | fib2-cancel: 25
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 395 | TP: 34 | SL: 110 | TIME: 251
+tf8: WR: 8.6% | AvgR: -0.073 | SumR: -28.9 | PF: 0.83
+  2023: 395 sd | WR 9% | SumR -28.9 | PF 0.83
+Entry kinds: {'LIMIT': 354, 'MARKET': 41}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2023-01-01 -> 2023-12-31
+Symbol: KAS | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+[41/134] +2571s OK DOGE tf8 2023: trades=395 sec=356
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: KASUSDT_1m_full_hdr.csv -> 2156 x 30m bars
+  ... 15%Confirm 5m: KASUSDT_1m_full_hdr.csv -> 12936 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 2156 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 5%  ... 85%  ... 10%  ... 15%  ... 15%  ... 100%
+Сигналов принято в pending: 452 | Сделок: 410 | fib2-cancel: 11
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 410 | TP: 47 | SL: 123 | TIME: 240
+tf8: WR: 11.5% | AvgR: +0.092 | SumR: +37.6 | PF: 1.22
+  2024: 410 sd | WR 11% | SumR +37.6 | PF 1.22
+Entry kinds: {'LIMIT': 349, 'MARKET': 61}
+[42/134] +2580s OK DOGE tf8 2024: trades=410 sec=340
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: KAS | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 20%Data: KASUSDT_1m_full_hdr.csv -> 17568 x 30m bars
+  ... 25%  ... 20%Confirm 5m: KASUSDT_1m_full_hdr.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 30%  ... 35%  ... 40%  ... 20%  ... 45%  ... 90%  ... 50%  ... 20%  ... 55%  ... 60%  ... 5%  ... 25%  ... 64%  ... 69%  ... 74%  ... 25%  ... 79%  ... 84%  ... 95%  ... 30%  ... 89%  ... 94%  ... 99%
+Сигналов принято в pending: 71 | Сделок: 65 | fib2-cancel: 4
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 65 | TP: 8 | SL: 10 | TIME: 47
+tf8: WR: 12.3% | AvgR: +0.280 | SumR: +18.2 | PF: 2.14
+  2023: 65 sd | WR 12% | SumR +18.2 | PF 2.14
+Entry kinds: {'LIMIT': 47, 'MARKET': 18}
+[43/134] +2611s OK KAS tf8 2023: trades=65 sec=40
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2025-01-01 -> 2025-12-31
+Symbol: KAS | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 10%Data: KASUSDT_1m_full_hdr.csv -> 17520 x 30m bars
+  ... 25%Confirm 5m: KASUSDT_1m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 35%
+Сигналов принято в pending: 504 | Сделок: 445 | fib2-cancel: 19
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 445 | TP: 60 | SL: 141 | TIME: 244
+tf8: WR: 13.5% | AvgR: +0.055 | SumR: +24.4 | PF: 1.13
+  2025: 445 sd | WR 13% | SumR +24.4 | PF 1.13
+Entry kinds: {'LIMIT': 379, 'MARKET': 66}
+[44/134] +2617s OK DOGE tf8 2025: trades=445 sec=328
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2026-01-01 -> 2026-12-31
+Symbol: KAS | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: KASUSDT_1m_full_hdr.csv -> 10512 x 30m bars
+Confirm 5m: KASUSDT_1m_full_hdr.csv -> 63072 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 10512 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 30%  ... 15%  ... 40%  ... 5%  ... 5%  ... 30%  ... 45%  ... 10%  ... 20%  ... 10%  ... 35%  ... 50%  ... 15%  ... 35%  ... 25%  ... 15%  ... 20%  ... 55%  ... 40%  ... 25%  ... 60%  ... 20%  ... 30%  ... 40%  ... 30%  ... 65%  ... 35%  ... 25%  ... 45%  ... 70%  ... 35%  ... 40%  ... 45%  ... 75%  ... 30%  ... 45%  ... 40%  ... 50%  ... 80%  ... 50%  ... 35%  ... 50%  ... 85%  ... 45%  ... 55%  ... 40%  ... 60%  ... 55%  ... 90%  ... 50%  ... 65%  ... 55%  ... 95%  ... 45%  ... 70%  ... 60%  ... 100%
+Сигналов принято в pending: 534 | Сделок: 428 | fib2-cancel: 59
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 428 | TP: 144 | SL: 245 | TIME: 39
+tf7: WR: 33.6% | AvgR: -0.021 | SumR: -8.9 | PF: 0.97
+  2026: 428 sd | WR 34% | SumR -8.9 | PF 0.97
+Entry kinds: {'LIMIT': 329, 'MARKET': 99}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2020-01-01 -> 2020-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[45/134] +2736s OK KAS tf7 2026: trades=428 sec=187
+  ... 55%Data: ADAUSDT-1m-merged.csv -> 96672 x 5m bars
+  ... 75%  ... 50%  ... 60%Confirm 1m: ADAUSDT-1m-merged.csv -> 483359 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 96672 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 80%  ... 60%  ... 55%  ... 65%  ... 85%  ... 5%  ... 65%  ... 65%  ... 90%  ... 60%  ... 95%  ... 10%  ... 70%  ... 70%  ... 70%  ... 65%  ... 100%
+Сигналов принято в pending: 306 | Сделок: 263 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 263 | TP: 38 | SL: 72 | TIME: 153
+tf8: WR: 14.4% | AvgR: +0.045 | SumR: +11.9 | PF: 1.11
+  2026: 263 sd | WR 14% | SumR +11.9 | PF 1.11
+Entry kinds: {'LIMIT': 220, 'MARKET': 43}
+[46/134] +2785s OK KAS tf8 2026: trades=263 sec=168
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: ADAUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 15%  ... 75%Confirm 1m: ADAUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 75%  ... 70%  ... 75%  ... 80%  ... 20%  ... 5%  ... 75%  ... 80%  ... 85%  ... 80%  ... 25%  ... 80%  ... 10%  ... 90%  ... 85%  ... 85%  ... 30%  ... 85%  ... 95%  ... 15%  ... 90%  ... 35%  ... 90%  ... 100%
+Сигналов принято в pending: 489 | Сделок: 444 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 444 | TP: 62 | SL: 114 | TIME: 268
+tf8: WR: 14.0% | AvgR: +0.105 | SumR: +46.7 | PF: 1.28
+  2024: 444 sd | WR 14% | SumR +46.7 | PF 1.28
+Entry kinds: {'LIMIT': 365, 'MARKET': 79}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[47/134] +2859s OK KAS tf8 2024: trades=444 sec=280
+Data: ADAUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 90%  ... 20%  ... 95%Confirm 1m: ADAUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 40%  ... 95%
+Сигналов принято в pending: 466 | Сделок: 425 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 425 | TP: 57 | SL: 115 | TIME: 253
+tf8: WR: 13.4% | AvgR: +0.133 | SumR: +56.4 | PF: 1.35
+  2025: 425 sd | WR 13% | SumR +56.4 | PF 1.35
+Entry kinds: {'LIMIT': 344, 'MARKET': 81}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+[48/134] +2880s OK KAS tf8 2025: trades=425 sec=269Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 25%Data: ADAUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 5%  ... 95%Confirm 1m: ADAUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 45%  ... 100%
+Сигналов принято в pending: 980 | Сделок: 811 | fib2-cancel: 91
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 811 | TP: 331 | SL: 434 | TIME: 46
+tf7: WR: 40.8% | AvgR: +0.224 | SumR: +181.8 | PF: 1.35
+  2024: 811 sd | WR 41% | SumR +181.8 | PF 1.35
+Entry kinds: {'LIMIT': 581, 'MARKET': 230}
+[49/134] +2900s OK KAS tf7 2024: trades=811 sec=392
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 30%  ... 10%Data: ADAUSDT-1m-merged.csv -> 105408 x 5m bars
+  ... 50%Confirm 1m: ADAUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%
+Сигналов принято в pending: 933 | Сделок: 756 | fib2-cancel: 103
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 756 | TP: 286 | SL: 419 | TIME: 51
+tf7: WR: 37.8% | AvgR: +0.151 | SumR: +114.4 | PF: 1.23
+  2025: 756 sd | WR 38% | SumR +114.4 | PF 1.23
+Entry kinds: {'LIMIT': 564, 'MARKET': 192}
+[50/134] +2910s OK KAS tf7 2025: trades=756 sec=392
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: ADAUSDT-1m-merged.csv -> 105120 x 5m bars
+Confirm 1m: ADAUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 15%  ... 35%  ... 55%  ... 5%  ... 10%  ... 5%  ... 20%  ... 60%  ... 40%  ... 10%  ... 15%  ... 10%  ... 65%  ... 25%  ... 45%  ... 15%  ... 20%  ... 15%  ... 70%  ... 30%  ... 50%  ... 20%  ... 25%  ... 20%  ... 75%  ... 35%  ... 55%  ... 25%  ... 25%  ... 30%  ... 80%  ... 40%  ... 60%  ... 30%  ... 30%  ... 85%  ... 35%  ... 65%  ... 45%  ... 35%  ... 90%  ... 35%  ... 40%  ... 70%  ... 50%  ... 40%  ... 95%  ... 40%  ... 45%  ... 75%  ... 55%  ... 45%  ... 100%
+Сигналов принято в pending: 839 | Сделок: 711 | fib2-cancel: 55
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 711 | TP: 260 | SL: 382 | TIME: 69
+tf7: WR: 36.6% | AvgR: +0.152 | SumR: +107.8 | PF: 1.24
+  2020: 711 sd | WR 37% | SumR +107.8 | PF 1.24
+Entry kinds: {'LIMIT': 561, 'MARKET': 150}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[51/134] +3104s OK ADA tf7 2020: trades=711 sec=367
+Data: ADAUSDT-1m-merged.csv -> 71712 x 5m bars
+  ... 45%Confirm 1m: ADAUSDT-1m-merged.csv -> 358560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 71712 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 50%  ... 80%  ... 60%  ... 5%  ... 50%  ... 50%  ... 55%  ... 10%  ... 85%  ... 65%  ... 55%  ... 15%  ... 55%  ... 60%  ... 20%  ... 90%  ... 60%  ... 70%  ... 25%  ... 60%  ... 65%  ... 30%  ... 95%  ... 65%  ... 75%  ... 35%  ... 65%  ... 70%  ... 40%
+Сигналов принято в pending: 952 | Сделок: 808 | fib2-cancel: 66
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 808 | TP: 304 | SL: 444 | TIME: 60
+tf7: WR: 37.6% | AvgR: +0.212 | SumR: +171.1 | PF: 1.33
+  2021: 808 sd | WR 38% | SumR +171.1 | PF 1.33
+Entry kinds: {'LIMIT': 635, 'MARKET': 173}
+[52/134] +3252s OK ADA tf7 2021: trades=808 sec=467
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2020-01-01 -> 2020-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: ADAUSDT-1m-merged.csv -> 16112 x 30m bars
+  ... 70%Confirm 5m: ADAUSDT-1m-merged.csv -> 96672 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 16112 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 80%  ... 45%  ... 70%  ... 5%  ... 75%  ... 50%  ... 75%  ... 85%  ... 55%  ... 10%  ... 75%  ... 80%  ... 60%  ... 80%  ... 15%  ... 90%  ... 65%  ... 80%  ... 20%  ... 85%  ... 70%  ... 85%  ... 25%  ... 75%  ... 95%  ... 85%  ... 30%  ... 90%  ... 80%  ... 90%  ... 35%  ... 85%
+Сигналов принято в pending: 911 | Сделок: 774 | fib2-cancel: 56
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 774 | TP: 305 | SL: 416 | TIME: 53
+tf7: WR: 39.4% | AvgR: +0.192 | SumR: +148.8 | PF: 1.29
+  2022: 774 sd | WR 39% | SumR +148.8 | PF 1.29
+Entry kinds: {'LIMIT': 616, 'MARKET': 158}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2021-01-01 -> 2021-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[53/134] +3381s OK ADA tf7 2022: trades=774 sec=522
+  ... 90%Data: ADAUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 40%  ... 95%Confirm 5m: ADAUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 90%  ... 95%  ... 45%  ... 5%  ... 95%  ... 95%  ... 50%
+Сигналов принято в pending: 957 | Сделок: 807 | fib2-cancel: 68
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 807 | TP: 288 | SL: 456 | TIME: 63
+tf7: WR: 35.7% | AvgR: +0.031 | SumR: +25.3 | PF: 1.04
+  2023: 807 sd | WR 36% | SumR +25.3 | PF 1.04
+Entry kinds: {'LIMIT': 646, 'MARKET': 161}
+[54/134] +3412s OK ADA tf7 2023: trades=807 sec=531
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2022-01-01 -> 2022-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+
+Сигналов принято в pending: 1004 | Сделок: 862 | fib2-cancel: 70
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 862 | TP: 304 | SL: 513 | TIME: 45
+tf7: WR: 35.3% | AvgR: +0.058 | SumR: +49.7 | PF: 1.08
+  2025: 862 sd | WR 35% | SumR +49.7 | PF 1.08
+Entry kinds: {'LIMIT': 688, 'MARKET': 174}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2023-01-01 -> 2023-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[55/134] +3413s OK ADA tf7 2025: trades=862 sec=503
+Data: ADAUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 100%
+Сигналов принято в pending: 598 | Сделок: 506 | fib2-cancel: 44
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 506 | TP: 173 | SL: 293 | TIME: 40
+tf7: WR: 34.2% | AvgR: +0.035 | SumR: +17.6 | PF: 1.05
+  2026: 506 sd | WR 34% | SumR +17.6 | PF 1.05
+Entry kinds: {'LIMIT': 421, 'MARKET': 85}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[56/134] +3416s OK ADA tf7 2026: trades=506 sec=312
+  ... 10%Data: ADAUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 55%Confirm 5m: ADAUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%Data: ADAUSDT-1m-merged.csv -> 17568 x 30m bars
+Confirm 5m: ADAUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%Confirm 5m: ADAUSDT-1m-merged.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 100%
+Сигналов принято в pending: 982 | Сделок: 840 | fib2-cancel: 73
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 840 | TP: 305 | SL: 479 | TIME: 56
+tf7: WR: 36.3% | AvgR: +0.068 | SumR: +57.1 | PF: 1.10
+  2024: 840 sd | WR 36% | SumR +57.1 | PF 1.10
+Entry kinds: {'LIMIT': 645, 'MARKET': 195}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2025-01-01 -> 2025-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+[57/134] +3430s OK ADA tf7 2024: trades=840 sec=530
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 5%  ... 60%  ... 15%  ... 5%Data: ADAUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 5%Confirm 5m: ADAUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 10%  ... 65%  ... 20%  ... 10%  ... 10%  ... 5%  ... 70%  ... 15%  ... 25%  ... 15%  ... 15%  ... 10%  ... 75%  ... 20%  ... 30%  ... 20%  ... 20%  ... 15%  ... 80%  ... 25%  ... 35%  ... 25%  ... 25%  ... 20%  ... 85%  ... 30%  ... 40%  ... 30%  ... 30%  ... 90%  ... 35%  ... 25%  ... 45%  ... 35%  ... 95%  ... 35%  ... 30%  ... 40%  ... 50%  ... 40%  ... 100%
+Сигналов принято в pending: 405 | Сделок: 368 | fib2-cancel: 16
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 368 | TP: 47 | SL: 93 | TIME: 228
+tf8: WR: 12.8% | AvgR: +0.094 | SumR: +34.7 | PF: 1.26
+  2020: 368 sd | WR 13% | SumR +34.7 | PF 1.26
+Entry kinds: {'LIMIT': 315, 'MARKET': 53}
+[58/134] +3528s OK ADA tf8 2020: trades=368 sec=276============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2026-01-01 -> 2026-12-31
+
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 40%  ... 45%  ... 35%Data: ADAUSDT-1m-merged.csv -> 11952 x 30m bars
+  ... 55%Confirm 5m: ADAUSDT-1m-merged.csv -> 71712 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 11952 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 45%  ... 50%  ... 45%  ... 40%  ... 5%  ... 60%  ... 50%  ... 10%  ... 50%  ... 55%  ... 45%  ... 65%  ... 15%  ... 55%  ... 55%  ... 60%  ... 50%  ... 20%  ... 70%  ... 60%  ... 25%  ... 65%  ... 60%  ... 55%  ... 75%  ... 30%  ... 65%  ... 70%  ... 65%  ... 60%  ... 35%  ... 80%  ... 70%  ... 40%  ... 70%  ... 75%  ... 65%  ... 45%  ... 85%  ... 75%  ... 75%  ... 80%  ... 50%  ... 70%  ... 90%  ... 55%  ... 80%  ... 80%  ... 85%  ... 75%  ... 95%  ... 60%  ... 85%  ... 85%  ... 90%  ... 65%  ... 80%
+Сигналов принято в pending: 488 | Сделок: 442 | fib2-cancel: 18
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 442 | TP: 52 | SL: 115 | TIME: 275
+tf8: WR: 11.8% | AvgR: +0.114 | SumR: +50.4 | PF: 1.31
+  2021: 442 sd | WR 12% | SumR +50.4 | PF 1.31
+Entry kinds: {'LIMIT': 379, 'MARKET': 63}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2020-01-01 -> 2020-12-31
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[59/134] +3650s OK ADA tf8 2021: trades=442 sec=269
+Data: BNBUSDT-1m-merged.csv -> 93792 x 5m bars
+  ... 90%  ... 90%  ... 70%Confirm 1m: BNBUSDT-1m-merged.csv -> 468959 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 93792 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 95%  ... 85%  ... 75%  ... 95%  ... 95%  ... 5%  ... 80%
+Сигналов принято в pending: 479 | Сделок: 429 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 429 | TP: 52 | SL: 119 | TIME: 258
+tf8: WR: 12.1% | AvgR: +0.121 | SumR: +51.8 | PF: 1.31
+  2022: 429 sd | WR 12% | SumR +51.8 | PF 1.31
+Entry kinds: {'LIMIT': 365, 'MARKET': 64}
+[60/134] +3674s OK ADA tf8 2022: trades=429 sec=263
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: BNBUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 90%Confirm 1m: BNBUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%
+Сигналов принято в pending: 455 | Сделок: 413 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 413 | TP: 57 | SL: 119 | TIME: 237
+tf8: WR: 13.8% | AvgR: +0.047 | SumR: +19.4 | PF: 1.12
+  2023: 413 sd | WR 14% | SumR +19.4 | PF 1.12
+Entry kinds: {'LIMIT': 360, 'MARKET': 53}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[61/134] +3682s OK ADA tf8 2023: trades=413 sec=269
+  ... 85%  ... 100%
+Сигналов принято в pending: 513 | Сделок: 462 | fib2-cancel: 17
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 462 | TP: 57 | SL: 136 | TIME: 269
+tf8: WR: 12.3% | AvgR: +0.071 | SumR: +32.7 | PF: 1.17
+  2024: 462 sd | WR 12% | SumR +32.7 | PF 1.17
+Entry kinds: {'LIMIT': 394, 'MARKET': 68}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[62/134] +3684s OK ADA tf8 2024: trades=462 sec=268
+Data: BNBUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 10%Data: BNBUSDT-1m-merged.csv -> 105120 x 5m bars
+Confirm 1m: BNBUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%Confirm 1m: BNBUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 95%  ... 90%  ... 5%  ... 95%  ... 15%
+Сигналов принято в pending: 513 | Сделок: 454 | fib2-cancel: 17
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 454 | TP: 63 | SL: 134 | TIME: 257
+tf8: WR: 13.9% | AvgR: +0.096 | SumR: +43.4 | PF: 1.24
+  2025: 454 sd | WR 14% | SumR +43.4 | PF 1.24
+Entry kinds: {'LIMIT': 372, 'MARKET': 82}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+[63/134] +3704s OK ADA tf8 2025: trades=454 sec=274
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: BNBUSDT-1m-merged.csv -> 105408 x 5m bars
+  ... 5%  ... 5%  ... 100%
+Сигналов принято в pending: 322 | Сделок: 293 | fib2-cancel: 9
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 293 | TP: 31 | SL: 84 | TIME: 178
+tf8: WR: 10.6% | AvgR: +0.059 | SumR: +17.3 | PF: 1.15
+  2026: 293 sd | WR 11% | SumR +17.3 | PF 1.15
+Entry kinds: {'LIMIT': 250, 'MARKET': 43}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill[64/134] +3711s OK ADA tf8 2026: trades=293 sec=183
+
+============================================================
+Confirm 1m: BNBUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%Data: BNBUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 20%  ... 10%Confirm 1m: BNBUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 10%  ... 10%  ... 5%  ... 25%  ... 15%  ... 5%  ... 15%  ... 15%  ... 30%  ... 10%  ... 20%  ... 10%  ... 35%  ... 20%  ... 20%  ... 15%  ... 15%  ... 25%  ... 40%  ... 25%  ... 25%  ... 20%  ... 20%  ... 30%  ... 45%  ... 30%  ... 25%  ... 30%  ... 25%  ... 35%  ... 50%  ... 35%  ... 30%  ... 30%  ... 55%  ... 40%  ... 35%  ... 40%  ... 60%  ... 35%  ... 35%  ... 45%  ... 40%  ... 45%  ... 65%  ... 40%  ... 40%  ... 50%  ... 45%  ... 50%  ... 70%  ... 45%  ... 45%  ... 55%  ... 50%  ... 75%  ... 55%  ... 50%  ... 50%  ... 60%  ... 80%  ... 55%  ... 60%  ... 55%  ... 55%  ... 65%  ... 85%  ... 60%  ... 65%  ... 60%  ... 60%  ... 70%  ... 90%  ... 65%  ... 70%  ... 65%  ... 95%  ... 65%  ... 75%  ... 75%  ... 70%  ... 100%
+Сигналов принято в pending: 815 | Сделок: 699 | fib2-cancel: 45
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 699 | TP: 275 | SL: 365 | TIME: 59
+tf7: WR: 39.3% | AvgR: +0.168 | SumR: +117.5 | PF: 1.26
+  2020: 699 sd | WR 39% | SumR +117.5 | PF 1.26
+Entry kinds: {'LIMIT': 520, 'MARKET': 179}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-12-31
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+[65/134] +3974s OK BNB tf7 2020: trades=699 sec=324============================================================
+
+  ... 70%Data: BNBUSDT-1m-merged.csv -> 71712 x 5m bars
+  ... 80%  ... 70%Confirm 1m: BNBUSDT-1m-merged.csv -> 358560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 71712 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 80%  ... 75%  ... 75%  ... 85%  ... 10%  ... 75%  ... 15%  ... 85%  ... 80%  ... 80%  ... 90%  ... 20%  ... 80%  ... 25%  ... 90%  ... 85%  ... 85%  ... 95%  ... 30%  ... 85%  ... 35%  ... 95%  ... 90%  ... 90%
+Сигналов принято в pending: 935 | Сделок: 794 | fib2-cancel: 65
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 794 | TP: 323 | SL: 410 | TIME: 61
+tf7: WR: 40.7% | AvgR: +0.283 | SumR: +224.8 | PF: 1.46
+  2021: 794 sd | WR 41% | SumR +224.8 | PF 1.46
+Entry kinds: {'LIMIT': 612, 'MARKET': 182}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2020-01-01 -> 2020-12-31
+[66/134] +4059s OK BNB tf7 2021: trades=794 sec=385
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 40%Data: BNBUSDT-1m-merged.csv -> 15632 x 30m bars
+Confirm 5m: BNBUSDT-1m-merged.csv -> 93792 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 15632 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 90%  ... 45%
+Сигналов принято в pending: 932 | Сделок: 755 | fib2-cancel: 96
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 755 | TP: 291 | SL: 395 | TIME: 69
+tf7: WR: 38.5% | AvgR: -0.079 | SumR: -60.0 | PF: 0.90
+  2023: 755 sd | WR 39% | SumR -60.0 | PF 0.90
+Entry kinds: {'LIMIT': 600, 'MARKET': 155}
+[67/134] +4071s OK BNB tf7 2023: trades=755 sec=387============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2021-01-01 -> 2021-12-31
+
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: BNBUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 95%  ... 5%  ... 95%Confirm 5m: BNBUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 50%  ... 10%  ... 95%  ... 5%  ... 55%
+Сигналов принято в pending: 1000 | Сделок: 824 | fib2-cancel: 99
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 824 | TP: 327 | SL: 449 | TIME: 48
+tf7: WR: 39.7% | AvgR: -0.033 | SumR: -27.0 | PF: 0.96
+  2025: 824 sd | WR 40% | SumR -27.0 | PF 0.96
+Entry kinds: {'LIMIT': 603, 'MARKET': 221}
+[68/134] +4095s OK BNB tf7 2025: trades=824 sec=384
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2022-01-01 -> 2022-12-31
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+
+Сигналов принято в pending: 951 | Сделок: 828 | fib2-cancel: 60
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 828 | TP: 286 | SL: 484 | TIME: 58
+tf7: WR: 34.5% | AvgR: -0.040 | SumR: -32.9 | PF: 0.95
+  2022: 828 sd | WR 35% | SumR -32.9 | PF 0.95
+Entry kinds: {'LIMIT': 650, 'MARKET': 178}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2023-01-01 -> 2023-12-31
+[69/134] +4096s OK BNB tf7 2022: trades=828 sec=414
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: BNBUSDT-1m-merged.csv -> 17520 x 30m bars
+Data: BNBUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 15%Confirm 5m: BNBUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 60%Confirm 5m: BNBUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 10%  ... 100%
+Сигналов принято в pending: 928 | Сделок: 773 | fib2-cancel: 77
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 773 | TP: 286 | SL: 418 | TIME: 69
+tf7: WR: 37.0% | AvgR: +0.008 | SumR: +5.8 | PF: 1.01
+  2024: 773 sd | WR 37% | SumR +5.8 | PF 1.01
+Entry kinds: {'LIMIT': 582, 'MARKET': 191}
+[70/134] +4111s OK BNB tf7 2024: trades=773 sec=407
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 20%  ... 65%  ... 5%Data: BNBUSDT-1m-merged.csv -> 17568 x 30m bars
+  ... 15%  ... 5%Confirm 5m: BNBUSDT-1m-merged.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 25%  ... 70%  ... 10%  ... 20%  ... 10%  ... 5%  ... 75%  ... 30%  ... 15%  ... 25%  ... 15%  ... 80%  ... 35%  ... 10%  ... 30%  ... 20%  ... 85%  ... 40%  ... 15%  ... 20%  ... 35%  ... 90%  ... 25%  ... 45%  ... 25%  ... 20%  ... 40%  ... 95%  ... 30%  ... 50%  ... 30%  ... 25%  ... 45%  ... 100%
+Сигналов принято в pending: 627 | Сделок: 500 | fib2-cancel: 66
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 500 | TP: 187 | SL: 289 | TIME: 24
+tf7: WR: 37.4% | AvgR: -0.184 | SumR: -92.1 | PF: 0.79
+  2026: 500 sd | WR 37% | SumR -92.1 | PF 0.79
+Entry kinds: {'LIMIT': 394, 'MARKET': 106}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2025-01-01 -> 2025-12-31
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[71/134] +4188s OK BNB tf7 2026: trades=500 sec=214
+Data: BNBUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 35%  ... 55%  ... 35%Confirm 5m: BNBUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 30%  ... 50%  ... 40%  ... 60%  ... 40%  ... 5%  ... 35%  ... 55%  ... 45%  ... 65%  ... 10%  ... 45%  ... 40%  ... 60%  ... 70%  ... 50%  ... 15%  ... 50%  ... 65%  ... 75%  ... 45%  ... 55%  ... 20%  ... 55%  ... 50%  ... 70%  ... 80%  ... 60%  ... 25%  ... 60%  ... 85%  ... 75%  ... 55%  ... 30%  ... 65%  ... 65%  ... 90%  ... 60%  ... 35%  ... 80%  ... 70%  ... 70%  ... 65%  ... 95%  ... 40%  ... 85%  ... 75%  ... 75%  ... 100%
+Сигналов принято в pending: 448 | Сделок: 413 | fib2-cancel: 13
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 413 | TP: 56 | SL: 104 | TIME: 253
+tf8: WR: 13.6% | AvgR: +0.120 | SumR: +49.7 | PF: 1.32
+  2020: 413 sd | WR 14% | SumR +49.7 | PF 1.32
+Entry kinds: {'LIMIT': 350, 'MARKET': 63}
+[72/134] +4307s OK BNB tf8 2020: trades=413 sec=248
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2026-01-01 -> 2026-12-31
+Symbol: BNB | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 70%  ... 45%  ... 90%Data: BNBUSDT-1m-merged.csv -> 11952 x 30m bars
+  ... 80%Confirm 5m: BNBUSDT-1m-merged.csv -> 71712 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 11952 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 80%  ... 75%  ... 5%  ... 95%  ... 50%  ... 85%  ... 10%  ... 85%  ... 80%
+Сигналов принято в pending: 469 | Сделок: 422 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 422 | TP: 55 | SL: 117 | TIME: 250
+tf8: WR: 13.0% | AvgR: +0.115 | SumR: +48.4 | PF: 1.30
+  2021: 422 sd | WR 13% | SumR +48.4 | PF 1.30
+Entry kinds: {'LIMIT': 361, 'MARKET': 61}
+============================================================
+[73/134] +4335s OK BNB tf8 2021: trades=422 sec=264
+Bot-aligned BT | tf7 5m -> 4H | 2020-01-01 -> 2020-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 55%  ... 15%Data: LINKUSDT-1m-merged.csv -> 100704 x 5m bars
+  ... 90%Confirm 1m: LINKUSDT-1m-merged.csv -> 503520 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 100704 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 90%  ... 85%  ... 20%  ... 60%  ... 95%  ... 25%  ... 5%  ... 90%  ... 95%  ... 65%  ... 30%
+Сигналов принято в pending: 468 | Сделок: 424 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 424 | TP: 62 | SL: 107 | TIME: 255
+tf8: WR: 14.6% | AvgR: +0.159 | SumR: +67.4 | PF: 1.43
+  2022: 424 sd | WR 15% | SumR +67.4 | PF 1.43
+Entry kinds: {'LIMIT': 358, 'MARKET': 66}
+[74/134] +4366s OK BNB tf8 2022: trades=424 sec=270
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: LINKUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 95%
+Сигналов принято в pending: 500 | Сделок: 453 | fib2-cancel: 17
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 453 | TP: 47 | SL: 109 | TIME: 297
+tf8: WR: 10.4% | AvgR: -0.040 | SumR: -18.2 | PF: 0.90
+  2023: 453 sd | WR 10% | SumR -18.2 | PF 0.90
+Entry kinds: {'LIMIT': 395, 'MARKET': 58}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds[75/134] +4372s OK BNB tf8 2023: trades=453 sec=276
+
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 10%Confirm 1m: LINKUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 35%Data: LINKUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 70%Confirm 1m: LINKUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 40%  ... 100%
+Сигналов принято в pending: 484 | Сделок: 429 | fib2-cancel: 20
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 429 | TP: 54 | SL: 116 | TIME: 259
+tf8: WR: 12.6% | AvgR: +0.042 | SumR: +17.8 | PF: 1.10
+  2024: 429 sd | WR 13% | SumR +17.8 | PF 1.10
+Entry kinds: {'LIMIT': 365, 'MARKET': 64}
+============================================================[76/134] +4384s OK BNB tf8 2024: trades=429 sec=273
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 15%Data: LINKUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 75%  ... 5%  ... 45%Confirm 1m: LINKUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 50%  ... 80%  ... 20%  ... 10%  ... 5%  ... 55%  ... 10%  ... 85%  ... 60%  ... 25%  ... 15%  ... 10%  ... 65%  ... 15%  ... 90%  ... 30%  ... 70%  ... 20%  ... 15%  ... 75%  ... 95%  ... 20%  ... 35%  ... 80%
+Сигналов принято в pending: 490 | Сделок: 445 | fib2-cancel: 11
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 445 | TP: 65 | SL: 130 | TIME: 250
+tf8: WR: 14.6% | AvgR: -0.010 | SumR: -4.4 | PF: 0.98
+  2025: 445 sd | WR 15% | SumR -4.4 | PF 0.98
+Entry kinds: {'LIMIT': 359, 'MARKET': 86}
+[77/134] +4459s OK BNB tf8 2025: trades=445 sec=271
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 25%  ... 20%  ... 85%Data: LINKUSDT-1m-merged.csv -> 105408 x 5m bars
+  ... 25%Confirm 1m: LINKUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 40%  ... 90%  ... 95%  ... 30%  ... 25%  ... 30%  ... 5%  ... 45%  ... 100%
+Сигналов принято в pending: 326 | Сделок: 287 | fib2-cancel: 10
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 287 | TP: 41 | SL: 83 | TIME: 163
+tf8: WR: 14.3% | AvgR: -0.047 | SumR: -13.6 | PF: 0.90
+  2026: 287 sd | WR 14% | SumR -13.6 | PF 0.90
+Entry kinds: {'LIMIT': 245, 'MARKET': 42}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5[78/134] +4486s OK BNB tf8 2026: trades=287 sec=179
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+
+Data: LINKUSDT-1m-merged.csv -> 105120 x 5m bars
+Confirm 1m: LINKUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 30%  ... 35%  ... 35%  ... 10%  ... 50%  ... 5%  ... 35%  ... 40%  ... 15%  ... 55%  ... 40%  ... 10%  ... 40%  ... 45%  ... 20%  ... 60%  ... 45%  ... 15%  ... 45%  ... 50%  ... 65%  ... 25%  ... 50%  ... 20%  ... 50%  ... 55%  ... 70%  ... 30%  ... 55%  ... 25%  ... 55%  ... 75%  ... 60%  ... 35%  ... 60%  ... 30%  ... 80%  ... 60%  ... 40%  ... 65%  ... 65%  ... 35%  ... 85%  ... 65%  ... 45%  ... 70%  ... 70%  ... 40%  ... 90%  ... 70%  ... 50%  ... 75%  ... 45%  ... 75%  ... 95%  ... 75%  ... 55%  ... 80%  ... 50%  ... 80%  ... 100%
+Сигналов принято в pending: 829 | Сделок: 699 | fib2-cancel: 41
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 699 | TP: 282 | SL: 352 | TIME: 65
+tf7: WR: 40.3% | AvgR: +0.293 | SumR: +204.9 | PF: 1.50
+  2020: 699 sd | WR 40% | SumR +204.9 | PF 1.50
+Entry kinds: {'LIMIT': 540, 'MARKET': 159}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-12-31
+[79/134] +4684s OK LINK tf7 2020: trades=699 sec=349
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 80%Data: LINKUSDT-1m-merged.csv -> 71712 x 5m bars
+  ... 60%Confirm 1m: LINKUSDT-1m-merged.csv -> 358560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 71712 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 85%  ... 55%  ... 85%  ... 5%  ... 85%  ... 65%  ... 10%  ... 60%  ... 90%  ... 90%  ... 15%  ... 70%  ... 90%  ... 20%  ... 65%  ... 95%  ... 95%  ... 25%  ... 75%  ... 95%  ... 30%  ... 70%
+Сигналов принято в pending: 1021 | Сделок: 856 | fib2-cancel: 73
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 856 | TP: 337 | SL: 479 | TIME: 40
+tf7: WR: 39.4% | AvgR: +0.208 | SumR: +178.4 | PF: 1.33
+  2021: 856 sd | WR 39% | SumR +178.4 | PF 1.33
+Entry kinds: {'LIMIT': 646, 'MARKET': 210}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2020-01-01 -> 2020-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[80/134] +4754s OK LINK tf7 2021: trades=856 sec=388
+Data: LINKUSDT-1m-merged.csv -> 16784 x 30m bars
+
+Сигналов принято в pending: 993 | Сделок: 841 | fib2-cancel: 74
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 841 | TP: 308 | SL: 471 | TIME: 62
+tf7: WR: 36.6% | AvgR: +0.133 | SumR: +112.1 | PF: 1.20
+  2022: 841 sd | WR 37% | SumR +112.1 | PF 1.20
+Entry kinds: {'LIMIT': 663, 'MARKET': 178}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2021-01-01 -> 2021-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds[81/134] +4758s OK LINK tf7 2022: trades=841 sec=386
+
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Confirm 5m: LINKUSDT-1m-merged.csv -> 100704 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 16784 баров (warmup=100, detect_step=2)...
+  ... 0%Data: LINKUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 35%Confirm 5m: LINKUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 80%
+Сигналов принято в pending: 959 | Сделок: 821 | fib2-cancel: 65
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 821 | TP: 287 | SL: 472 | TIME: 62
+tf7: WR: 35.0% | AvgR: +0.006 | SumR: +4.9 | PF: 1.01
+  2023: 821 sd | WR 35% | SumR +4.9 | PF 1.01
+Entry kinds: {'LIMIT': 653, 'MARKET': 168}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2022-01-01 -> 2022-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[82/134] +4766s OK LINK tf7 2023: trades=821 sec=382
+Data: LINKUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 75%  ... 5%  ... 40%Confirm 5m: LINKUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 5%  ... 45%  ... 10%  ... 5%  ... 85%  ... 80%  ... 50%  ... 10%  ... 15%  ... 10%  ... 55%  ... 90%  ... 15%  ... 20%  ... 85%  ... 15%  ... 60%  ... 20%  ... 25%  ... 65%  ... 95%  ... 20%  ... 90%  ... 30%  ... 70%  ... 25%  ... 25%  ... 35%  ... 100%
+Сигналов принято в pending: 1020 | Сделок: 850 | fib2-cancel: 86
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 850 | TP: 322 | SL: 487 | TIME: 41
+tf7: WR: 37.9% | AvgR: +0.080 | SumR: +67.9 | PF: 1.11
+  2024: 850 sd | WR 38% | SumR +67.9 | PF 1.11
+Entry kinds: {'LIMIT': 669, 'MARKET': 181}
+============================================================
+[83/134] +4843s OK LINK tf7 2024: trades=850 sec=384
+Bot-aligned BT | tf8 30m -> 8H | 2023-01-01 -> 2023-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 75%  ... 30%Data: LINKUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 95%Confirm 5m: LINKUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 30%  ... 40%  ... 80%  ... 35%  ... 5%  ... 35%  ... 85%  ... 45%
+Сигналов принято в pending: 1044 | Сделок: 896 | fib2-cancel: 79
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 896 | TP: 349 | SL: 499 | TIME: 48
+tf7: WR: 39.0% | AvgR: +0.157 | SumR: +140.6 | PF: 1.23
+  2025: 896 sd | WR 39% | SumR +140.6 | PF 1.23
+Entry kinds: {'LIMIT': 671, 'MARKET': 225}
+[84/134] +4869s OK LINK tf7 2025: trades=896 sec=383
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 40%Data: LINKUSDT-1m-merged.csv -> 17568 x 30m bars
+  ... 90%Confirm 5m: LINKUSDT-1m-merged.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 40%  ... 50%  ... 10%  ... 45%  ... 95%  ... 5%  ... 55%  ... 45%  ... 15%  ... 100%
+Сигналов принято в pending: 618 | Сделок: 520 | fib2-cancel: 48
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 520 | TP: 204 | SL: 277 | TIME: 39
+tf7: WR: 39.2% | AvgR: +0.114 | SumR: +59.4 | PF: 1.17
+  2026: 520 sd | WR 39% | SumR +59.4 | PF 1.17
+Entry kinds: {'LIMIT': 417, 'MARKET': 103}
+[85/134] +4896s OK LINK tf7 2026: trades=520 sec=212
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2025-01-01 -> 2025-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 50%  ... 60%Data: LINKUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 10%Confirm 5m: LINKUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 50%  ... 20%  ... 55%  ... 65%  ... 15%  ... 25%  ... 55%  ... 5%  ... 70%  ... 20%  ... 60%  ... 30%  ... 60%  ... 10%  ... 75%  ... 25%  ... 65%  ... 35%  ... 15%  ... 65%  ... 80%  ... 30%  ... 40%  ... 70%  ... 20%  ... 70%  ... 85%  ... 45%  ... 75%  ... 35%  ... 75%  ... 25%  ... 90%  ... 50%  ... 40%  ... 80%  ... 80%  ... 30%  ... 95%  ... 55%  ... 85%  ... 45%  ... 85%  ... 35%  ... 100%
+Сигналов принято в pending: 420 | Сделок: 375 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 375 | TP: 39 | SL: 69 | TIME: 267
+tf8: WR: 10.4% | AvgR: +0.153 | SumR: +57.2 | PF: 1.51
+  2020: 375 sd | WR 10% | SumR +57.2 | PF 1.51
+Entry kinds: {'LIMIT': 316, 'MARKET': 59}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2026-01-01 -> 2026-12-31
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[86/134] +5000s OK LINK tf8 2020: trades=375 sec=246
+Data: LINKUSDT-1m-merged.csv -> 11952 x 30m bars
+  ... 60%  ... 90%Confirm 5m: LINKUSDT-1m-merged.csv -> 71712 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 11952 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 50%  ... 90%  ... 40%  ... 5%  ... 95%  ... 65%  ... 55%  ... 95%  ... 10%  ... 45%
+Сигналов принято в pending: 526 | Сделок: 475 | fib2-cancel: 18
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 475 | TP: 52 | SL: 146 | TIME: 277
+tf8: WR: 10.9% | AvgR: +0.128 | SumR: +60.6 | PF: 1.33
+  2021: 475 sd | WR 11% | SumR +60.6 | PF 1.33
+Entry kinds: {'LIMIT': 399, 'MARKET': 76}
+============================================================[87/134] +5030s OK LINK tf8 2021: trades=475 sec=272
+
+Bot-aligned BT | tf7 5m -> 4H | 2020-01-01 -> 2020-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 70%  ... 15%Data: LTCUSDT-1m-merged.csv -> 103007 x 5m bars
+  ... 60%
+Сигналов принято в pending: 535 | Сделок: 491 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 491 | TP: 68 | SL: 142 | TIME: 281
+tf8: WR: 13.8% | AvgR: +0.134 | SumR: +65.8 | PF: 1.35
+  2022: 491 sd | WR 14% | SumR +65.8 | PF 1.35
+Entry kinds: {'LIMIT': 409, 'MARKET': 82}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+[88/134] +5036s OK LINK tf8 2022: trades=491 sec=270Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Confirm 1m: LTCUSDT-1m-merged.csv -> 515031 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 103007 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 50%Data: LTCUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 20%Confirm 1m: LTCUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 75%  ... 65%  ... 25%  ... 55%  ... 5%  ... 30%  ... 80%  ... 70%  ... 5%  ... 60%  ... 35%  ... 10%  ... 85%  ... 75%  ... 40%  ... 65%  ... 10%  ... 45%  ... 80%  ... 15%  ... 90%  ... 50%  ... 70%  ... 15%  ... 85%  ... 55%  ... 95%  ... 20%  ... 75%  ... 60%  ... 90%  ... 20%
+Сигналов принято в pending: 484 | Сделок: 432 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 432 | TP: 50 | SL: 126 | TIME: 256
+tf8: WR: 11.6% | AvgR: +0.054 | SumR: +23.2 | PF: 1.13
+  2023: 432 sd | WR 12% | SumR +23.2 | PF 1.13
+Entry kinds: {'LIMIT': 378, 'MARKET': 54}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[89/134] +5112s OK LINK tf8 2023: trades=432 sec=269
+  ... 65%Data: LTCUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 80%  ... 25%Confirm 1m: LTCUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 95%  ... 70%  ... 25%  ... 85%  ... 100%
+Сигналов принято в pending: 518 | Сделок: 457 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 457 | TP: 62 | SL: 158 | TIME: 237
+tf8: WR: 13.6% | AvgR: -0.008 | SumR: -3.7 | PF: 0.98
+  2024: 457 sd | WR 14% | SumR -3.7 | PF 0.98
+Entry kinds: {'LIMIT': 375, 'MARKET': 82}
+============================================================
+[90/134] +5134s OK LINK tf8 2024: trades=457 sec=265
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 30%  ... 75%  ... 5%Data: LTCUSDT-1m-merged.csv -> 105120 x 5m bars
+Confirm 1m: LTCUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 90%  ... 80%  ... 30%  ... 35%  ... 10%  ... 85%  ... 95%  ... 5%  ... 90%  ... 35%  ... 15%
+Сигналов принято в pending: 515 | Сделок: 458 | fib2-cancel: 20
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 458 | TP: 67 | SL: 146 | TIME: 245
+tf8: WR: 14.6% | AvgR: +0.109 | SumR: +49.7 | PF: 1.25
+  2025: 458 sd | WR 15% | SumR +49.7 | PF 1.25
+Entry kinds: {'LIMIT': 384, 'MARKET': 74}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+[91/134] +5169s OK LINK tf8 2025: trades=458 sec=273Slope filter: off (как на сервере)
+
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 40%  ... 95%Data: LTCUSDT-1m-merged.csv -> 105408 x 5m bars
+  ... 10%Confirm 1m: LTCUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 100%
+Сигналов принято в pending: 319 | Сделок: 291 | fib2-cancel: 13
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 291 | TP: 29 | SL: 87 | TIME: 175
+tf8: WR: 10.0% | AvgR: +0.017 | SumR: +4.9 | PF: 1.04
+  2026: 291 sd | WR 10% | SumR +4.9 | PF 1.04
+Entry kinds: {'LIMIT': 252, 'MARKET': 39}
+[92/134] +5180s OK LINK tf8 2026: trades=291 sec=181
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 40%Data: LTCUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 20%  ... 45%Confirm 1m: LTCUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 15%  ... 5%  ... 45%  ... 5%  ... 50%  ... 25%  ... 20%  ... 10%  ... 10%  ... 50%  ... 30%  ... 55%  ... 25%  ... 15%  ... 15%  ... 35%  ... 55%  ... 60%  ... 30%  ... 20%  ... 20%  ... 40%  ... 65%  ... 60%  ... 35%  ... 25%  ... 25%  ... 45%  ... 70%  ... 65%  ... 40%  ... 30%  ... 30%  ... 50%  ... 75%  ... 70%  ... 45%  ... 35%  ... 35%  ... 55%  ... 80%  ... 50%  ... 40%  ... 75%  ... 40%  ... 85%  ... 55%  ... 45%  ... 60%  ... 80%  ... 45%  ... 60%  ... 90%  ... 50%  ... 65%  ... 50%  ... 85%  ... 65%  ... 95%  ... 55%  ... 55%  ... 70%  ... 90%  ... 70%  ... 60%  ... 100%
+Сигналов принято в pending: 891 | Сделок: 767 | fib2-cancel: 49
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 767 | TP: 286 | SL: 402 | TIME: 79
+tf7: WR: 37.3% | AvgR: +0.175 | SumR: +134.1 | PF: 1.28
+  2020: 767 sd | WR 37% | SumR +134.1 | PF 1.28
+Entry kinds: {'LIMIT': 614, 'MARKET': 153}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[93/134] +5396s OK LTC tf7 2020: trades=767 sec=366
+Data: LTCUSDT-1m-merged.csv -> 71712 x 5m bars
+  ... 60%Confirm 1m: LTCUSDT-1m-merged.csv -> 358560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 71712 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 95%  ... 75%  ... 5%  ... 75%  ... 65%  ... 65%  ... 10%  ... 80%  ... 15%
+Сигналов принято в pending: 1012 | Сделок: 861 | fib2-cancel: 71
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 861 | TP: 299 | SL: 509 | TIME: 53
+tf7: WR: 34.7% | AvgR: +0.073 | SumR: +62.9 | PF: 1.11
+  2021: 861 sd | WR 35% | SumR +62.9 | PF 1.11
+Entry kinds: {'LIMIT': 679, 'MARKET': 182}
+[94/134] +5433s OK LTC tf7 2021: trades=861 sec=397
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2020-01-01 -> 2020-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 70%  ... 80%Data: LTCUSDT-1m-merged.csv -> 17168 x 30m bars
+  ... 70%Confirm 5m: LTCUSDT-1m-merged.csv -> 103007 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17168 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 20%  ... 5%  ... 85%  ... 25%  ... 75%  ... 75%  ... 85%  ... 30%  ... 10%  ... 90%  ... 80%  ... 35%  ... 15%  ... 80%  ... 40%  ... 90%  ... 20%  ... 95%  ... 85%  ... 45%  ... 85%  ... 25%  ... 50%  ... 95%
+Сигналов принято в pending: 876 | Сделок: 750 | fib2-cancel: 60
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 750 | TP: 266 | SL: 407 | TIME: 77
+tf7: WR: 35.5% | AvgR: +0.032 | SumR: +23.8 | PF: 1.04
+  2023: 750 sd | WR 35% | SumR +23.8 | PF 1.04
+Entry kinds: {'LIMIT': 618, 'MARKET': 132}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2021-01-01 -> 2021-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[95/134] +5512s OK LTC tf7 2023: trades=750 sec=378
+  ... 90%  ... 55%  ... 30%Data: LTCUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 90%Confirm 5m: LTCUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 60%  ... 35%  ... 95%  ... 5%
+Сигналов принято в pending: 955 | Сделок: 810 | fib2-cancel: 70
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 810 | TP: 302 | SL: 447 | TIME: 61
+tf7: WR: 37.3% | AvgR: +0.131 | SumR: +106.1 | PF: 1.19
+  2022: 810 sd | WR 37% | SumR +106.1 | PF 1.19
+Entry kinds: {'LIMIT': 656, 'MARKET': 154}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2022-01-01 -> 2022-12-31
+[96/134] +5533s OK LTC tf7 2022: trades=810 sec=421
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 65%Data: LTCUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 95%Confirm 5m: LTCUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 40%  ... 10%  ... 70%  ... 100%
+Сигналов принято в pending: 948 | Сделок: 803 | fib2-cancel: 61
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 803 | TP: 309 | SL: 434 | TIME: 60
+tf7: WR: 38.5% | AvgR: +0.075 | SumR: +60.0 | PF: 1.10
+  2024: 803 sd | WR 38% | SumR +60.0 | PF 1.10
+Entry kinds: {'LIMIT': 638, 'MARKET': 165}
+[97/134] +5550s OK LTC tf7 2024: trades=803 sec=382
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2023-01-01 -> 2023-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 5%  ... 45%Data: LTCUSDT-1m-merged.csv -> 17520 x 30m bars
+  ... 75%  ... 15%
+Сигналов принято в pending: 986 | Сделок: 810 | fib2-cancel: 92
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 810 | TP: 304 | SL: 457 | TIME: 49
+tf7: WR: 37.5% | AvgR: +0.071 | SumR: +57.7 | PF: 1.10
+  2025: 810 sd | WR 38% | SumR +57.7 | PF 1.10
+Entry kinds: {'LIMIT': 595, 'MARKET': 215}
+[98/134] +5557s OK LTC tf7 2025: trades=810 sec=377
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Confirm 5m: LTCUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%Data: LTCUSDT-1m-merged.csv -> 17568 x 30m bars
+  ... 10%Confirm 5m: LTCUSDT-1m-merged.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 50%  ... 80%  ... 20%  ... 5%  ... 85%  ... 5%  ... 15%  ... 55%  ... 10%  ... 25%  ... 90%  ... 10%  ... 20%  ... 60%  ... 30%  ... 95%  ... 15%  ... 15%  ... 25%  ... 65%  ... 100%
+Сигналов принято в pending: 645 | Сделок: 534 | fib2-cancel: 53
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 534 | TP: 187 | SL: 319 | TIME: 28
+tf7: WR: 35.0% | AvgR: -0.126 | SumR: -67.4 | PF: 0.84
+  2026: 534 sd | WR 35% | SumR -67.4 | PF 0.84
+Entry kinds: {'LIMIT': 432, 'MARKET': 102}
+[99/134] +5609s OK LTC tf7 2026: trades=534 sec=212============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2025-01-01 -> 2025-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 20%  ... 35%Data: LTCUSDT-1m-merged.csv -> 17520 x 30m bars
+Confirm 5m: LTCUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 20%  ... 30%  ... 70%  ... 25%  ... 40%  ... 5%  ... 35%  ... 25%  ... 30%  ... 75%  ... 45%  ... 10%  ... 30%  ... 40%  ... 35%  ... 80%  ... 50%  ... 45%  ... 15%  ... 40%  ... 85%  ... 35%  ... 55%  ... 50%  ... 20%  ... 45%  ... 90%  ... 40%  ... 60%  ... 55%  ... 25%  ... 50%  ... 95%  ... 45%  ... 60%  ... 65%  ... 55%  ... 30%  ... 100%
+Сигналов принято в pending: 458 | Сделок: 403 | fib2-cancel: 18
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 403 | TP: 50 | SL: 88 | TIME: 265
+tf8: WR: 12.4% | AvgR: +0.135 | SumR: +54.5 | PF: 1.40
+  2020: 403 sd | WR 12% | SumR +54.5 | PF 1.40
+Entry kinds: {'LIMIT': 339, 'MARKET': 64}
+[100/134] +5698s OK LTC tf8 2020: trades=403 sec=264
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2026-01-01 -> 2026-12-31
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 50%Data: LTCUSDT-1m-merged.csv -> 11952 x 30m bars
+Confirm 5m: LTCUSDT-1m-merged.csv -> 71712 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 11952 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 65%  ... 60%  ... 70%  ... 35%  ... 55%  ... 5%  ... 65%  ... 70%  ... 75%  ... 40%  ... 10%  ... 60%  ... 70%  ... 15%  ... 75%  ... 45%  ... 80%  ... 65%  ... 20%  ... 75%  ... 80%  ... 85%  ... 25%  ... 50%  ... 70%  ... 80%  ... 30%  ... 85%  ... 90%  ... 55%  ... 35%  ... 75%  ... 85%  ... 95%  ... 90%  ... 40%  ... 60%  ... 80%  ... 45%  ... 90%
+Сигналов принято в pending: 517 | Сделок: 478 | fib2-cancel: 13
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 478 | TP: 72 | SL: 131 | TIME: 275
+tf8: WR: 15.1% | AvgR: +0.137 | SumR: +65.3 | PF: 1.36
+  2021: 478 sd | WR 15% | SumR +65.3 | PF 1.36
+Entry kinds: {'LIMIT': 397, 'MARKET': 81}
+[101/134] +5786s OK LTC tf8 2021: trades=478 sec=274
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2020-01-01 -> 2020-12-31
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 95%Data: XRPUSDT-1m-merged.csv -> 102716 x 5m bars
+  ... 65%  ... 85%Confirm 1m: XRPUSDT-1m-merged.csv -> 513579 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 102716 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 50%  ... 95%
+Сигналов принято в pending: 477 | Сделок: 428 | fib2-cancel: 10
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 428 | TP: 55 | SL: 126 | TIME: 247
+tf8: WR: 12.9% | AvgR: +0.070 | SumR: +30.1 | PF: 1.18
+  2022: 428 sd | WR 13% | SumR +30.1 | PF 1.18
+Entry kinds: {'LIMIT': 363, 'MARKET': 65}
+[102/134] +5802s OK LTC tf8 2022: trades=428 sec=269
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 70%  ... 55%  ... 90%Data: XRPUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 5%Confirm 1m: XRPUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%
+Сигналов принято в pending: 459 | Сделок: 403 | fib2-cancel: 20
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 403 | TP: 47 | SL: 111 | TIME: 245
+tf8: WR: 11.7% | AvgR: +0.043 | SumR: +17.3 | PF: 1.10
+  2023: 403 sd | WR 12% | SumR +17.3 | PF 1.10
+Entry kinds: {'LIMIT': 366, 'MARKET': 37}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+[103/134] +5812s OK LTC tf8 2023: trades=403 sec=262Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 60%Data: XRPUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 95%  ... 75%Confirm 1m: XRPUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 65%  ... 10%  ... 5%  ... 80%  ... 70%  ... 100%
+Сигналов принято в pending: 499 | Сделок: 448 | fib2-cancel: 22
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 448 | TP: 64 | SL: 133 | TIME: 251
+tf8: WR: 14.3% | AvgR: +0.079 | SumR: +35.4 | PF: 1.18
+  2024: 448 sd | WR 14% | SumR +35.4 | PF 1.18
+Entry kinds: {'LIMIT': 381, 'MARKET': 67}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+[104/134] +5833s OK LTC tf8 2024: trades=448 sec=276
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 5%Data: XRPUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 75%Confirm 1m: XRPUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 15%  ... 85%  ... 10%  ... 80%  ... 10%  ... 90%  ... 85%  ... 20%  ... 5%  ... 15%  ... 90%  ... 95%  ... 15%  ... 25%  ... 95%  ... 10%  ... 20%
+Сигналов принято в pending: 518 | Сделок: 461 | fib2-cancel: 20
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 461 | TP: 66 | SL: 149 | TIME: 246
+tf8: WR: 14.3% | AvgR: +0.073 | SumR: +33.8 | PF: 1.17
+  2025: 461 sd | WR 14% | SumR +33.8 | PF 1.17
+Entry kinds: {'LIMIT': 394, 'MARKET': 67}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+[105/134] +5879s OK LTC tf8 2025: trades=461 sec=271
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 100%
+Сигналов принято в pending: 364 | Сделок: 321 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 321 | TP: 28 | SL: 114 | TIME: 179
+tf8: WR: 8.7% | AvgR: -0.144 | SumR: -46.3 | PF: 0.72
+  2026: 321 sd | WR 9% | SumR -46.3 | PF 0.72
+Entry kinds: {'LIMIT': 275, 'MARKET': 46}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+[106/134] +5883s OK LTC tf8 2026: trades=321 sec=185
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: XRPUSDT-1m-merged.csv -> 105408 x 5m bars
+  ... 20%Data: XRPUSDT-1m-merged.csv -> 105120 x 5m bars
+Confirm 1m: XRPUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 30%Confirm 1m: XRPUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 15%  ... 25%  ... 25%  ... 5%  ... 35%  ... 5%  ... 20%  ... 30%  ... 30%  ... 40%  ... 10%  ... 10%  ... 25%  ... 35%  ... 35%  ... 45%  ... 15%  ... 15%  ... 30%  ... 40%  ... 40%  ... 20%  ... 50%  ... 35%  ... 20%  ... 45%  ... 45%  ... 25%  ... 55%  ... 40%  ... 25%  ... 50%  ... 50%  ... 30%  ... 60%  ... 45%  ... 30%  ... 55%  ... 35%  ... 65%  ... 55%  ... 50%  ... 35%  ... 40%  ... 70%  ... 60%  ... 60%  ... 55%  ... 45%  ... 40%  ... 75%  ... 65%  ... 65%  ... 60%  ... 50%  ... 80%  ... 45%  ... 70%  ... 70%  ... 65%  ... 55%  ... 85%  ... 75%  ... 50%  ... 70%  ... 75%  ... 60%  ... 90%  ... 80%  ... 55%  ... 75%  ... 80%  ... 65%  ... 95%  ... 85%  ... 80%  ... 60%  ... 85%  ... 100%
+Сигналов принято в pending: 867 | Сделок: 710 | fib2-cancel: 71
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 710 | TP: 247 | SL: 382 | TIME: 81
+tf7: WR: 34.8% | AvgR: +0.070 | SumR: +50.0 | PF: 1.10
+  2020: 710 sd | WR 35% | SumR +50.0 | PF 1.10
+Entry kinds: {'LIMIT': 580, 'MARKET': 130}
+[107/134] +6143s OK XRP tf7 2020: trades=710 sec=357============================================================
+
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-12-31
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 70%Data: XRPUSDT-1m-merged.csv -> 71712 x 5m bars
+  ... 90%Confirm 1m: XRPUSDT-1m-merged.csv -> 358560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 71712 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 85%  ... 65%  ... 5%  ... 90%  ... 75%  ... 95%  ... 10%  ... 90%  ... 70%  ... 15%  ... 80%  ... 95%
+Сигналов принято в pending: 890 | Сделок: 743 | fib2-cancel: 69
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 743 | TP: 252 | SL: 417 | TIME: 74
+tf7: WR: 33.9% | AvgR: +0.049 | SumR: +36.2 | PF: 1.07
+  2022: 743 sd | WR 34% | SumR +36.2 | PF 1.07
+Entry kinds: {'LIMIT': 599, 'MARKET': 144}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2020-01-01 -> 2020-12-31
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[108/134] +6188s OK XRP tf7 2022: trades=743 sec=376
+  ... 20%  ... 95%Data: XRPUSDT-1m-merged.csv -> 17120 x 30m bars
+Confirm 5m: XRPUSDT-1m-merged.csv -> 102716 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17120 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 75%  ... 25%  ... 5%  ... 85%  ... 30%
+Сигналов принято в pending: 880 | Сделок: 742 | fib2-cancel: 61
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 742 | TP: 266 | SL: 396 | TIME: 80
+tf7: WR: 35.8% | AvgR: +0.017 | SumR: +12.6 | PF: 1.02
+  2023: 742 sd | WR 36% | SumR +12.6 | PF 1.02
+Entry kinds: {'LIMIT': 609, 'MARKET': 133}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2021-01-01 -> 2021-12-31
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+[109/134] +6211s OK XRP tf7 2023: trades=742 sec=378
+============================================================
+
+Сигналов принято в pending: 933 | Сделок: 792 | fib2-cancel: 61
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 792 | TP: 300 | SL: 415 | TIME: 77
+tf7: WR: 37.9% | AvgR: +0.237 | SumR: +188.0 | PF: 1.39
+  2021: 792 sd | WR 38% | SumR +188.0 | PF 1.39
+Entry kinds: {'LIMIT': 635, 'MARKET': 157}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2022-01-01 -> 2022-12-31
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[110/134] +6212s OK XRP tf7 2021: trades=792 sec=411
+Data: XRPUSDT-1m-merged.csv -> 17520 x 30m bars
+Data: XRPUSDT-1m-merged.csv -> 17520 x 30m bars
+Confirm 5m: XRPUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 10%Confirm 5m: XRPUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 80%  ... 35%  ... 90%  ... 5%  ... 15%  ... 40%  ... 5%  ... 45%  ... 10%  ... 85%  ... 10%  ... 20%  ... 95%  ... 50%  ... 15%  ... 15%  ... 25%  ... 55%  ... 90%  ... 30%  ... 20%  ... 20%  ... 60%
+Сигналов принято в pending: 958 | Сделок: 798 | fib2-cancel: 88
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 798 | TP: 321 | SL: 435 | TIME: 42
+tf7: WR: 40.2% | AvgR: +0.153 | SumR: +122.3 | PF: 1.22
+  2025: 798 sd | WR 40% | SumR +122.3 | PF 1.22
+Entry kinds: {'LIMIT': 617, 'MARKET': 181}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2023-01-01 -> 2023-12-31[111/134] +6272s OK XRP tf7 2025: trades=798 sec=389
+
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: XRPUSDT-1m-merged.csv -> 17520 x 30m bars
+Confirm 5m: XRPUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 35%  ... 65%  ... 25%  ... 25%  ... 95%  ... 70%  ... 30%  ... 5%  ... 40%  ... 30%  ... 75%  ... 35%  ... 45%  ... 100%
+Сигналов принято в pending: 883 | Сделок: 764 | fib2-cancel: 54
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 764 | TP: 249 | SL: 433 | TIME: 82
+tf7: WR: 32.6% | AvgR: -0.055 | SumR: -42.1 | PF: 0.93
+  2024: 764 sd | WR 33% | SumR -42.1 | PF 0.93
+Entry kinds: {'LIMIT': 615, 'MARKET': 149}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+[112/134] +6307s OK XRP tf7 2024: trades=764 sec=428
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 35%  ... 10%Data: XRPUSDT-1m-merged.csv -> 17568 x 30m bars
+  ... 80%Confirm 5m: XRPUSDT-1m-merged.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 40%  ... 50%  ... 40%  ... 15%  ... 85%  ... 5%  ... 45%  ... 55%  ... 45%  ... 90%  ... 20%  ... 10%  ... 50%  ... 60%  ... 95%  ... 50%  ... 25%  ... 15%  ... 55%  ... 100%
+Сигналов принято в pending: 644 | Сделок: 536 | fib2-cancel: 45
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 536 | TP: 187 | SL: 318 | TIME: 31
+tf7: WR: 34.9% | AvgR: -0.114 | SumR: -61.3 | PF: 0.86
+  2026: 536 sd | WR 35% | SumR -61.3 | PF 0.86
+Entry kinds: {'LIMIT': 419, 'MARKET': 117}
+[113/134] +6356s OK XRP tf7 2026: trades=536 sec=214
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2025-01-01 -> 2025-12-31
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 65%  ... 30%  ... 55%Data: XRPUSDT-1m-merged.csv -> 17520 x 30m bars
+Confirm 5m: XRPUSDT-1m-merged.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 20%  ... 60%  ... 35%  ... 70%  ... 60%  ... 5%  ... 25%  ... 65%  ... 40%  ... 75%  ... 10%  ... 65%  ... 30%  ... 70%  ... 45%  ... 80%  ... 15%  ... 70%  ... 75%  ... 35%  ... 50%  ... 85%  ... 20%  ... 75%  ... 55%  ... 80%  ... 40%  ... 90%  ... 25%  ... 80%  ... 60%  ... 45%  ... 85%  ... 95%  ... 30%  ... 65%  ... 85%  ... 90%  ... 50%
+Сигналов принято в pending: 457 | Сделок: 407 | fib2-cancel: 18
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 407 | TP: 33 | SL: 90 | TIME: 284
+tf8: WR: 8.1% | AvgR: +0.011 | SumR: +4.6 | PF: 1.03
+  2020: 407 sd | WR 8% | SumR +4.6 | PF 1.03
+Entry kinds: {'LIMIT': 352, 'MARKET': 55}
+[114/134] +6448s OK XRP tf8 2020: trades=407 sec=261
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2026-01-01 -> 2026-12-31
+Symbol: XRP | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 35%Data: XRPUSDT-1m-merged.csv -> 11952 x 30m bars
+  ... 70%Confirm 5m: XRPUSDT-1m-merged.csv -> 71712 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 11952 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 90%  ... 95%  ... 55%  ... 40%  ... 5%  ... 75%  ... 95%  ... 10%
+Сигналов принято в pending: 487 | Сделок: 438 | fib2-cancel: 23
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 438 | TP: 44 | SL: 128 | TIME: 266
+tf8: WR: 10.0% | AvgR: +0.048 | SumR: +21.0 | PF: 1.12
+  2021: 438 sd | WR 10% | SumR +21.0 | PF 1.12
+Entry kinds: {'LIMIT': 385, 'MARKET': 53}
+[115/134] +6471s OK XRP tf8 2021: trades=438 sec=260
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2020-01-01 -> 2020-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 31212 x 5m bars
+  ... 60%Confirm 1m: SOLUSDT_1m_full_hdr.csv -> 156540 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 31212 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 45%  ... 5%
+Сигналов принято в pending: 461 | Сделок: 414 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 414 | TP: 54 | SL: 99 | TIME: 261
+tf8: WR: 13.0% | AvgR: +0.136 | SumR: +56.3 | PF: 1.38
+  2022: 414 sd | WR 13% | SumR +56.3 | PF 1.38
+Entry kinds: {'LIMIT': 364, 'MARKET': 50}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[116/134] +6478s OK XRP tf8 2022: trades=414 sec=266
+Data: SOLUSDT_5m_full_hdr.csv -> 104765 x 5m bars
+  ... 15%  ... 80%  ... 10%Confirm 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 104765 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 65%  ... 15%  ... 20%  ... 20%  ... 50%  ... 25%  ... 85%  ... 30%  ... 70%  ... 35%  ... 25%  ... 5%  ... 55%  ... 40%  ... 45%  ... 90%  ... 50%  ... 30%  ... 75%  ... 55%  ... 60%  ... 60%  ... 10%  ... 65%  ... 95%  ... 35%  ... 70%  ... 80%  ... 75%  ... 65%  ... 40%  ... 80%  ... 15%  ... 85%
+Сигналов принято в pending: 427 | Сделок: 382 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 382 | TP: 46 | SL: 96 | TIME: 240
+tf8: WR: 12.0% | AvgR: +0.075 | SumR: +28.5 | PF: 1.20
+  2023: 382 sd | WR 12% | SumR +28.5 | PF 1.20
+Entry kinds: {'LIMIT': 343, 'MARKET': 39}
+[117/134] +6531s OK XRP tf8 2023: trades=382 sec=259
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 104901 x 5m bars
+  ... 90%  ... 45%Confirm 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 104901 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 85%  ... 95%  ... 70%  ... 100%
+Сигналов принято в pending: 271 | Сделок: 221 | fib2-cancel: 28
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 221 | TP: 86 | SL: 112 | TIME: 23
+tf7: WR: 38.9% | AvgR: +0.258 | SumR: +56.9 | PF: 1.44
+  2020: 221 sd | WR 39% | SumR +56.9 | PF 1.44
+Entry kinds: {'LIMIT': 166, 'MARKET': 55}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+[118/134] +6541s OK SOL tf7 2020: trades=221 sec=70
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+  ... 50%Confirm 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 90%  ... 20%  ... 55%  ... 75%  ... 5%  ... 95%  ... 60%  ... 5%  ... 80%  ... 25%  ... 65%  ... 10%  ... 100%
+Сигналов принято в pending: 448 | Сделок: 409 | fib2-cancel: 13
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 409 | TP: 62 | SL: 110 | TIME: 237
+tf8: WR: 15.2% | AvgR: +0.132 | SumR: +54.0 | PF: 1.35
+  2024: 409 sd | WR 15% | SumR +54.0 | PF 1.35
+Entry kinds: {'LIMIT': 358, 'MARKET': 51}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[119/134] +6570s OK XRP tf8 2024: trades=409 sec=262
+Data: SOLUSDT_5m_full_hdr.csv -> 105408 x 5m bars
+Confirm 1m: SOLUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 70%  ... 85%  ... 10%  ... 30%  ... 15%  ... 75%  ... 90%  ... 5%  ... 80%  ... 15%  ... 35%  ... 20%  ... 85%  ... 95%  ... 90%  ... 10%  ... 20%  ... 40%
+Сигналов принято в pending: 484 | Сделок: 436 | fib2-cancel: 19
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 436 | TP: 52 | SL: 141 | TIME: 243
+tf8: WR: 11.9% | AvgR: -0.020 | SumR: -8.8 | PF: 0.96
+  2025: 436 sd | WR 12% | SumR -8.8 | PF 0.96
+Entry kinds: {'LIMIT': 353, 'MARKET': 83}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%[120/134] +6614s OK XRP tf8 2025: trades=436 sec=258
+
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+  ... 25%Confirm 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 95%  ... 100%
+Сигналов принято в pending: 331 | Сделок: 296 | fib2-cancel: 8
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 296 | TP: 35 | SL: 91 | TIME: 170
+tf8: WR: 11.8% | AvgR: +0.006 | SumR: +1.8 | PF: 1.01
+  2026: 296 sd | WR 12% | SumR +1.8 | PF 1.01
+Entry kinds: {'LIMIT': 245, 'MARKET': 51}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[121/134] +6627s OK XRP tf8 2026: trades=296 sec=179
+Data: SOLUSDT_5m_full_hdr.csv -> 50112 x 5m bars
+  ... 15%  ... 25%Confirm 1m: SOLUSDT_1m_full_hdr.csv -> 335520 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 50112 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 45%  ... 5%  ... 30%  ... 5%  ... 10%  ... 30%  ... 20%  ... 50%  ... 15%  ... 10%  ... 35%  ... 20%  ... 25%  ... 35%  ... 25%  ... 15%  ... 55%  ... 30%  ... 40%  ... 35%  ... 40%  ... 40%  ... 20%  ... 30%  ... 60%  ... 45%  ... 45%  ... 50%  ... 45%  ... 25%  ... 55%  ... 35%  ... 65%  ... 50%  ... 60%  ... 65%  ... 50%  ... 30%  ... 70%  ... 70%  ... 40%  ... 55%  ... 75%  ... 35%  ... 80%  ... 55%  ... 75%  ... 45%  ... 60%  ... 85%  ... 90%  ... 40%  ... 60%  ... 95%  ... 80%  ... 65%  ... 50%  ... 100%
+Сигналов принято в pending: 434 | Сделок: 371 | fib2-cancel: 32
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 371 | TP: 126 | SL: 216 | TIME: 29
+tf7: WR: 34.0% | AvgR: -0.058 | SumR: -21.4 | PF: 0.92
+  2026: 371 sd | WR 34% | SumR -21.4 | PF 0.92
+Entry kinds: {'LIMIT': 282, 'MARKET': 89}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2020-01-01 -> 2020-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%[122/134] +6764s OK SOL tf7 2026: trades=371 sec=137
+
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 5218 x 30m bars
+Confirm 5m: SOLUSDT_5m_full_hdr.csv -> 31212 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 5218 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 5%  ... 45%  ... 10%  ... 65%  ... 15%  ... 70%  ... 85%  ... 20%  ... 55%  ... 25%  ... 30%  ... 50%  ... 35%  ... 70%  ... 40%  ... 45%  ... 75%  ... 90%  ... 50%  ... 60%  ... 55%  ... 55%  ... 60%  ... 65%  ... 75%  ... 70%  ... 80%  ... 95%  ... 75%  ... 65%  ... 60%  ... 80%  ... 85%  ... 80%  ... 90%  ... 95%  ... 85%  ... 100%
+Сигналов принято в pending: 138 | Сделок: 121 | fib2-cancel: 7
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 121 | TP: 26 | SL: 26 | TIME: 69
+tf8: WR: 21.5% | AvgR: +0.314 | SumR: +38.0 | PF: 1.97
+  2020: 121 sd | WR 21% | SumR +38.0 | PF 1.97
+Entry kinds: {'LIMIT': 90, 'MARKET': 31}
+[123/134] +6839s OK SOL tf8 2020: trades=121 sec=75============================================================
+
+Bot-aligned BT | tf8 30m -> 8H | 2021-01-01 -> 2021-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 100%
+Сигналов принято в pending: 950 | Сделок: 796 | fib2-cancel: 80
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 796 | TP: 337 | SL: 407 | TIME: 52
+tf7: WR: 42.3% | AvgR: +0.353 | SumR: +280.9 | PF: 1.61
+  2021: 796 sd | WR 42% | SumR +280.9 | PF 1.61
+Entry kinds: {'LIMIT': 595, 'MARKET': 201}
+[124/134] +6840s OK SOL tf7 2021: trades=796 sec=361
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2022-01-01 -> 2022-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 17520 x 30m bars
+Data: SOLUSDT_5m_full_hdr.csv -> 17520 x 30m bars
+Confirm 5m: SOLUSDT_5m_full_hdr.csv -> 104765 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%Confirm 5m: SOLUSDT_5m_full_hdr.csv -> 104901 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 65%  ... 70%  ... 85%  ... 5%  ... 5%  ... 90%  ... 70%  ... 75%  ... 10%  ... 10%  ... 90%  ... 95%  ... 15%  ... 75%  ... 15%  ... 80%  ... 95%  ... 20%  ... 20%  ... 100%
+Сигналов принято в pending: 913 | Сделок: 774 | fib2-cancel: 60
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 774 | TP: 324 | SL: 386 | TIME: 64
+tf7: WR: 41.9% | AvgR: +0.324 | SumR: +250.8 | PF: 1.55
+  2022: 774 sd | WR 42% | SumR +250.8 | PF 1.55
+Entry kinds: {'LIMIT': 595, 'MARKET': 179}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2023-01-01 -> 2023-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[125/134] +6894s OK SOL tf7 2022: trades=774 sec=363
+Data: SOLUSDT_5m_full_hdr.csv -> 17520 x 30m bars
+Confirm 5m: SOLUSDT_5m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 80%  ... 25%  ... 25%  ... 85%  ... 5%
+Сигналов принято в pending: 919 | Сделок: 804 | fib2-cancel: 40
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 804 | TP: 284 | SL: 452 | TIME: 68
+tf7: WR: 35.3% | AvgR: +0.085 | SumR: +68.6 | PF: 1.13
+  2023: 804 sd | WR 35% | SumR +68.6 | PF 1.13
+Entry kinds: {'LIMIT': 648, 'MARKET': 156}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[126/134] +6909s OK SOL tf7 2023: trades=804 sec=368
+Data: SOLUSDT_5m_full_hdr.csv -> 17568 x 30m bars
+Confirm 5m: SOLUSDT_5m_full_hdr.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 30%  ... 85%  ... 30%  ... 10%  ... 5%  ... 90%  ... 35%  ... 35%  ... 15%  ... 10%  ... 90%  ... 40%  ... 40%  ... 95%  ... 20%  ... 15%  ... 45%  ... 45%  ... 95%  ... 25%  ... 20%  ... 100%
+Сигналов принято в pending: 966 | Сделок: 844 | fib2-cancel: 59
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 844 | TP: 323 | SL: 468 | TIME: 53
+tf7: WR: 38.3% | AvgR: +0.163 | SumR: +137.2 | PF: 1.24
+  2024: 844 sd | WR 38% | SumR +137.2 | PF 1.24
+Entry kinds: {'LIMIT': 651, 'MARKET': 193}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2025-01-01 -> 2025-12-31
+[127/134] +6964s OK SOL tf7 2024: trades=844 sec=394Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+  ... 50%Data: SOLUSDT_5m_full_hdr.csv -> 17520 x 30m bars
+Confirm 5m: SOLUSDT_5m_full_hdr.csv -> 105120 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17520 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 50%  ... 30%
+Сигналов принято в pending: 993 | Сделок: 845 | fib2-cancel: 61
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 845 | TP: 336 | SL: 471 | TIME: 38
+tf7: WR: 39.8% | AvgR: +0.156 | SumR: +132.2 | PF: 1.23
+  2025: 845 sd | WR 40% | SumR +132.2 | PF 1.23
+Entry kinds: {'LIMIT': 637, 'MARKET': 208}
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2026-01-01 -> 2026-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+[128/134] +6973s OK SOL tf7 2025: trades=845 sec=359
+  ... 25%Data: SOLUSDT_5m_full_hdr.csv -> 8352 x 30m bars
+Confirm 5m: SOLUSDT_5m_full_hdr.csv -> 50112 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 8352 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 5%  ... 55%  ... 55%  ... 5%  ... 35%  ... 30%  ... 10%  ... 10%  ... 60%  ... 15%  ... 60%  ... 40%  ... 20%  ... 35%  ... 15%  ... 65%  ... 25%  ... 65%  ... 30%  ... 45%  ... 35%  ... 40%  ... 20%  ... 70%  ... 40%  ... 70%  ... 50%  ... 45%  ... 45%  ... 25%  ... 75%  ... 50%  ... 75%  ... 55%  ... 55%  ... 50%  ... 80%  ... 30%  ... 60%  ... 80%  ... 65%  ... 60%  ... 55%  ... 35%  ... 85%  ... 70%  ... 85%  ... 75%  ... 65%  ... 60%  ... 80%  ... 40%  ... 90%  ... 85%  ... 90%  ... 45%  ... 70%  ... 90%  ... 65%  ... 95%  ... 95%  ... 95%  ... 100%
+Сигналов принято в pending: 216 | Сделок: 191 | fib2-cancel: 10
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 191 | TP: 32 | SL: 51 | TIME: 108
+tf8: WR: 16.8% | AvgR: +0.210 | SumR: +40.0 | PF: 1.55
+  2026: 191 sd | WR 17% | SumR +40.0 | PF 1.55
+Entry kinds: {'LIMIT': 161, 'MARKET': 30}
+[129/134] +7087s OK SOL tf8 2026: trades=191 sec=114
+  ... 50%  ... 75%  ... 70%
+Сигналов принято в pending: 470 | Сделок: 424 | fib2-cancel: 12
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 424 | TP: 57 | SL: 130 | TIME: 237
+tf8: WR: 13.4% | AvgR: +0.121 | SumR: +51.1 | PF: 1.30
+  2022: 424 sd | WR 13% | SumR +51.1 | PF 1.30
+Entry kinds: {'LIMIT': 367, 'MARKET': 57}
+[130/134] +7091s OK SOL tf8 2022: trades=424 sec=251
+
+Сигналов принято в pending: 485 | Сделок: 431 | fib2-cancel: 19
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 431 | TP: 59 | SL: 109 | TIME: 263
+tf8: WR: 13.7% | AvgR: +0.189 | SumR: +81.3 | PF: 1.53
+  2021: 431 sd | WR 14% | SumR +81.3 | PF 1.53
+Entry kinds: {'LIMIT': 343, 'MARKET': 88}
+[131/134] +7097s OK SOL tf8 2021: trades=431 sec=257
+  ... 55%  ... 80%  ... 75%  ... 60%  ... 85%  ... 80%  ... 65%  ... 90%  ... 85%  ... 70%  ... 95%  ... 90%  ... 75%
+Сигналов принято в pending: 471 | Сделок: 425 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 425 | TP: 51 | SL: 118 | TIME: 256
+tf8: WR: 12.0% | AvgR: +0.086 | SumR: +36.4 | PF: 1.22
+  2023: 425 sd | WR 12% | SumR +36.4 | PF 1.22
+Entry kinds: {'LIMIT': 358, 'MARKET': 67}
+[132/134] +7147s OK SOL tf8 2023: trades=425 sec=253
+  ... 95%  ... 80%  ... 100%
+Сигналов принято в pending: 505 | Сделок: 461 | fib2-cancel: 7
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 461 | TP: 54 | SL: 121 | TIME: 286
+tf8: WR: 11.7% | AvgR: +0.125 | SumR: +57.7 | PF: 1.34
+  2024: 461 sd | WR 12% | SumR +57.7 | PF 1.34
+Entry kinds: {'LIMIT': 380, 'MARKET': 81}
+[133/134] +7162s OK SOL tf8 2024: trades=461 sec=253
+  ... 85%  ... 90%  ... 95%
+Сигналов принято в pending: 491 | Сделок: 429 | fib2-cancel: 18
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 429 | TP: 68 | SL: 131 | TIME: 230
+tf8: WR: 15.9% | AvgR: +0.134 | SumR: +57.4 | PF: 1.33
+  2025: 429 sd | WR 16% | SumR +57.4 | PF 1.33
+Entry kinds: {'LIMIT': 360, 'MARKET': 69}
+[134/134] +7194s OK SOL tf8 2025: trades=429 sec=230
+DONE in 7194s
+EXIT=0

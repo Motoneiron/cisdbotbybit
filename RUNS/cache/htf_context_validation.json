@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-10-08 19:59:28",
+  "tests": [
+    {
+      "test": "test1_fvg_availability",
+      "passed": true,
+      "details": []
+    },
+    {
+      "test": "test2_swing_availability",
+      "passed": true,
+      "details": []
+    },
+    {
+      "test": "test3_fill",
+      "passed": true,
+      "details": []
+    },
+    {
+      "test": "test4_future_contamination",
+      "passed": true,
+      "details": [
+        "path@15:00 = [('SWING_HIGH', 105.0, None, 2.75)]"
+      ]
+    },
+    {
+      "test": "test5_incomplete_htf_candle",
+      "passed": true,
+      "details": []
+    },
+    {
+      "test": "test_truncation_invariance",
+      "passed": true,
+      "details": []
+    },
+    {
+      "test": "real_data_truncation_SOL",
+      "passed": true,
+      "details": [
+        "инвариантность на реальных SOL 4H/1D/1W проверена"
+      ]
+    }
+  ],
+  "all_passed": true
+}

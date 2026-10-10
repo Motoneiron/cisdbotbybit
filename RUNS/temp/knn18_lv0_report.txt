@@ -1,0 +1,44 @@
+stream: RUNS/temp/stream_off_v1_lv0_v2.pkl | n=25230
+supported: 25204 | insufficient: 26
+
+ALL                          n=25230 WR= 70.3% ΣR=  5429.2 AvgR= 0.215
+KEEP (p>=0.45)               n=24431 WR= 70.9% ΣR=  5498.9 AvgR= 0.225
+SKIP (p<0.45)                n=  799 WR= 51.4% ΣR=   -69.7 AvgR=-0.087
+INSUFFICIENT ONLY            n=   26 WR= 95.0% ΣR=    16.8 AvgR= 0.647
+KEEP без insufficient        n=24431 WR= 70.9% ΣR=  5498.9 AvgR= 0.225
+
+-- по годам (KEEP vs SKIP) --
+2020 KEEP                    n= 3055 WR= 71.9% ΣR=   740.4 AvgR= 0.242
+2020 SKIP                    n=   60 WR= 80.9% ΣR=    26.2 AvgR= 0.436
+2021 KEEP                    n= 3805 WR= 71.5% ΣR=  1034.6 AvgR= 0.272
+2021 SKIP                    n=   89 WR= 49.2% ΣR=    -3.8 AvgR=-0.043
+2022 KEEP                    n= 3852 WR= 71.0% ΣR=   896.1 AvgR= 0.233
+2022 SKIP                    n=   86 WR= 48.4% ΣR=   -11.4 AvgR=-0.132
+2023 KEEP                    n= 3659 WR= 72.0% ΣR=   768.6 AvgR= 0.210
+2023 SKIP                    n=  113 WR= 58.1% ΣR=    -4.0 AvgR=-0.036
+2024 KEEP                    n= 4015 WR= 70.9% ΣR=   909.1 AvgR= 0.226
+2024 SKIP                    n=  132 WR= 47.1% ΣR=   -17.9 AvgR=-0.136
+2025 KEEP                    n= 3748 WR= 69.6% ΣR=   769.4 AvgR= 0.205
+2025 SKIP                    n=  183 WR= 49.2% ΣR=   -22.8 AvgR=-0.125
+2026 KEEP                    n= 2297 WR= 68.9% ΣR=   380.7 AvgR= 0.166
+2026 SKIP                    n=  136 WR= 42.4% ΣR=   -35.8 AvgR=-0.263
+
+-- по tf --
+tf7 KEEP                     n=11460 WR= 67.4% ΣR=  2486.1 AvgR= 0.217
+tf7 SKIP                     n=  432 WR= 50.7% ΣR=   -43.6 AvgR=-0.101
+tf8 KEEP                     n=12971 WR= 76.0% ΣR=  3012.8 AvgR= 0.232
+tf8 SKIP                     n=  367 WR= 53.4% ΣR=   -26.1 AvgR=-0.071
+
+-- по направлениям --
+LONG KEEP                    n=11811 WR= 69.6% ΣR=  2477.0 AvgR= 0.210
+LONG SKIP                    n=  416 WR= 55.3% ΣR=   -13.4 AvgR=-0.032
+SHORT KEEP                   n=12620 WR= 72.0% ΣR=  3021.8 AvgR= 0.239
+SHORT SKIP                   n=  383 WR= 47.5% ΣR=   -56.2 AvgR=-0.147
+
+-- кривая порогов (по prob; insufficient исключены) --
+th=0.400 keep_n=25048 (99.4%) WR= 70.4% ΣR=  5431.2
+th=0.425 keep_n=24823 (98.5%) WR= 70.6% ΣR=  5464.7
+th=0.450 keep_n=24431 (96.9%) WR= 70.9% ΣR=  5498.9
+th=0.475 keep_n=24431 (96.9%) WR= 70.9% ΣR=  5498.9
+th=0.500 keep_n=23753 (94.2%) WR= 71.4% ΣR=  5544.7
+th=0.550 keep_n=22636 (89.8%) WR= 72.1% ΣR=  5537.4

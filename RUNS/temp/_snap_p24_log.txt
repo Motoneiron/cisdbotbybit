@@ -1,0 +1,43 @@
+BTC tf7 2024: lim=626 vwap=164 n=144 WR=33.6 Σr=-3.04
+BTC tf7 2025: lim=597 vwap=170 n=123 WR=37.4 Σr=-1.58
+BTC tf8 2024: lim=378 vwap=130 n=129 WR=40.0 Σr=22.8
+BTC tf8 2025: lim=371 vwap=122 n=115 WR=42.4 Σr=22.49
+ETH tf7 2024: lim=658 vwap=186 n=173 WR=35.4 Σr=2.77
+ETH tf7 2025: lim=631 vwap=188 n=175 WR=32.9 Σr=-1.03
+ETH tf8 2024: lim=369 vwap=128 n=128 WR=31.8 Σr=17.68
+ETH tf8 2025: lim=371 vwap=122 n=122 WR=40.5 Σr=27.0
+DOGE tf7 2024: lim=619 vwap=172 n=168 WR=40.9 Σr=32.32
+DOGE tf7 2025: lim=632 vwap=208 n=205 WR=31.3 Σr=-4.22
+DOGE tf8 2024: lim=349 vwap=116 n=116 WR=44.1 Σr=41.32
+DOGE tf8 2025: lim=379 vwap=122 n=122 WR=52.5 Σr=39.47
+KAS tf7 2024: lim=591 vwap=153 n=150 WR=48.2 Σr=69.69
+KAS tf7 2025: lim=578 vwap=194 n=190 WR=43.2 Σr=66.94
+KAS tf8 2024: lim=365 vwap=124 n=124 WR=52.4 Σr=41.33
+KAS tf8 2025: lim=344 vwap=115 n=115 WR=41.2 Σr=38.38
+ADA tf7 2024: lim=661 vwap=173 n=169 WR=35.7 Σr=12.0
+ADA tf7 2025: lim=713 vwap=239 n=238 WR=33.5 Σr=8.39
+ADA tf8 2024: lim=394 vwap=119 n=119 WR=45.2 Σr=46.24
+ADA tf8 2025: lim=372 vwap=126 n=126 WR=40.0 Σr=38.3
+BNB tf7 2024: lim=603 vwap=166 n=151 WR=36.3 Σr=2.2
+BNB tf7 2025: lim=621 vwap=197 n=159 WR=44.0 Σr=37.14
+BNB tf8 2024: lim=365 vwap=126 n=126 WR=47.7 Σr=39.93
+BNB tf8 2025: lim=359 vwap=109 n=103 WR=52.9 Σr=33.82
+LINK tf7 2024: lim=687 vwap=178 n=172 WR=32.3 Σr=-12.29
+LINK tf7 2025: lim=684 vwap=202 n=196 WR=34.7 Σr=9.19
+LINK tf8 2024: lim=375 vwap=96 n=96 WR=25.7 Σr=0.21
+LINK tf8 2025: lim=384 vwap=121 n=121 WR=54.1 Σr=63.01
+LTC tf7 2024: lim=656 vwap=190 n=172 WR=41.5 Σr=35.03
+LTC tf7 2025: lim=618 vwap=176 n=167 WR=34.4 Σr=-5.01
+LTC tf8 2024: lim=381 vwap=121 n=119 WR=43.9 Σr=27.6
+LTC tf8 2025: lim=394 vwap=127 n=127 WR=38.1 Σr=28.18
+XRP tf7 2024: lim=634 vwap=148 n=142 WR=32.2 Σr=-5.3
+XRP tf7 2025: lim=631 vwap=186 n=174 WR=36.8 Σr=8.04
+XRP tf8 2024: lim=358 vwap=110 n=110 WR=49.0 Σr=36.8
+XRP tf8 2025: lim=353 vwap=115 n=115 WR=26.8 Σr=10.21
+SOL tf7 2024: lim=663 vwap=172 n=170 WR=40.8 Σr=43.75
+SOL tf7 2025: lim=662 vwap=200 n=192 WR=36.2 Σr=9.91
+SOL tf8 2024: lim=380 vwap=124 n=124 WR=53.1 Σr=49.95
+SOL tf8 2025: lim=360 vwap=106 n=106 WR=41.9 Σr=33.09
+ИТОГО: n=5793 Σr=962.7
+saved: D:/PYTHON/cisdbotbybit/RUNS/temp/stream_off_v1_p24.pkl
+EXIT=0

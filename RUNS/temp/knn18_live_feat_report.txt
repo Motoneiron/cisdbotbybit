@@ -1,0 +1,33 @@
+stream: RUNS/temp/knn18_live_input.pkl | time_col=decision_at | n=25230
+
+### live_feat
+ALL                            n=25230 WR= 70.3% ΣR=  5429.2 AvgR= 0.215
+KEEP (p>=0.45)                 n=24982 WR= 70.4% ΣR=  5393.3 AvgR= 0.216
+SKIP (p<0.45)                  n=  248 WR= 63.2% ΣR=    35.9 AvgR= 0.145
+2020 KEEP                      n= 3078 WR= 71.9% ΣR=   745.1 AvgR= 0.242
+2020 SKIP                      n=   37 WR= 90.0% ΣR=    21.5 AvgR= 0.581
+2021 KEEP                      n= 3868 WR= 71.0% ΣR=  1021.2 AvgR= 0.264
+2021 SKIP                      n=   26 WR= 72.7% ΣR=     9.5 AvgR= 0.366
+2022 KEEP                      n= 3908 WR= 70.5% ΣR=   873.5 AvgR= 0.224
+2022 SKIP                      n=   30 WR= 75.0% ΣR=    11.2 AvgR= 0.375
+2023 KEEP                      n= 3742 WR= 71.8% ΣR=   768.6 AvgR= 0.205
+2023 SKIP                      n=   30 WR= 45.8% ΣR=    -4.0 AvgR=-0.133
+2024 KEEP                      n= 4106 WR= 70.3% ΣR=   885.3 AvgR= 0.216
+2024 SKIP                      n=   41 WR= 61.8% ΣR=     5.9 AvgR= 0.145
+2025 KEEP                      n= 3879 WR= 69.0% ΣR=   752.7 AvgR= 0.194
+2025 SKIP                      n=   52 WR= 47.4% ΣR=    -6.1 AvgR=-0.117
+2026 KEEP                      n= 2401 WR= 67.7% ΣR=   347.1 AvgR= 0.145
+2026 SKIP                      n=   32 WR= 52.0% ΣR=    -2.2 AvgR=-0.069
+tf7 KEEP                       n=11712 WR= 66.9% ΣR=  2423.3 AvgR= 0.207
+tf7 SKIP                       n=  180 WR= 60.6% ΣR=    19.2 AvgR= 0.107
+tf8 KEEP                       n=13270 WR= 75.6% ΣR=  2970.0 AvgR= 0.224
+tf8 SKIP                       n=   68 WR= 77.4% ΣR=    16.7 AvgR= 0.245
+LONG KEEP                      n=12097 WR= 69.2% ΣR=  2440.1 AvgR= 0.202
+LONG SKIP                      n=  130 WR= 65.1% ΣR=    23.5 AvgR= 0.181
+SHORT KEEP                     n=12885 WR= 71.5% ΣR=  2953.2 AvgR= 0.229
+SHORT SKIP                     n=  118 WR= 61.1% ΣR=    12.4 AvgR= 0.105
+
+th=0.40 keep_n=25201 (99.9%) WR= 70.3% ΣR=  5424.5
+th=0.45 keep_n=25008 (99.1%) WR= 70.4% ΣR=  5410.1
+th=0.50 keep_n=24663 (97.8%) WR= 70.6% ΣR=  5383.2
+th=0.55 keep_n=23917 (94.8%) WR= 70.7% ΣR=  5249.3

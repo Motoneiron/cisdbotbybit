@@ -1,0 +1,44 @@
+df5: 606638 2020-09-14 07:05:00 .. 2026-06-23 23:55:00
+htf_ratio [tf7]: 240
+
+### 2024-01-01 11:25:00 (SHORT) i=346135
+   W=200 min_sweep_atr=0.0: SHORT cbt=2024-01-01 11:20:00 e=104.064 fib=0 kind=LIMIT
+   W=200 min_sweep_atr=0.4: SHORT cbt=2024-01-01 11:20:00 e=104.064 fib=0 kind=LIMIT
+   W=300 min_sweep_atr=0.0: SHORT cbt=2024-01-01 11:20:00 e=104.064 fib=0 kind=LIMIT
+   W=300 min_sweep_atr=0.4: SHORT cbt=2024-01-01 11:20:00 e=104.064 fib=0 kind=LIMIT
+
+### 2024-01-04 09:35:00 (LONG) i=346977
+   W=200 min_sweep_atr=0.0: -
+   W=200 min_sweep_atr=0.4: -
+   W=300 min_sweep_atr=0.0: -
+   W=300 min_sweep_atr=0.4: -
+
+### 2024-01-11 12:15:00 (SHORT) i=349025
+   W=200 min_sweep_atr=0.0: SHORT cbt=2024-01-11 12:10:00 e=104.499 fib=0 kind=LIMIT
+   W=200 min_sweep_atr=0.4: SHORT cbt=2024-01-11 12:10:00 e=104.499 fib=0 kind=LIMIT
+   W=300 min_sweep_atr=0.0: SHORT cbt=2024-01-11 12:10:00 e=104.499 fib=0 kind=LIMIT
+   W=300 min_sweep_atr=0.4: SHORT cbt=2024-01-11 12:10:00 e=104.499 fib=0 kind=LIMIT
+
+### 2024-01-13 06:45:00 (SHORT) i=349535
+   W=200 min_sweep_atr=0.0: SHORT cbt=2024-01-13 06:40:00 e=92.554 fib=0 kind=LIMIT
+   W=200 min_sweep_atr=0.4: SHORT cbt=2024-01-13 06:40:00 e=92.554 fib=0 kind=LIMIT
+   W=300 min_sweep_atr=0.0: SHORT cbt=2024-01-13 06:40:00 e=92.554 fib=0 kind=LIMIT
+   W=300 min_sweep_atr=0.4: SHORT cbt=2024-01-13 06:40:00 e=92.554 fib=0 kind=LIMIT
+
+### 2024-01-18 12:30:00 (LONG) i=351044
+   W=200 min_sweep_atr=0.0: LONG cbt=2024-01-18 12:25:00 e=98.521 fib=0 kind=LIMIT
+   W=200 min_sweep_atr=0.4: LONG cbt=2024-01-18 12:25:00 e=98.521 fib=0 kind=LIMIT
+   W=300 min_sweep_atr=0.0: LONG cbt=2024-01-18 12:25:00 e=98.521 fib=0 kind=LIMIT
+   W=300 min_sweep_atr=0.4: LONG cbt=2024-01-18 12:25:00 e=98.521 fib=0 kind=LIMIT
+
+### 2024-01-20 00:30:00 (LONG) i=351476
+   W=200 min_sweep_atr=0.0: LONG cbt=2024-01-20 00:25:00 e=93.09 fib=0 kind=LIMIT
+   W=200 min_sweep_atr=0.4: LONG cbt=2024-01-20 00:25:00 e=93.09 fib=0 kind=LIMIT
+   W=300 min_sweep_atr=0.0: LONG cbt=2024-01-20 00:25:00 e=93.09 fib=0 kind=LIMIT
+   W=300 min_sweep_atr=0.4: LONG cbt=2024-01-20 00:25:00 e=93.09 fib=0 kind=LIMIT
+
+### 2024-01-05 17:20:00 (LONG) i=347358
+   W=200 min_sweep_atr=0.0: -
+   W=200 min_sweep_atr=0.4: -
+   W=300 min_sweep_atr=0.0: -
+   W=300 min_sweep_atr=0.4: -

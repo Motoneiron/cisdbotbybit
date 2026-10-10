@@ -1,0 +1,7 @@
+===== MODE=ms1.5_a0.8 cfg={'ms': 1.5, 'tp': None, 'hold': 12, 'a': 0.8, 'wait': 10, 'vol': True, 'd': True} =====
+skip LTC 2024 | skip LTC 2025 | skip LTC 2026
+skip LINK 2024 | skip LINK 2025 | skip LINK 2026
+skip SOL 2024 | skip SOL 2025 | skip SOL 2026
+skip ADA 2024 | skip ADA 2025 | skip ADA 2026
+skip DOGE 2024 | skip DOGE 2025 | skip DOGE 2026
+skip KAS 2024 | skip KAS 2025 | skip KAS 2026

@@ -1,0 +1,187 @@
+fetched SOL 8413 2026-09-20 00:00:00 .. 2026-09-25 20:12:00
+fetched DOGE 8413 2026-09-20 00:00:00 .. 2026-09-25 20:12:00
+fetched KAS 8413 2026-09-20 00:00:00 .. 2026-09-25 20:12:00
+fetched ADA 8413 2026-09-20 00:00:00 .. 2026-09-25 20:12:00
+fetched LINK 8413 2026-09-20 00:00:00 .. 2026-09-25 20:12:00
+fetched LTC 8413 2026-09-20 00:00:00 .. 2026-09-25 20:12:00
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-09-22 -> 2026-09-25
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 1 | max_pos 7
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_1m.csv -> 1107 x 5m bars
+Fill 1m: SOLUSDT_1m.csv -> 5533 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 1107 баров (warmup=100, detect_step=1)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 74%  ... 79%  ... 84%  ... 89%  ... 94%  ... 99%
+Сигналов принято в pending: 3 | Сделок: 3 | gate_skip: 24
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 3 | TP: 0 | SL: 3 | TIME: 0
+tf7_main: WR: 0.0% | AvgR: -1.205 | SumR: -3.6 | PF: 0.00
+  2026: 3 sd | WR 0% | SumR -3.6 | PF 0.00
+Entry kinds: {'LIMIT': 3}
+SOL signals=3 trades=3
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-09-22 -> 2026-09-25
+Symbol: DOGE | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 1 | max_pos 7
+Slope filter: off (как на сервере)
+============================================================
+Data: DOGEUSDT_1m.csv -> 1107 x 5m bars
+Fill 1m: DOGEUSDT_1m.csv -> 5533 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 1107 баров (warmup=100, detect_step=1)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 74%  ... 79%  ... 84%  ... 89%  ... 94%  ... 99%
+Сигналов принято в pending: 5 | Сделок: 3
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 3 | TP: 2 | SL: 1 | TIME: 0
+tf7_main: WR: 66.7% | AvgR: +0.274 | SumR: +0.8 | PF: 1.77
+  2026: 3 sd | WR 67% | SumR +0.8 | PF 1.77
+Entry kinds: {'LIMIT': 3}
+DOGE signals=5 trades=3
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-09-22 -> 2026-09-25
+Symbol: KAS | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 1 | max_pos 7
+Slope filter: off (как на сервере)
+============================================================
+Data: KASUSDT_1m.csv -> 1107 x 5m bars
+Fill 1m: KASUSDT_1m.csv -> 5533 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 1107 баров (warmup=100, detect_step=1)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 74%  ... 79%  ... 84%  ... 89%  ... 94%  ... 99%
+Сигналов принято в pending: 4 | Сделок: 1
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 1 | TP: 0 | SL: 1 | TIME: 0
+tf7_main: WR: 0.0% | AvgR: -1.090 | SumR: -1.1 | PF: 0.00
+  2026: 1 sd | WR 0% | SumR -1.1 | PF 0.00
+Entry kinds: {'LIMIT': 1}
+KAS signals=4 trades=1
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-09-22 -> 2026-09-25
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 1 | max_pos 7
+Slope filter: off (как на сервере)
+============================================================
+Data: ADAUSDT_1m.csv -> 1107 x 5m bars
+Fill 1m: ADAUSDT_1m.csv -> 5533 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 1107 баров (warmup=100, detect_step=1)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 74%  ... 79%  ... 84%  ... 89%  ... 94%  ... 99%
+Сигналов принято в pending: 2 | Сделок: 2
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 2 | TP: 1 | SL: 1 | TIME: 0
+tf7_main: WR: 50.0% | AvgR: -0.058 | SumR: -0.1 | PF: 0.89
+  2026: 2 sd | WR 50% | SumR -0.1 | PF 0.89
+Entry kinds: {'LIMIT': 2}
+ADA signals=2 trades=2
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-09-22 -> 2026-09-25
+Symbol: LINK | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 1 | max_pos 7
+Slope filter: off (как на сервере)
+============================================================
+Data: LINKUSDT_1m.csv -> 1107 x 5m bars
+Fill 1m: LINKUSDT_1m.csv -> 5533 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 1107 баров (warmup=100, detect_step=1)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 74%  ... 79%  ... 84%  ... 89%  ... 94%  ... 99%
+Сигналов принято в pending: 5 | Сделок: 3
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 3 | TP: 1 | SL: 1 | TIME: 1
+tf7_main: WR: 33.3% | AvgR: +0.029 | SumR: +0.1 | PF: 1.08
+  2026: 3 sd | WR 33% | SumR +0.1 | PF 1.08
+Entry kinds: {'LIMIT': 3}
+LINK signals=5 trades=3
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-09-22 -> 2026-09-25
+Symbol: LTC | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 1 | max_pos 7
+Slope filter: off (как на сервере)
+============================================================
+Data: LTCUSDT_1m.csv -> 1107 x 5m bars
+Fill 1m: LTCUSDT_1m.csv -> 5533 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 1107 баров (warmup=100, detect_step=1)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 74%  ... 79%  ... 84%  ... 89%  ... 94%  ... 99%
+Сигналов принято в pending: 1 | Сделок: 1
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 1 | TP: 0 | SL: 1 | TIME: 0
+tf7_main: WR: 0.0% | AvgR: -1.112 | SumR: -1.1 | PF: 0.00
+  2026: 1 sd | WR 0% | SumR -1.1 | PF 0.00
+Entry kinds: {'LIMIT': 1}
+LTC signals=1 trades=1
+
+=== SIGNALS ===
+2026-09-22 14:35:00 LINK LONG  entry=13.014 stop=12.732 tp=13.620000000000003 htf=2026-09-22 12:00:00 pending
+2026-09-22 16:20:00 KAS  LONG  entry=0.04189 stop=0.04126 tp=0.04333000000000001 htf=2026-09-22 16:00:00 pending
+2026-09-22 22:10:00 LINK LONG  entry=12.913 stop=12.824 tp=13.148000000000001 htf=2026-09-22 20:00:00 pending
+2026-09-22 23:05:00 DOGE SHORT entry=0.10034 stop=0.10127 tp=0.09821000000000002 htf=2026-09-22 20:00:00 pending
+2026-09-22 23:10:00 SOL  SHORT entry=118.42 stop=119.25 tp=116.61000000000001 htf=2026-09-22 20:00:00 pending
+2026-09-22 23:20:00 ADA  SHORT entry=0.253 stop=0.2577 tp=0.2430000000000001 htf=2026-09-22 20:00:00 pending
+2026-09-23 00:35:00 KAS  LONG  entry=0.0416 stop=0.04124 tp=0.042319999999999997 htf=2026-09-23 00:00:00 pending
+2026-09-23 01:25:00 DOGE SHORT entry=0.10069 stop=0.10268 tp=0.09650000000000002 htf=2026-09-23 00:00:00 pending
+2026-09-23 10:25:00 LINK LONG  entry=12.899 stop=12.735 tp=13.245 htf=2026-09-23 08:00:00 pending
+2026-09-23 10:25:00 SOL  LONG  entry=117.38 stop=116.68 tp=118.80999999999999 htf=2026-09-23 08:00:00 pending
+2026-09-24 01:10:00 LTC  SHORT entry=61.82 stop=62.57 tp=59.92999999999999 htf=2026-09-24 00:00:00 pending
+2026-09-24 01:15:00 KAS  LONG  entry=0.03832 stop=0.03796 tp=0.03907000000000001 htf=2026-09-24 00:00:00 pending
+2026-09-24 02:05:00 LINK LONG  entry=12.242 stop=12.17 tp=12.394999999999998 htf=2026-09-24 00:00:00 pending
+2026-09-24 05:05:00 ADA  SHORT entry=0.2396 stop=0.2436 tp=0.2301 htf=2026-09-24 04:00:00 pending
+2026-09-24 05:05:00 DOGE SHORT entry=0.09345 stop=0.09513 tp=0.08990999999999999 htf=2026-09-24 04:00:00 pending
+2026-09-24 09:35:00 DOGE LONG  entry=0.09306 stop=0.09137 tp=0.09658999999999998 htf=2026-09-24 08:00:00 pending
+2026-09-24 09:35:00 LINK LONG  entry=12.276 stop=12.067 tp=12.723999999999998 htf=2026-09-24 08:00:00 pending
+2026-09-24 16:20:00 KAS  SHORT entry=0.03989 stop=0.04075 tp=0.03775 htf=2026-09-24 16:00:00 pending
+2026-09-25 01:10:00 DOGE SHORT entry=0.09595 stop=0.09695 tp=0.09392 htf=2026-09-25 00:00:00 pending
+2026-09-25 16:40:00 SOL  SHORT entry=121.04 stop=121.9 tp=119.19999999999999 htf=2026-09-25 16:00:00 pending
+
+=== TRADES ===
+SOL  SHORT sl   r=-1.194 entry=118.42 stop=119.25 in= out=
+SOL  LONG  sl   r=-1.228 entry=117.38 stop=116.68 in= out=
+SOL  SHORT sl   r=-1.191 entry=121.04 stop=121.9 in= out=
+DOGE SHORT sl   r=-1.069 entry=0.10069 stop=0.10268 in= out=
+DOGE SHORT tp   r=+0.960 entry=0.09345 stop=0.09513 in= out=
+DOGE SHORT tp   r=+0.931 entry=0.09595 stop=0.09695 in= out=
+KAS  LONG  sl   r=-1.090 entry=0.04189 stop=0.04126 in= out=
+ADA  SHORT sl   r=-1.073 entry=0.253 stop=0.2577 in= out=
+ADA  SHORT tp   r=+0.957 entry=0.2396 stop=0.2436 in= out=
+LINK LONG  time r=+0.235 entry=13.014 stop=12.732 in= out=
+LINK LONG  sl   r=-1.107 entry=12.899 stop=12.735 in= out=
+LINK LONG  tp   r=+0.958 entry=12.276 stop=12.067 in= out=
+LTC  SHORT sl   r=-1.112 entry=61.82 stop=62.57 in= out=

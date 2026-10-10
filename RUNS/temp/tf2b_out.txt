@@ -1,0 +1,37 @@
+===== MODE=tf2 profile=tf2 min_stop=1.0 sl_gate=None smoke=False =====
+  [tf2] SOL 2024-11-25 trades=66 skip_gate=0 sec=852
+  [tf2] DOGE 2024-11-25 trades=38 skip_gate=0 sec=856
+  [tf2] LINK 2024-11-25 trades=60 skip_gate=0 sec=858
+  [tf2] LTC 2024-11-25 trades=48 skip_gate=0 sec=866
+  [tf2] KAS 2024-11-25 trades=56 skip_gate=0 sec=874
+  [tf2] ADA 2024-11-25 trades=48 skip_gate=0 sec=934
+OK LINK 2024 n=71 sec=952
+OK LTC 2024 n=55 sec=959
+OK SOL 2024 n=70 sec=963
+OK KAS 2024 n=65 sec=972
+OK DOGE 2024 n=43 sec=972
+OK ADA 2024 n=56 sec=1043
+  [tf2] SOL 2025-11-26 trades=56 skip_gate=0 sec=825
+  [tf2] LINK 2025-11-26 trades=60 skip_gate=0 sec=857
+  [tf2] DOGE 2025-11-26 trades=55 skip_gate=0 sec=842
+  [tf2] KAS 2025-11-26 trades=55 skip_gate=0 sec=846
+  [tf2] LTC 2025-11-26 trades=51 skip_gate=0 sec=869
+OK SOL 2025 n=59 sec=923
+OK DOGE 2025 n=62 sec=927
+OK LINK 2025 n=67 sec=950
+OK LTC 2025 n=55 sec=952
+  [tf2] ADA 2025-11-26 trades=65 skip_gate=0 sec=862
+OK KAS 2025 n=58 sec=946
+OK ADA 2025 n=71 sec=954
+OK DOGE 2026 n=27 sec=527
+OK DOGE 2024 n=43 sec=972 | OK DOGE 2025 n=62 sec=927 | OK DOGE 2026 n=27 sec=527
+OK SOL 2026 n=32 sec=557
+OK SOL 2024 n=70 sec=963 | OK SOL 2025 n=59 sec=923 | OK SOL 2026 n=32 sec=557
+OK KAS 2026 n=35 sec=546
+OK KAS 2024 n=65 sec=972 | OK KAS 2025 n=58 sec=946 | OK KAS 2026 n=35 sec=546
+OK LINK 2026 n=36 sec=604
+OK LINK 2024 n=71 sec=952 | OK LINK 2025 n=67 sec=950 | OK LINK 2026 n=36 sec=604
+OK LTC 2026 n=30 sec=633
+OK LTC 2024 n=55 sec=959 | OK LTC 2025 n=55 sec=952 | OK LTC 2026 n=30 sec=633
+OK ADA 2026 n=34 sec=581
+OK ADA 2024 n=56 sec=1043 | OK ADA 2025 n=71 sec=954 | OK ADA 2026 n=34 sec=581

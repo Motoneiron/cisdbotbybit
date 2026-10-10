@@ -1,0 +1,147 @@
+задач: 6 | воркеров: 5
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+Symbol: DOGE | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+Symbol: KAS | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+Symbol: ADA | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+Symbol: LINK | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+Symbol: LTC | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: KASUSDT_1m_full_hdr.csv -> 105408 x 5m bars
+Fill 1m: KASUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%Data: DOGEUSDT_1m_full_hdr.csv -> 105408 x 5m bars
+Data: LINKUSDT-1m-merged.csv -> 105408 x 5m bars
+Data: LTCUSDT-1m-merged.csv -> 105408 x 5m bars
+Data: ADAUSDT-1m-merged.csv -> 105408 x 5m bars
+Fill 1m: LINKUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%Fill 1m: DOGEUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%Fill 1m: LTCUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%Fill 1m: ADAUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 5%  ... 5%  ... 5%  ... 5%  ... 10%  ... 10%  ... 10%  ... 10%  ... 10%  ... 15%  ... 15%  ... 15%  ... 15%  ... 15%  ... 20%  ... 20%  ... 20%  ... 20%  ... 20%  ... 25%  ... 25%  ... 25%  ... 25%  ... 25%  ... 30%  ... 30%  ... 30%  ... 30%  ... 30%  ... 35%  ... 35%  ... 35%  ... 35%  ... 35%  ... 40%  ... 40%  ... 40%  ... 40%  ... 40%  ... 45%  ... 45%  ... 45%  ... 45%  ... 45%  ... 50%  ... 50%  ... 50%  ... 50%  ... 50%  ... 55%  ... 55%  ... 55%  ... 55%  ... 55%  ... 60%  ... 60%  ... 60%  ... 60%  ... 60%  ... 65%  ... 65%  ... 65%  ... 65%  ... 65%  ... 70%  ... 70%  ... 70%  ... 70%  ... 70%  ... 75%  ... 75%  ... 75%  ... 75%  ... 80%  ... 75%  ... 80%  ... 80%  ... 85%  ... 80%  ... 80%  ... 85%  ... 85%  ... 90%  ... 85%  ... 85%  ... 90%  ... 90%  ... 95%  ... 90%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 333 | Сделок: 205
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 205 | TP: 135 | SL: 64 | TIME: 6
+tf7_main: WR: 65.9% | AvgR: +0.169 | SumR: +34.7 | PF: 1.46
+  2024: 205 sd | WR 66% | SumR +34.7 | PF 1.46
+Entry kinds: {'LIMIT': 205}
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+[1/6] +557s OK DOGE 2024: sig=648 dec=648 trades=205 sec=552
+Data: SOLUSDT_5m_full_hdr.csv -> 105408 x 5m bars
+  ... 95%Fill 1m: SOLUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 95%  ... 95%  ... 100%
+Сигналов принято в pending: 390 | Сделок: 226
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 226 | TP: 149 | SL: 72 | TIME: 5
+tf7_main: WR: 65.9% | AvgR: +0.077 | SumR: +17.4 | PF: 1.19
+  2024: 226 sd | WR 66% | SumR +17.4 | PF 1.19
+Entry kinds: {'LIMIT': 226}
+[2/6] +570s OK LTC 2024: sig=699 dec=699 trades=226 sec=566
+  ... 100%
+Сигналов принято в pending: 415 | Сделок: 279
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 279 | TP: 178 | SL: 93 | TIME: 8
+tf7_main: WR: 63.8% | AvgR: +0.103 | SumR: +28.7 | PF: 1.26
+  2024: 279 sd | WR 64% | SumR +28.7 | PF 1.26
+Entry kinds: {'LIMIT': 279}
+[3/6] +588s OK ADA 2024: sig=703 dec=703 trades=279 sec=584
+  ... 5%  ... 100%
+Сигналов принято в pending: 373 | Сделок: 230
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 230 | TP: 150 | SL: 78 | TIME: 2
+tf7_main: WR: 65.2% | AvgR: +0.153 | SumR: +35.3 | PF: 1.39
+  2024: 230 sd | WR 65% | SumR +35.3 | PF 1.39
+Entry kinds: {'LIMIT': 230}
+[4/6] +596s OK KAS 2024: sig=728 dec=728 trades=230 sec=592
+  ... 100%
+Сигналов принято в pending: 444 | Сделок: 268
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 268 | TP: 170 | SL: 92 | TIME: 6
+tf7_main: WR: 63.4% | AvgR: +0.091 | SumR: +24.3 | PF: 1.22
+  2024: 268 sd | WR 63% | SumR +24.3 | PF 1.22
+Entry kinds: {'LIMIT': 268}
+[5/6] +597s OK LINK 2024: sig=807 dec=807 trades=268 sec=593
+  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 378 | Сделок: 246
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 246 | TP: 157 | SL: 84 | TIME: 5
+tf7_main: WR: 63.8% | AvgR: +0.123 | SumR: +30.2 | PF: 1.30
+  2024: 246 sd | WR 64% | SumR +30.2 | PF 1.30
+Entry kinds: {'LIMIT': 246}
+[6/6] +941s OK SOL 2024: sig=710 dec=710 trades=246 sec=384
+DONE 941s
+EXIT=0

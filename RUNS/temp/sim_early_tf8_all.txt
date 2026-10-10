@@ -1,0 +1,36 @@
+=== BTC tf8 (vwap-поток, 2024-25) ===
+  old     : n=131 WR=39.1% SumR=+17.3 AvgR=+0.132 (TP=18 SL=28 TIME=85)
+  honest30: n=74 WR=65.9% SumR=+3.5 AvgR=+0.047 (TP=29 SL=15 TIME=30)
+  early5  : n=127 WR=76.0% SumR=+17.0 AvgR=+0.134 (TP=57 SL=18 TIME=52)
+=== ETH tf8 (vwap-поток, 2024-25) ===
+  old     : n=144 WR=34.1% SumR=+23.9 AvgR=+0.166 (TP=15 SL=29 TIME=100)
+  honest30: n=86 WR=72.5% SumR=+13.9 AvgR=+0.161 (TP=37 SL=14 TIME=35)
+  early5  : n=137 WR=82.9% SumR=+41.0 AvgR=+0.299 (TP=68 SL=14 TIME=55)
+=== DOGE tf8 (vwap-поток, 2024-25) ===
+  old     : n=140 WR=51.1% SumR=+49.7 AvgR=+0.355 (TP=23 SL=22 TIME=95)
+  honest30: n=88 WR=66.7% SumR=+5.5 AvgR=+0.062 (TP=32 SL=16 TIME=40)
+  early5  : n=131 WR=72.4% SumR=+20.1 AvgR=+0.154 (TP=55 SL=21 TIME=55)
+=== KAS tf8 (vwap-поток, 2024-25) ===
+  old     : n=148 WR=38.3% SumR=+34.2 AvgR=+0.231 (TP=18 SL=29 TIME=101)
+  honest30: n=93 WR=66.0% SumR=+16.8 AvgR=+0.180 (TP=35 SL=18 TIME=40)
+  early5  : n=145 WR=76.1% SumR=+39.0 AvgR=+0.269 (TP=67 SL=21 TIME=57)
+=== ADA tf8 (vwap-поток, 2024-25) ===
+  old     : n=149 WR=39.0% SumR=+43.8 AvgR=+0.294 (TP=16 SL=25 TIME=108)
+  honest30: n=89 WR=74.5% SumR=+19.1 AvgR=+0.214 (TP=35 SL=12 TIME=42)
+  early5  : n=143 WR=79.8% SumR=+40.1 AvgR=+0.281 (TP=67 SL=17 TIME=59)
+=== BNB tf8 (vwap-поток, 2024-25) ===
+  old     : n=129 WR=51.1% SumR=+41.0 AvgR=+0.318 (TP=24 SL=23 TIME=82)
+  honest30: n=74 WR=75.5% SumR=+15.2 AvgR=+0.205 (TP=37 SL=12 TIME=25)
+  early5  : n=127 WR=79.8% SumR=+32.6 AvgR=+0.257 (TP=67 SL=17 TIME=43)
+=== LINK tf8 (vwap-поток, 2024-25) ===
+  old     : n=133 WR=42.2% SumR=+38.3 AvgR=+0.288 (TP=19 SL=26 TIME=88)
+  honest30: n=83 WR=67.3% SumR=+13.4 AvgR=+0.162 (TP=33 SL=16 TIME=34)
+  early5  : n=129 WR=67.1% SumR=+15.5 AvgR=+0.120 (TP=51 SL=25 TIME=53)
+=== LTC tf8 (vwap-поток, 2024-25) ===
+  old     : n=173 WR=32.8% SumR=+22.0 AvgR=+0.127 (TP=19 SL=39 TIME=115)
+  honest30: n=111 WR=73.8% SumR=+25.8 AvgR=+0.233 (TP=48 SL=17 TIME=46)
+  early5  : n=167 WR=77.2% SumR=+42.7 AvgR=+0.256 (TP=78 SL=23 TIME=66)
+=== XRP tf8 (vwap-поток, 2024-25) ===
+  old     : n=129 WR=45.3% SumR=+35.7 AvgR=+0.276 (TP=24 SL=29 TIME=76)
+  honest30: n=80 WR=59.6% SumR=+3.4 AvgR=+0.043 (TP=31 SL=21 TIME=28)
+  early5  : n=126 WR=63.3% SumR=+9.0 AvgR=+0.071 (TP=50 SL=29 TIME=47)

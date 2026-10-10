@@ -1,0 +1,126 @@
+##### tf7e13_lc
+
+=== live_tf/tf7e13_lc
+  2024: n= 706 SR=  +20.1 avg=+0.0284 tp/sl/time=368/300/38 trades/day=1.93
+  2025: n= 650 SR=  -63.2 avg=-0.0972 tp/sl/time=295/315/40 trades/day=1.78
+  2026: n= 207 SR=   +2.5 avg=+0.0122 tp/sl/time=98/81/28 trades/day=0.85
+  ALL: n=1563 SR=  -40.6 avg=-0.0260 tp/sl/time=761/696/106 trades/day=1.60
+##### tf7e13_000
+
+=== live_tf/tf7e13_000
+  2024: n= 640 SR=  +40.9 avg=+0.0639 tp/sl/time=343/260/37 trades/day=1.75
+  2025: n= 597 SR=  -36.1 avg=-0.0606 tp/sl/time=281/279/37 trades/day=1.64
+  2026: n= 201 SR=  +11.2 avg=+0.0558 tp/sl/time=99/74/28 trades/day=0.83
+  ALL: n=1438 SR=  +15.9 avg=+0.0111 tp/sl/time=723/613/102 trades/day=1.48
+##### tf7e21_cb
+
+=== live_tf/tf7e21_cb
+  2024: n= 422 SR=  +32.7 avg=+0.0774 tp/sl/time=226/168/28 trades/day=1.15
+  2025: n= 394 SR=  -27.7 avg=-0.0703 tp/sl/time=181/184/29 trades/day=1.08
+  2026: n= 136 SR=  +16.7 avg=+0.1226 tp/sl/time=67/42/27 trades/day=0.56
+  ALL: n= 952 SR=  +21.6 avg=+0.0227 tp/sl/time=474/394/84 trades/day=0.98
+##### tf7e5_cb
+
+=== live_tf/tf7e5_cb
+  2024: n= 593 SR=  +40.6 avg=+0.0684 tp/sl/time=321/242/30 trades/day=1.62
+  2025: n= 560 SR=  -36.2 avg=-0.0646 tp/sl/time=262/262/36 trades/day=1.53
+  2026: n= 193 SR=   +9.7 avg=+0.0505 tp/sl/time=95/72/26 trades/day=0.79
+  ALL: n=1346 SR=  +14.1 avg=+0.0105 tp/sl/time=678/576/92 trades/day=1.38
+##### tf1ms15
+
+=== live_tf/tf1ms15
+  2024: n= 566 SR=   +1.1 avg=+0.0019 tp/sl/time=273/249/44 trades/day=1.55
+  2025: n= 517 SR=  -39.7 avg=-0.0767 tp/sl/time=234/251/32 trades/day=1.42
+  2026: n= 142 SR=  -22.7 avg=-0.1596 tp/sl/time=53/67/22 trades/day=0.58
+  ALL: n=1225 SR=  -61.2 avg=-0.0500 tp/sl/time=560/567/98 trades/day=1.26
+##### tf1ms15_sl5
+
+=== live_tf/tf1ms15_sl5
+  2024: n= 562 SR=   +7.4 avg=+0.0131 tp/sl/time=274/244/44 trades/day=1.54
+  2025: n= 515 SR=  -39.6 avg=-0.0768 tp/sl/time=233/250/32 trades/day=1.41
+  2026: n= 142 SR=  -22.7 avg=-0.1596 tp/sl/time=53/67/22 trades/day=0.58
+  ALL: n=1219 SR=  -54.9 avg=-0.0450 tp/sl/time=560/561/98 trades/day=1.25
+##### tf1ms15_sl15
+
+=== live_tf/tf1ms15_sl15
+  2024: n= 508 SR=  +15.9 avg=+0.0313 tp/sl/time=251/216/41 trades/day=1.39
+  2025: n= 475 SR=  -20.4 avg=-0.0430 tp/sl/time=223/224/28 trades/day=1.30
+  2026: n= 133 SR=  -21.7 avg=-0.1628 tp/sl/time=49/63/21 trades/day=0.55
+  ALL: n=1116 SR=  -26.2 avg=-0.0234 tp/sl/time=523/503/90 trades/day=1.15
+##### tf1ms15_voff
+
+=== live_tf/tf1ms15_voff
+  2024: n= 779 SR=  -21.7 avg=-0.0279 tp/sl/time=351/343/85 trades/day=2.13
+  2025: n= 725 SR=  -50.6 avg=-0.0697 tp/sl/time=327/344/54 trades/day=1.99
+  2026: n= 218 SR=  -15.3 avg=-0.0701 tp/sl/time=88/92/38 trades/day=0.90
+  ALL: n=1722 SR=  -87.6 avg=-0.0508 tp/sl/time=766/779/177 trades/day=1.77
+##### tf1ms15_doff
+
+=== live_tf/tf1ms15_doff
+  2024: n= 804 SR=  -11.3 avg=-0.0140 tp/sl/time=380/359/65 trades/day=2.20
+  2025: n= 777 SR=  -53.6 avg=-0.0690 tp/sl/time=347/367/63 trades/day=2.13
+  2026: n= 215 SR=  -52.0 avg=-0.2417 tp/sl/time=70/111/34 trades/day=0.88
+  ALL: n=1796 SR= -116.8 avg=-0.0650 tp/sl/time=797/837/162 trades/day=1.84
+##### tf1sl5sp8
+
+=== live_tf/tf1sl5sp8
+  2024: n= 563 SR=   +1.7 avg=+0.0030 tp/sl/time=272/248/43 trades/day=1.54
+  2025: n= 514 SR=  -40.5 avg=-0.0788 tp/sl/time=232/250/32 trades/day=1.41
+  2026: n= 142 SR=  -22.7 avg=-0.1596 tp/sl/time=53/67/22 trades/day=0.58
+  ALL: n=1219 SR=  -61.5 avg=-0.0504 tp/sl/time=557/565/97 trades/day=1.25
+##### tf1sl5sp21
+
+=== live_tf/tf1sl5sp21
+  2024: n= 552 SR=  +11.4 avg=+0.0206 tp/sl/time=271/238/43 trades/day=1.51
+  2025: n= 505 SR=  -40.3 avg=-0.0799 tp/sl/time=228/246/31 trades/day=1.38
+  2026: n= 141 SR=  -23.6 avg=-0.1675 tp/sl/time=52/67/22 trades/day=0.58
+  ALL: n=1198 SR=  -52.6 avg=-0.0439 tp/sl/time=551/551/96 trades/day=1.23
+##### tf1sl15sp8
+
+=== live_tf/tf1sl15sp8
+  2024: n= 555 SR=   +8.1 avg=+0.0147 tp/sl/time=271/241/43 trades/day=1.52
+  2025: n= 507 SR=  -40.4 avg=-0.0797 tp/sl/time=229/247/31 trades/day=1.39
+  2026: n= 141 SR=  -23.6 avg=-0.1675 tp/sl/time=52/67/22 trades/day=0.58
+  ALL: n=1203 SR=  -55.9 avg=-0.0464 tp/sl/time=552/555/96 trades/day=1.24
+##### tf1sl15sp21
+
+=== live_tf/tf1sl15sp21
+  2024: n= 399 SR=   +3.2 avg=+0.0081 tp/sl/time=189/172/38 trades/day=1.09
+  2025: n= 388 SR=   -2.5 avg=-0.0063 tp/sl/time=187/175/26 trades/day=1.06
+  2026: n= 117 SR=  -13.7 avg=-0.1169 tp/sl/time=45/52/20 trades/day=0.48
+  ALL: n= 904 SR=  -12.9 avg=-0.0143 tp/sl/time=421/399/84 trades/day=0.93
+##### tf1sl5ms10
+
+=== live_tf/tf1sl5ms10
+  2024: n= 991 SR=  -34.7 avg=-0.0350 tp/sl/time=484/459/48 trades/day=2.71
+  2025: n=1048 SR=  -91.7 avg=-0.0875 tp/sl/time=495/517/36 trades/day=2.87
+  2026: n= 347 SR=  -31.0 avg=-0.0895 tp/sl/time=154/160/33 trades/day=1.43
+  ALL: n=2386 SR= -157.4 avg=-0.0660 tp/sl/time=1133/1136/117 trades/day=2.45
+##### tf1ms125
+
+=== live_tf/tf1ms125
+  2024: n= 749 SR=  -10.9 avg=-0.0145 tp/sl/time=364/339/46 trades/day=2.05
+  2025: n= 738 SR=  -80.9 avg=-0.1096 tp/sl/time=331/371/36 trades/day=2.02
+  2026: n= 209 SR=  -16.5 avg=-0.0792 tp/sl/time=88/92/29 trades/day=0.86
+  ALL: n=1696 SR= -108.3 avg=-0.0638 tp/sl/time=783/802/111 trades/day=1.74
+##### tf1ms15a08
+
+=== live_tf/tf1ms15a08
+  2024: n= 452 SR=   +4.2 avg=+0.0093 tp/sl/time=218/197/37 trades/day=1.23
+  2025: n= 409 SR=  -32.0 avg=-0.0781 tp/sl/time=182/196/31 trades/day=1.12
+  2026: n= 120 SR=  -20.1 avg=-0.1675 tp/sl/time=43/56/21 trades/day=0.49
+  ALL: n= 981 SR=  -47.9 avg=-0.0488 tp/sl/time=443/449/89 trades/day=1.01
+##### tf7e13_cc
+
+=== live_tf/tf7e13_cc
+  2024: n= 701 SR=  +13.9 avg=+0.0198 tp/sl/time=362/300/39 trades/day=1.92
+  2025: n= 645 SR=  -69.9 avg=-0.1084 tp/sl/time=289/316/40 trades/day=1.77
+  2026: n= 204 SR=   +3.8 avg=+0.0188 tp/sl/time=97/79/28 trades/day=0.84
+  ALL: n=1550 SR=  -52.2 avg=-0.0337 tp/sl/time=748/695/107 trades/day=1.59
+##### tf7e21_lc
+
+=== live_tf/tf7e21_lc
+  2024: n= 550 SR=  +29.4 avg=+0.0535 tp/sl/time=290/225/35 trades/day=1.50
+  2025: n= 506 SR=  -42.6 avg=-0.0842 tp/sl/time=229/240/37 trades/day=1.39
+  2026: n= 169 SR=   +3.7 avg=+0.0217 tp/sl/time=78/63/28 trades/day=0.70
+  ALL: n=1225 SR=   -9.5 avg=-0.0077 tp/sl/time=597/528/100 trades/day=1.26

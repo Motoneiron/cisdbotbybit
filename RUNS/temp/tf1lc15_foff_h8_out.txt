@@ -1,0 +1,85 @@
+===== MODE=tf1lc15_foff_h8 profile=tf1 min_stop=1.5 sl_gate=(21, 0.0002, '15m', 'lc') di_gate=None anchor=None smoke=False =====
+  [tf1lc15_foff_h8] SOL 2024-03-20 trades=21 skip_gate=124 sec=1067
+  [tf1lc15_foff_h8] KAS 2024-03-20 trades=25 skip_gate=137 sec=1081
+  [tf1lc15_foff_h8] DOGE 2024-03-20 trades=8 skip_gate=146 sec=1135
+  [tf1lc15_foff_h8] ADA 2024-03-20 trades=13 skip_gate=154 sec=1151
+  [tf1lc15_foff_h8] LINK 2024-03-20 trades=18 skip_gate=174 sec=1283
+  [tf1lc15_foff_h8] LTC 2024-03-20 trades=15 skip_gate=205 sec=1373
+  [tf1lc15_foff_h8] SOL 2024-06-11 trades=35 skip_gate=300 sec=2662
+  [tf1lc15_foff_h8] DOGE 2024-06-11 trades=24 skip_gate=300 sec=2773
+  [tf1lc15_foff_h8] KAS 2024-06-11 trades=44 skip_gate=292 sec=2854
+  [tf1lc15_foff_h8] ADA 2024-06-11 trades=23 skip_gate=344 sec=2864
+  [tf1lc15_foff_h8] LINK 2024-06-11 trades=33 skip_gate=375 sec=3203
+  [tf1lc15_foff_h8] LTC 2024-06-11 trades=24 skip_gate=379 sec=3308
+  [tf1lc15_foff_h8] SOL 2024-09-03 trades=53 skip_gate=488 sec=4180
+  [tf1lc15_foff_h8] KAS 2024-09-03 trades=57 skip_gate=473 sec=4499
+  [tf1lc15_foff_h8] DOGE 2024-09-03 trades=38 skip_gate=463 sec=4518
+  [tf1lc15_foff_h8] ADA 2024-09-03 trades=33 skip_gate=509 sec=4546
+  [tf1lc15_foff_h8] LTC 2024-09-03 trades=34 skip_gate=561 sec=4824
+  [tf1lc15_foff_h8] LINK 2024-09-03 trades=46 skip_gate=566 sec=4950
+  [tf1lc15_foff_h8] SOL 2024-11-25 trades=68 skip_gate=661 sec=5969
+  [tf1lc15_foff_h8] ADA 2024-11-25 trades=45 skip_gate=672 sec=6309
+  [tf1lc15_foff_h8] KAS 2024-11-25 trades=68 skip_gate=644 sec=6314
+  [tf1lc15_foff_h8] DOGE 2024-11-25 trades=54 skip_gate=610 sec=6316
+  [tf1lc15_foff_h8] LTC 2024-11-25 trades=40 skip_gate=754 sec=6544
+  [tf1lc15_foff_h8] LINK 2024-11-25 trades=56 skip_gate=762 sec=6732
+OK SOL 2024 n=78 sec=6739
+OK KAS 2024 n=77 sec=7069
+OK ADA 2024 n=59 sec=7107
+OK DOGE 2024 n=64 sec=7108
+OK LTC 2024 n=51 sec=7273
+OK LINK 2024 n=64 sec=7501
+  [tf1lc15_foff_h8] SOL 2025-03-21 trades=14 skip_gate=151 sec=1639
+  [tf1lc15_foff_h8] KAS 2025-03-21 trades=14 skip_gate=144 sec=1706
+  [tf1lc15_foff_h8] DOGE 2025-03-21 trades=16 skip_gate=133 sec=1707
+  [tf1lc15_foff_h8] ADA 2025-03-21 trades=24 skip_gate=138 sec=1707
+  [tf1lc15_foff_h8] LTC 2025-03-21 trades=19 skip_gate=164 sec=1653
+  [tf1lc15_foff_h8] LINK 2025-03-21 trades=18 skip_gate=178 sec=1756
+  [tf1lc15_foff_h8] SOL 2025-06-12 trades=27 skip_gate=327 sec=3312
+  [tf1lc15_foff_h8] KAS 2025-06-12 trades=33 skip_gate=290 sec=3427
+  [tf1lc15_foff_h8] DOGE 2025-06-12 trades=31 skip_gate=296 sec=3452
+  [tf1lc15_foff_h8] ADA 2025-06-12 trades=46 skip_gate=297 sec=3498
+  [tf1lc15_foff_h8] LTC 2025-06-12 trades=29 skip_gate=337 sec=3364
+  [tf1lc15_foff_h8] LINK 2025-06-12 trades=33 skip_gate=359 sec=3502
+  [tf1lc15_foff_h8] SOL 2025-09-04 trades=40 skip_gate=509 sec=4991
+  [tf1lc15_foff_h8] DOGE 2025-09-04 trades=44 skip_gate=466 sec=5071
+  [tf1lc15_foff_h8] KAS 2025-09-04 trades=54 skip_gate=455 sec=5150
+  [tf1lc15_foff_h8] LTC 2025-09-04 trades=38 skip_gate=528 sec=4966
+  [tf1lc15_foff_h8] ADA 2025-09-04 trades=64 skip_gate=462 sec=5170
+  [tf1lc15_foff_h8] LINK 2025-09-04 trades=57 skip_gate=532 sec=5117
+  [tf1lc15_foff_h8] SOL 2025-11-26 trades=52 skip_gate=705 sec=6468
+  [tf1lc15_foff_h8] DOGE 2025-11-26 trades=60 skip_gate=637 sec=6538
+  [tf1lc15_foff_h8] KAS 2025-11-26 trades=77 skip_gate=614 sec=6655
+  [tf1lc15_foff_h8] LTC 2025-11-26 trades=43 skip_gate=709 sec=6460
+OK SOL 2025 n=58 sec=7126
+  [tf1lc15_foff_h8] ADA 2025-11-26 trades=78 skip_gate=647 sec=6745
+  [tf1lc15_foff_h8] LINK 2025-11-26 trades=69 skip_gate=731 sec=6727
+OK DOGE 2025 n=62 sec=7173
+OK KAS 2025 n=82 sec=7314
+OK LTC 2025 n=46 sec=7183
+OK ADA 2025 n=81 sec=7369
+OK LINK 2025 n=73 sec=7401
+  [tf1lc15_foff_h8] SOL 2026-03-21 trades=11 skip_gate=157 sec=1360
+  [tf1lc15_foff_h8] DOGE 2026-03-21 trades=14 skip_gate=150 sec=1437
+  [tf1lc15_foff_h8] KAS 2026-03-21 trades=13 skip_gate=124 sec=1427
+  [tf1lc15_foff_h8] ADA 2026-03-21 trades=16 skip_gate=150 sec=1456
+  [tf1lc15_foff_h8] LTC 2026-03-21 trades=8 skip_gate=193 sec=1495
+  [tf1lc15_foff_h8] LINK 2026-03-21 trades=6 skip_gate=161 sec=1493
+  [tf1lc15_foff_h8] SOL 2026-06-12 trades=15 skip_gate=348 sec=2808
+  [tf1lc15_foff_h8] DOGE 2026-06-12 trades=25 skip_gate=320 sec=2907
+  [tf1lc15_foff_h8] ADA 2026-06-12 trades=20 skip_gate=326 sec=2822
+  [tf1lc15_foff_h8] LTC 2026-06-12 trades=13 skip_gate=368 sec=2865
+  [tf1lc15_foff_h8] KAS 2026-06-12 trades=23 skip_gate=300 sec=2974
+  [tf1lc15_foff_h8] LINK 2026-06-12 trades=14 skip_gate=351 sec=2929
+OK SOL 2026 n=18 sec=4100
+OK SOL 2024 n=78 sec=6739 | OK SOL 2025 n=58 sec=7126 | OK SOL 2026 n=18 sec=4100
+OK DOGE 2026 n=27 sec=3934
+OK DOGE 2024 n=64 sec=7108 | OK DOGE 2025 n=62 sec=7173 | OK DOGE 2026 n=27 sec=3934
+OK KAS 2026 n=25 sec=3970
+OK KAS 2024 n=77 sec=7069 | OK KAS 2025 n=82 sec=7314 | OK KAS 2026 n=25 sec=3970
+OK ADA 2026 n=39 sec=4114
+OK ADA 2024 n=59 sec=7107 | OK ADA 2025 n=81 sec=7369 | OK ADA 2026 n=39 sec=4114
+OK LTC 2026 n=16 sec=4163
+OK LTC 2024 n=51 sec=7273 | OK LTC 2025 n=46 sec=7183 | OK LTC 2026 n=16 sec=4163
+OK LINK 2026 n=22 sec=3966
+OK LINK 2024 n=64 sec=7501 | OK LINK 2025 n=73 sec=7401 | OK LINK 2026 n=22 sec=3966

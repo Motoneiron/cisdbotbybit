@@ -1,0 +1,533 @@
+задач: 24 | воркеров: 6
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2023-01-01 -> 2023-12-31
+Symbol: DOGE | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+Symbol: DOGE | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2025-01-01 -> 2025-12-31
+Symbol: DOGE | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-01-01 -> 2026-06-23
+Symbol: DOGE | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2023-01-01 -> 2023-12-31
+Symbol: KAS | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+Symbol: KAS | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: KASUSDT_1m_full_hdr.csv -> 12936 x 5m bars
+Data: KASUSDT_1m_full_hdr.csv -> 105408 x 5m bars
+Fill 1m: KASUSDT_1m_full_hdr.csv -> 64680 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 12936 баров (warmup=100, detect_step=12)...
+  ... 0%Fill 1m: KASUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%Data: DOGEUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+Data: DOGEUSDT_1m_full_hdr.csv -> 105408 x 5m bars
+Data: DOGEUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+Data: DOGEUSDT_1m_full_hdr.csv -> 50112 x 5m bars
+  ... 5%  ... 10%  ... 15%Fill 1m: DOGEUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%Fill 1m: DOGEUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%Fill 1m: DOGEUSDT_1m_full_hdr.csv -> 250560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 50112 баров (warmup=100, detect_step=12)...
+  ... 0%Fill 1m: DOGEUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 5%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 10%  ... 70%  ... 5%  ... 75%  ... 80%  ... 85%  ... 5%  ... 5%  ... 5%  ... 90%  ... 15%  ... 95%  ... 100%
+Сигналов принято в pending: 70 | Сделок: 33
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 33 | TP: 22 | SL: 11 | TIME: 0
+tf7_main: WR: 66.7% | AvgR: +0.207 | SumR: +6.8 | PF: 1.56
+  2023: 33 sd | WR 67% | SumR +6.8 | PF 1.56
+Entry kinds: {'LIMIT': 33}
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2025-01-01 -> 2025-12-31
+Symbol: KAS | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)[1/24] +37s OK KAS 2023: 33 сделок sec=34
+
+============================================================
+Data: KASUSDT_1m_full_hdr.csv -> 105120 x 5m bars
+Fill 1m: KASUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 20%  ... 25%  ... 10%  ... 10%  ... 10%  ... 10%  ... 30%  ... 35%  ... 5%  ... 40%  ... 15%  ... 15%  ... 15%  ... 15%  ... 45%  ... 10%  ... 50%  ... 20%  ... 55%  ... 20%  ... 20%  ... 20%  ... 60%  ... 65%  ... 15%  ... 25%  ... 70%  ... 25%  ... 25%  ... 25%  ... 75%  ... 80%  ... 20%  ... 30%  ... 30%  ... 30%  ... 30%  ... 85%  ... 90%  ... 95%  ... 25%  ... 35%  ... 35%  ... 35%  ... 100%
+Сигналов принято в pending: 231 | Сделок: 118
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 118 | TP: 71 | SL: 43 | TIME: 4
+tf7_main: WR: 60.2% | AvgR: -0.037 | SumR: -4.3 | PF: 0.92
+  2026: 118 sd | WR 60% | SumR -4.3 | PF 0.92
+Entry kinds: {'LIMIT': 118}
+[2/24] +165s OK DOGE 2026: 118 сделок sec=162
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-01-01 -> 2026-06-23
+Symbol: KAS | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+  ... 35%Data: KASUSDT_1m_full_hdr.csv -> 50112 x 5m bars
+Fill 1m: KASUSDT_1m_full_hdr.csv -> 250560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 50112 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 30%  ... 10%  ... 40%  ... 40%  ... 40%  ... 15%  ... 40%  ... 20%  ... 25%  ... 35%  ... 45%  ... 45%  ... 45%  ... 30%  ... 45%  ... 35%  ... 40%  ... 40%  ... 50%  ... 50%  ... 50%  ... 45%  ... 50%  ... 50%  ... 55%  ... 55%  ... 45%  ... 55%  ... 60%  ... 55%  ... 55%  ... 65%  ... 70%  ... 60%  ... 50%  ... 60%  ... 75%  ... 60%  ... 60%  ... 80%  ... 85%  ... 65%  ... 55%  ... 90%  ... 65%  ... 65%  ... 65%  ... 95%  ... 70%  ... 100%
+Сигналов принято в pending: 213 | Сделок: 86
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 86 | TP: 54 | SL: 30 | TIME: 2
+tf7_main: WR: 62.8% | AvgR: +0.065 | SumR: +5.6 | PF: 1.15
+  2026: 86 sd | WR 63% | SumR +5.6 | PF 1.15
+Entry kinds: {'LIMIT': 86}
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2023-01-01 -> 2023-12-31
+Symbol: ADA | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+[3/24] +321s OK KAS 2026: 86 сделок sec=156============================================================
+
+  ... 60%Data: ADAUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 70%Fill 1m: ADAUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 70%  ... 70%  ... 75%  ... 65%  ... 5%  ... 75%  ... 75%  ... 75%  ... 80%  ... 70%  ... 10%  ... 80%  ... 80%  ... 80%  ... 85%  ... 15%  ... 75%  ... 85%  ... 85%  ... 85%  ... 90%  ... 20%  ... 80%  ... 90%  ... 90%  ... 90%  ... 95%  ... 25%  ... 85%  ... 95%  ... 95%
+Сигналов принято в pending: 422 | Сделок: 218
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 218 | TP: 135 | SL: 79 | TIME: 4
+tf7_main: WR: 61.9% | AvgR: -0.069 | SumR: -15.0 | PF: 0.86
+  2023: 218 sd | WR 62% | SumR -15.0 | PF 0.86
+Entry kinds: {'LIMIT': 218}
+[4/24] +446s OK DOGE 2023: 218 сделок sec=442
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+Symbol: ADA | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+  ... 95%Data: ADAUSDT-1m-merged.csv -> 105408 x 5m bars
+Fill 1m: ADAUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 30%  ... 90%  ... 100%
+Сигналов принято в pending: 497 | Сделок: 244
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 244 | TP: 150 | SL: 92 | TIME: 2
+tf7_main: WR: 61.5% | AvgR: +0.030 | SumR: +7.4 | PF: 1.07
+  2025: 244 sd | WR 61% | SumR +7.4 | PF 1.07
+Entry kinds: {'LIMIT': 244}
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2025-01-01 -> 2025-12-31
+Symbol: ADA | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+[5/24] +466s OK DOGE 2025: 244 сделок sec=463
+
+Сигналов принято в pending: 565 | Сделок: 269
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 269 | TP: 183 | SL: 83 | TIME: 3
+tf7_main: WR: 68.0% | AvgR: +0.205 | SumR: +55.3 | PF: 1.56
+  2024: 269 sd | WR 68% | SumR +55.3 | PF 1.56
+Entry kinds: {'LIMIT': 269}
+[6/24] +466s OK KAS 2024: 269 сделок sec=463
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-01-01 -> 2026-06-23
+Symbol: ADA | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+  ... 100%
+Сигналов принято в pending: 501 | Сделок: 243
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 243 | TP: 163 | SL: 72 | TIME: 8
+tf7_main: WR: 67.1% | AvgR: +0.204 | SumR: +49.5 | PF: 1.58
+  2024: 243 sd | WR 67% | SumR +49.5 | PF 1.58
+Entry kinds: {'LIMIT': 243}
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2023-01-01 -> 2023-12-31
+Symbol: LINK | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+[7/24] +470s OK DOGE 2024: 243 сделок sec=466
+Data: ADAUSDT-1m-merged.csv -> 50112 x 5m bars
+Data: ADAUSDT-1m-merged.csv -> 105120 x 5m bars
+Data: LINKUSDT-1m-merged.csv -> 105120 x 5m bars
+Fill 1m: ADAUSDT-1m-merged.csv -> 250560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 50112 баров (warmup=100, detect_step=12)...
+  ... 0%Fill 1m: ADAUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 35%  ... 5%Fill 1m: LINKUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 95%  ... 10%  ... 5%  ... 10%  ... 15%  ... 40%  ... 5%  ... 20%
+Сигналов принято в pending: 497 | Сделок: 207
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 207 | TP: 128 | SL: 71 | TIME: 8
+tf7_main: WR: 61.8% | AvgR: +0.096 | SumR: +19.9 | PF: 1.24
+  2025: 207 sd | WR 62% | SumR +19.9 | PF 1.24
+Entry kinds: {'LIMIT': 207}
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31[8/24] +511s OK KAS 2025: 207 сделок sec=474
+
+Symbol: LINK | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+  ... 25%  ... 10%Data: LINKUSDT-1m-merged.csv -> 105408 x 5m bars
+  ... 45%  ... 15%Fill 1m: LINKUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 30%  ... 10%  ... 35%  ... 15%  ... 40%  ... 20%  ... 5%  ... 50%  ... 15%  ... 45%  ... 50%  ... 20%  ... 55%  ... 10%  ... 25%  ... 55%  ... 20%  ... 60%  ... 65%  ... 25%  ... 70%  ... 15%  ... 30%  ... 60%  ... 75%  ... 25%  ... 80%  ... 30%  ... 20%  ... 85%  ... 35%  ... 65%  ... 90%  ... 30%  ... 95%  ... 35%  ... 25%  ... 40%  ... 100%
+Сигналов принято в pending: 239 | Сделок: 137
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 137 | TP: 92 | SL: 42 | TIME: 3
+tf7_main: WR: 67.2% | AvgR: +0.128 | SumR: +17.5 | PF: 1.34
+  2026: 137 sd | WR 67% | SumR +17.5 | PF 1.34
+Entry kinds: {'LIMIT': 137}
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2025-01-01 -> 2025-12-31
+Symbol: LINK | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+[9/24] +620s OK ADA 2026: 137 сделок sec=154============================================================
+
+  ... 70%Data: LINKUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 35%Fill 1m: LINKUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 30%  ... 40%  ... 45%  ... 75%  ... 40%  ... 5%  ... 35%  ... 50%  ... 45%  ... 80%  ... 45%  ... 10%  ... 40%  ... 55%  ... 50%  ... 85%  ... 50%  ... 15%  ... 45%  ... 60%  ... 55%  ... 90%  ... 55%  ... 20%  ... 50%  ... 65%  ... 60%  ... 95%  ... 60%  ... 55%  ... 25%  ... 70%  ... 65%
+Сигналов принято в pending: 529 | Сделок: 259
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 259 | TP: 168 | SL: 87 | TIME: 4
+tf7_main: WR: 64.9% | AvgR: +0.021 | SumR: +5.3 | PF: 1.05
+  2023: 259 sd | WR 65% | SumR +5.3 | PF 1.05
+Entry kinds: {'LIMIT': 259}
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-01-01 -> 2026-06-23
+Symbol: LINK | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+[10/24] +725s OK ADA 2023: 259 сделок sec=404
+Data: LINKUSDT-1m-merged.csv -> 50112 x 5m bars
+Fill 1m: LINKUSDT-1m-merged.csv -> 250560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 50112 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 65%  ... 60%  ... 5%  ... 30%  ... 75%  ... 70%  ... 10%  ... 15%  ... 70%  ... 65%  ... 20%  ... 80%  ... 35%  ... 75%  ... 25%  ... 30%  ... 75%  ... 70%  ... 35%  ... 85%  ... 80%  ... 40%  ... 40%  ... 45%  ... 80%  ... 75%  ... 50%  ... 90%  ... 85%  ... 45%  ... 55%  ... 60%  ... 85%  ... 80%  ... 65%  ... 95%  ... 90%  ... 70%  ... 50%  ... 75%  ... 90%  ... 80%  ... 85%  ... 100%
+Сигналов принято в pending: 576 | Сделок: 313
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 313 | TP: 213 | SL: 92 | TIME: 8
+tf7_main: WR: 68.1% | AvgR: +0.174 | SumR: +54.3 | PF: 1.49
+  2024: 313 sd | WR 68% | SumR +54.3 | PF 1.49
+Entry kinds: {'LIMIT': 313}
+[11/24] +866s OK ADA 2024: 313 сделок sec=420
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2023-01-01 -> 2023-12-31
+Symbol: LTC | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+  ... 95%  ... 85%  ... 55%Data: LTCUSDT-1m-merged.csv -> 105120 x 5m bars
+Fill 1m: LTCUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 90%  ... 95%  ... 90%  ... 95%
+Сигналов принято в pending: 547 | Сделок: 264
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 264 | TP: 166 | SL: 89 | TIME: 9
+tf7_main: WR: 62.9% | AvgR: +0.094 | SumR: +24.9 | PF: 1.23
+  2025: 264 sd | WR 63% | SumR +24.9 | PF 1.23
+Entry kinds: {'LIMIT': 264}
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+[12/24] +894s OK ADA 2025: 264 сделок sec=428
+Symbol: LTC | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+  ... 100%
+Сигналов принято в pending: 237 | Сделок: 106
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 106 | TP: 67 | SL: 33 | TIME: 6
+tf7_main: WR: 63.2% | AvgR: +0.052 | SumR: +5.5 | PF: 1.12
+  2026: 106 sd | WR 63% | SumR +5.5 | PF 1.12
+Entry kinds: {'LIMIT': 106}
+[13/24] +896s OK LINK 2026: 106 сделок sec=171============================================================
+
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2025-01-01 -> 2025-12-31
+Symbol: LTC | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: LTCUSDT-1m-merged.csv -> 105408 x 5m bars
+  ... 60%Data: LTCUSDT-1m-merged.csv -> 105120 x 5m bars
+  ... 5%Fill 1m: LTCUSDT-1m-merged.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%
+Сигналов принято в pending: 480 | Сделок: 235
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 235 | TP: 143 | SL: 88 | TIME: 4
+tf7_main: WR: 60.9% | AvgR: -0.021 | SumR: -4.9 | PF: 0.96
+  2023: 235 sd | WR 61% | SumR -4.9 | PF 0.96
+Entry kinds: {'LIMIT': 235}
+============================================================[14/24] +905s OK LINK 2023: 235 сделок sec=435
+
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2026-01-01 -> 2026-06-23
+Symbol: LTC | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Fill 1m: LTCUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%Data: LTCUSDT-1m-merged.csv -> 50112 x 5m bars
+  ... 95%Fill 1m: LTCUSDT-1m-merged.csv -> 250560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 50112 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 65%  ... 5%  ... 10%  ... 5%  ... 15%  ... 100%
+Сигналов принято в pending: 613 | Сделок: 304
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 304 | TP: 200 | SL: 98 | TIME: 6
+tf7_main: WR: 65.8% | AvgR: +0.127 | SumR: +38.5 | PF: 1.32
+  2024: 304 sd | WR 66% | SumR +38.5 | PF 1.32
+Entry kinds: {'LIMIT': 304}
+[15/24] +946s OK LINK 2024: 304 сделок sec=435
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2023-01-01 -> 2023-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 20%  ... 15%  ... 10%  ... 25%  ... 70%  ... 10%  ... 30%  ... 5%  ... 35%  ... 20%  ... 15%  ... 75%  ... 40%  ... 15%  ... 45%  ... 10%  ... 25%  ... 50%  ... 20%  ... 80%  ... 55%  ... 20%  ... 15%  ... 60%  ... 30%  ... 65%  ... 25%  ... 70%  ... 85%  ... 25%  ... 20%  ... 75%  ... 35%  ... 80%  ... 30%  ... 85%  ... 30%  ... 90%  ... 25%  ... 90%  ... 40%  ... 95%  ... 35%  ... 100%
+Сигналов принято в pending: 239 | Сделок: 110
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 110 | TP: 70 | SL: 37 | TIME: 3
+tf7_main: WR: 63.6% | AvgR: -0.065 | SumR: -7.1 | PF: 0.86
+  2026: 110 sd | WR 64% | SumR -7.1 | PF 0.86
+Entry kinds: {'LIMIT': 110}
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+[16/24] +1104s OK LTC 2026: 110 сделок sec=199
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105408 x 5m bars
+  ... 30%  ... 35%  ... 95%Fill 1m: SOLUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 45%  ... 40%  ... 35%  ... 40%  ... 5%
+Сигналов принято в pending: 642 | Сделок: 310
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 310 | TP: 208 | SL: 96 | TIME: 6
+tf7_main: WR: 67.1% | AvgR: +0.170 | SumR: +52.7 | PF: 1.46
+  2025: 310 sd | WR 67% | SumR +52.7 | PF 1.46
+Entry kinds: {'LIMIT': 310}
+[17/24] +1138s OK LINK 2025: 310 сделок sec=518
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2025-01-01 -> 2025-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: bot: fib-stretch MARKET → LIMIT @ CISD
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+  ... 50%Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 45%  ... 10%  ... 40%  ... 45%  ... 5%  ... 55%  ... 50%  ... 45%  ... 15%  ... 50%  ... 10%  ... 60%  ... 55%  ... 50%  ... 20%  ... 15%  ... 55%  ... 65%  ... 60%  ... 25%  ... 55%  ... 20%  ... 70%  ... 60%  ... 30%  ... 25%  ... 60%  ... 65%  ... 75%  ... 65%  ... 30%  ... 35%  ... 65%  ... 70%  ... 80%  ... 70%  ... 40%  ... 70%  ... 35%  ... 85%  ... 75%  ... 75%  ... 45%  ... 75%  ... 40%  ... 90%  ... 80%  ... 50%  ... 80%  ... 80%  ... 45%  ... 95%  ... 85%  ... 55%  ... 85%  ... 85%  ... 50%
+Сигналов принято в pending: 449 | Сделок: 243
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 243 | TP: 156 | SL: 76 | TIME: 11
+tf7_main: WR: 64.2% | AvgR: +0.033 | SumR: +8.1 | PF: 1.08
+  2023: 243 sd | WR 64% | SumR +8.1 | PF 1.08
+Entry kinds: {'LIMIT': 243}
+[18/24] +1407s OK LTC 2023: 243 сделок sec=541
+[19/24] +1407s skip SOL 2026
+  ... 90%  ... 60%  ... 90%  ... 90%  ... 55%  ... 95%  ... 65%  ... 95%  ... 60%  ... 95%  ... 100%
+Сигналов принято в pending: 557 | Сделок: 263
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 263 | TP: 179 | SL: 79 | TIME: 5
+tf7_main: WR: 68.1% | AvgR: +0.106 | SumR: +27.9 | PF: 1.27
+  2024: 263 sd | WR 68% | SumR +27.9 | PF 1.27
+Entry kinds: {'LIMIT': 263}
+[20/24] +1458s OK LTC 2024: 263 сделок sec=564
+  ... 70%
+Сигналов принято в pending: 454 | Сделок: 235
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 235 | TP: 147 | SL: 79 | TIME: 9
+tf7_main: WR: 62.6% | AvgR: +0.110 | SumR: +25.9 | PF: 1.27
+  2023: 235 sd | WR 63% | SumR +25.9 | PF 1.27
+Entry kinds: {'LIMIT': 235}
+[21/24] +1470s OK SOL 2023: 235 сделок sec=524
+  ... 65%
+Сигналов принято в pending: 617 | Сделок: 278
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 278 | TP: 181 | SL: 89 | TIME: 8
+tf7_main: WR: 65.1% | AvgR: +0.081 | SumR: +22.5 | PF: 1.20
+  2025: 278 sd | WR 65% | SumR +22.5 | PF 1.20
+Entry kinds: {'LIMIT': 278}
+[22/24] +1474s OK LTC 2025: 278 сделок sec=578
+  ... 75%  ... 70%  ... 80%  ... 75%  ... 85%  ... 80%  ... 90%  ... 85%  ... 95%  ... 90%  ... 100%
+Сигналов принято в pending: 563 | Сделок: 289
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 289 | TP: 194 | SL: 90 | TIME: 5
+tf7_main: WR: 67.1% | AvgR: +0.181 | SumR: +52.2 | PF: 1.49
+  2024: 289 sd | WR 67% | SumR +52.2 | PF 1.49
+Entry kinds: {'LIMIT': 289}
+[23/24] +1572s OK SOL 2024: 289 сделок sec=468
+  ... 95%
+Сигналов принято в pending: 570 | Сделок: 268
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: Сделок: 268 | TP: 177 | SL: 87 | TIME: 4
+tf7_main: WR: 66.0% | AvgR: +0.131 | SumR: +35.1 | PF: 1.34
+  2025: 268 sd | WR 66% | SumR +35.1 | PF 1.34
+Entry kinds: {'LIMIT': 268}
+[24/24] +1606s OK SOL 2025: 268 сделок sec=468
+DONE 1606s
+EXIT=0

@@ -1,0 +1,106 @@
+
+=== БАЗА: n=10754 avg=+0.0504 SR=+542 ===
+
+=== SLOPE-гейт: LONG slope>+thr / SHORT slope<-thr; dead(|s|<=thr) и NaN — pass ===
+
+--- топ-20 клеток по avg остатка (skip>=10%, tag=incl) ---
+tf   span   thr%  skip%  skipavg  passavg    dPass   yneg
+15m    21   0.10   97.7   +0.037   +0.626  +0.57612/ 7
+5m     21   0.10   96.2   +0.029   +0.600  +0.54912/ 7
+15m    21   0.05   92.6   +0.011   +0.534  +0.48373/ 7
+15m    13   0.10   92.8   +0.015   +0.511  +0.46073/ 7
+5m     21   0.05   86.3   -0.019   +0.488  +0.43754/ 7
+5m     13   0.10   91.0   +0.009   +0.474  +0.42343/ 7
+5m     13   0.05   74.8   -0.069   +0.405  +0.35456/ 7
+15m    13   0.05   82.8   -0.023   +0.402  +0.35214/ 7
+15m     8   0.10   82.4   -0.023   +0.397  +0.34655/ 7
+5m      8   0.10   84.2   -0.014   +0.396  +0.34604/ 7
+1h      8   0.10   94.4   +0.030   +0.395  +0.34483/ 7
+15m    21   0.02   82.5   -0.022   +0.389  +0.33814/ 7
+5m     21   0.02   63.8   -0.119   +0.348  +0.29806/ 7
+1h     13   0.10   94.5   +0.034   +0.332  +0.28152/ 7
+15m     5   0.10   68.4   -0.076   +0.323  +0.27306/ 7
+5m      5   0.10   77.9   -0.026   +0.318  +0.26784/ 7
+15m    13   0.02   69.2   -0.068   +0.316  +0.26566/ 7
+1h      8   0.05   90.0   +0.021   +0.311  +0.26093/ 7
+15m     8   0.05   67.1   -0.077   +0.311  +0.26066/ 7
+1h      5   0.10   90.5   +0.023   +0.311  +0.26023/ 7
+
+--- худшие-5 (skip>=10%) ---
+4h      2   0.02   75.5   +0.048   +0.056  +0.00582/ 7
+4h      2   0.00   74.4   +0.049   +0.054  +0.00412/ 7
+4h     13   0.02   61.4   +0.048   +0.054  +0.00342/ 7
+4h     13   0.00   59.0   +0.050   +0.050  +0.00012/ 7
+4h      8   0.00   61.4   +0.052   +0.047  -0.00302/ 7
+
+--- 5m: полные строки по thr ---
+  5m s=2    0.00% skip= 39.7% skipavg=  -0.066 passavg=  +0.127 d= +0.0766 yneg=5/7
+  5m s=2    0.02% skip= 45.9% skipavg=  -0.067 passavg=  +0.150 d= +0.0994 yneg=5/7
+  5m s=2    0.05% skip= 55.4% skipavg=  -0.055 passavg=  +0.181 d= +0.1305 yneg=5/7
+  5m s=2    0.10% skip= 68.3% skipavg=  -0.035 passavg=  +0.234 d= +0.1837 yneg=4/7
+  5m s=3    0.00% skip= 35.9% skipavg=  -0.098 passavg=  +0.134 d= +0.0832 yneg=6/7
+  5m s=3    0.02% skip= 44.4% skipavg=  -0.096 passavg=  +0.167 d= +0.1170 yneg=5/7
+  5m s=3    0.05% skip= 56.3% skipavg=  -0.065 passavg=  +0.199 d= +0.1487 yneg=5/7
+  5m s=3    0.10% skip= 71.9% skipavg=  -0.038 passavg=  +0.276 d= +0.2259 yneg=5/7
+  5m s=5    0.00% skip= 30.6% skipavg=  -0.165 passavg=  +0.145 d= +0.0946 yneg=7/7
+  5m s=5    0.02% skip= 41.9% skipavg=  -0.140 passavg=  +0.187 d= +0.1369 yneg=6/7
+  5m s=5    0.05% skip= 58.7% skipavg=  -0.083 passavg=  +0.240 d= +0.1899 yneg=6/7
+  5m s=5    0.10% skip= 77.9% skipavg=  -0.026 passavg=  +0.318 d= +0.2678 yneg=4/7
+  5m s=8    0.00% skip= 26.7% skipavg=  -0.225 passavg=  +0.151 d= +0.1004 yneg=7/7
+  5m s=8    0.02% skip= 42.6% skipavg=  -0.168 passavg=  +0.213 d= +0.1624 yneg=7/7
+  5m s=8    0.05% skip= 64.8% skipavg=  -0.089 passavg=  +0.308 d= +0.2575 yneg=6/7
+  5m s=8    0.10% skip= 84.2% skipavg=  -0.014 passavg=  +0.396 d= +0.3460 yneg=4/7
+  5m s=13   0.00% skip= 26.6% skipavg=  -0.254 passavg=  +0.161 d= +0.1102 yneg=7/7
+  5m s=13   0.02% skip= 50.1% skipavg=  -0.171 passavg=  +0.272 d= +0.2220 yneg=7/7
+  5m s=13   0.05% skip= 74.8% skipavg=  -0.069 passavg=  +0.405 d= +0.3545 yneg=6/7
+  5m s=13   0.10% skip= 91.0% skipavg=  +0.009 passavg=  +0.474 d= +0.4234 yneg=3/7
+  5m s=21   0.00% skip= 33.7% skipavg=  -0.223 passavg=  +0.189 d= +0.1388 yneg=7/7
+  5m s=21   0.02% skip= 63.8% skipavg=  -0.119 passavg=  +0.348 d= +0.2980 yneg=6/7
+  5m s=21   0.05% skip= 86.3% skipavg=  -0.019 passavg=  +0.488 d= +0.4375 yneg=4/7
+  5m s=21   0.10% skip= 96.2% skipavg=  +0.029 passavg=  +0.600 d= +0.5491 yneg=2/7
+
+--- 4h: полные строки по thr ---
+  4h s=2    0.00% skip= 74.4% skipavg=  +0.049 passavg=  +0.054 d= +0.0041 yneg=2/7
+  4h s=2    0.02% skip= 75.5% skipavg=  +0.048 passavg=  +0.056 d= +0.0058 yneg=2/7
+  4h s=2    0.05% skip= 77.2% skipavg=  +0.045 passavg=  +0.069 d= +0.0190 yneg=2/7
+  4h s=2    0.10% skip= 79.7% skipavg=  +0.044 passavg=  +0.076 d= +0.0251 yneg=2/7
+  4h s=3    0.00% skip= 70.6% skipavg=  +0.044 passavg=  +0.065 d= +0.0150 yneg=2/7
+  4h s=3    0.02% skip= 72.2% skipavg=  +0.044 passavg=  +0.068 d= +0.0177 yneg=2/7
+  4h s=3    0.05% skip= 74.3% skipavg=  +0.043 passavg=  +0.070 d= +0.0200 yneg=2/7
+  4h s=3    0.10% skip= 77.4% skipavg=  +0.041 passavg=  +0.083 d= +0.0322 yneg=2/7
+  4h s=5    0.00% skip= 65.5% skipavg=  +0.045 passavg=  +0.061 d= +0.0105 yneg=2/7
+  4h s=5    0.02% skip= 67.5% skipavg=  +0.044 passavg=  +0.063 d= +0.0128 yneg=2/7
+  4h s=5    0.05% skip= 70.1% skipavg=  +0.044 passavg=  +0.066 d= +0.0157 yneg=2/7
+  4h s=5    0.10% skip= 74.2% skipavg=  +0.040 passavg=  +0.079 d= +0.0288 yneg=2/7
+  4h s=8    0.00% skip= 61.4% skipavg=  +0.052 passavg=  +0.047 d= -0.0030 yneg=2/7
+  4h s=8    0.02% skip= 63.8% skipavg=  +0.045 passavg=  +0.060 d= +0.0101 yneg=2/7
+  4h s=8    0.05% skip= 67.2% skipavg=  +0.044 passavg=  +0.063 d= +0.0122 yneg=2/7
+  4h s=8    0.10% skip= 72.4% skipavg=  +0.037 passavg=  +0.085 d= +0.0345 yneg=2/7
+  4h s=13   0.00% skip= 59.0% skipavg=  +0.050 passavg=  +0.050 d= +0.0001 yneg=2/7
+  4h s=13   0.02% skip= 61.4% skipavg=  +0.048 passavg=  +0.054 d= +0.0034 yneg=2/7
+  4h s=13   0.05% skip= 65.4% skipavg=  +0.044 passavg=  +0.063 d= +0.0126 yneg=2/7
+  4h s=13   0.10% skip= 71.2% skipavg=  +0.035 passavg=  +0.089 d= +0.0386 yneg=2/7
+  4h s=21   0.00% skip= 56.4% skipavg=  +0.039 passavg=  +0.066 d= +0.0152 yneg=2/7
+  4h s=21   0.02% skip= 59.7% skipavg=  +0.036 passavg=  +0.072 d= +0.0215 yneg=2/7
+  4h s=21   0.05% skip= 64.2% skipavg=  +0.034 passavg=  +0.080 d= +0.0295 yneg=2/7
+  4h s=21   0.10% skip= 70.7% skipavg=  +0.036 passavg=  +0.085 d= +0.0345 yneg=2/7
+
+--- контроль якоря str vs incl (span=8, thr=0.02%) ---
+  5m   incl: skip%=42.6 skipavg=-0.168 passavg=+0.213
+  5m    str: skip%=43.7 skipavg=-0.134 passavg=+0.194
+  4h   incl: skip%=63.8 skipavg=+0.045 passavg=+0.060
+  4h    str: skip%=63.8 skipavg=+0.045 passavg=+0.060
+
+=== POS-гейт: LONG close>EMA / SHORT close<EMA (порог thr=0 для pos) ===
+  15m    21 skip= 66.6% skipavg=  -0.065 passavg=  +0.281 d= +0.2303 yneg=6/7
+  15m    13 skip= 54.2% skipavg=  -0.098 passavg=  +0.226 d= +0.1760 yneg=6/7
+  1h      8 skip= 81.0% skipavg=  +0.011 passavg=  +0.217 d= +0.1666 yneg=3/7
+  1h      5 skip= 77.5% skipavg=  +0.006 passavg=  +0.205 d= +0.1546 yneg=3/7
+  5m     21 skip= 33.7% skipavg=  -0.223 passavg=  +0.189 d= +0.1388 yneg=7/7
+  15m     8 skip= 39.9% skipavg=  -0.152 passavg=  +0.185 d= +0.1345 yneg=6/7
+  1h      3 skip= 67.9% skipavg=  -0.006 passavg=  +0.171 d= +0.1203 yneg=4/7
+  5m     13 skip= 26.6% skipavg=  -0.254 passavg=  +0.161 d= +0.1102 yneg=7/7
+  1h     13 skip= 77.7% skipavg=  +0.019 passavg=  +0.159 d= +0.1090 yneg=3/7
+  15m     5 skip= 30.3% skipavg=  -0.193 passavg=  +0.157 d= +0.1062 yneg=6/7
+  5m      8 skip= 26.7% skipavg=  -0.225 passavg=  +0.151 d= +0.1004 yneg=7/7
+  5m      5 skip= 30.6% skipavg=  -0.165 passavg=  +0.145 d= +0.0946 yneg=7/7

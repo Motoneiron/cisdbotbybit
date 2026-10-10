@@ -1,0 +1,50 @@
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105408 x 5m bars
+Confirm 1m: SOLUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 966 | Сделок: 844 | fib2-cancel: 59
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 844 | TP: 323 | SL: 468 | TIME: 53
+tf7: WR: 38.3% | AvgR: +0.163 | SumR: +137.2 | PF: 1.24
+  2024: 844 sd | WR 38% | SumR +137.2 | PF 1.24
+Entry kinds: {'LIMIT': 651, 'MARKET': 193}
+Saved: D:\PYTHON\CISDBOT\RUNS\2026-09-12\bot_aligned\SOL_tf7_2024-01-01_2024-12-31.pkl
+SOL tf7 2024 (новый движок): trades=844 sumR=+137.2
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: SOL | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 17568 x 30m bars
+Confirm 5m: SOLUSDT_5m_full_hdr.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 504 | Сделок: 377 | fib2-cancel: 13
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 377 | TP: 41 | SL: 120 | TIME: 216
+tf8: WR: 10.9% | AvgR: +0.012 | SumR: +4.5 | PF: 1.03
+  2024: 377 sd | WR 11% | SumR +4.5 | PF 1.03
+Entry kinds: {'LIMIT': 297, 'MARKET': 80}
+Saved: D:\PYTHON\CISDBOT\RUNS\2026-09-12\bot_aligned\SOL_tf8_2024-01-01_2024-12-31.pkl
+SOL tf8 2024 (новый движок): trades=377 sumR=+4.5

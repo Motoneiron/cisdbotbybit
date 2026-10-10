@@ -1,0 +1,16 @@
+saved: RUNS/temp/stream_off_v1_v2_full.pkl
+ALL (с VP)                     n=16226 WR= 65.1% ΣR=  2199.3 AvgR= 0.136
+SHORT ALL                      n=12777 WR= 71.3% ΣR=  2891.0 AvgR= 0.226
+LONG ALL                       n= 3449 WR= 46.9% ΣR=  -691.6 AvgR=-0.201
+-- vp_block_share квартили --
+block_share Q1                 n= 3720 WR= 65.8% ΣR=   575.7 AvgR= 0.155
+block_share Q2                 n= 3719 WR= 64.4% ΣR=   521.3 AvgR= 0.140
+block_share Q3                 n= 3719 WR= 64.5% ΣR=   434.7 AvgR= 0.117
+block_share Q4                 n= 3720 WR= 63.8% ΣR=   410.7 AvgR= 0.110
+-- vp_va_pos бакеты --
+va_pos [-9,0)                  n= 1795 WR= 60.4% ΣR=   142.2 AvgR= 0.079
+va_pos [0,0.25)                n= 4219 WR= 63.9% ΣR=   457.0 AvgR= 0.108
+va_pos [0.25,0.75)             n= 4734 WR= 65.5% ΣR=   667.0 AvgR= 0.141
+va_pos [0.75,1.01)             n= 3437 WR= 66.5% ΣR=   519.5 AvgR= 0.151
+va_pos [1.01,9)                n= 2041 WR= 69.0% ΣR=   413.6 AvgR= 0.203
+VP_EXIT=0

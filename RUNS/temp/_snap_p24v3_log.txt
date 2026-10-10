@@ -1,0 +1,43 @@
+BTC tf7 2024: lim=626 vwap=164 ms=144 filled=133 WR=65.4 Σtp1=21.12 Σnat=-14.5
+BTC tf8 2024: lim=378 vwap=130 ms=129 filled=123 WR=69.7 Σtp1=9.99 Σnat=24.82
+BTC tf7 2025: lim=597 vwap=170 ms=123 filled=108 WR=58.5 Σtp1=-2.06 Σnat=-5.52
+BTC tf8 2025: lim=371 vwap=122 ms=115 filled=111 WR=73.4 Σtp1=11.82 Σnat=21.68
+ETH tf7 2024: lim=658 vwap=186 ms=173 filled=155 WR=60.1 Σtp1=8.71 Σnat=0.76
+ETH tf8 2024: lim=369 vwap=128 ms=128 filled=122 WR=76.0 Σtp1=25.73 Σnat=17.84
+ETH tf7 2025: lim=631 vwap=188 ms=175 filled=162 WR=57.5 Σtp1=2.04 Σnat=2.95
+ETH tf8 2025: lim=371 vwap=122 ms=122 filled=116 WR=76.1 Σtp1=25.19 Σnat=27.88
+DOGE tf7 2024: lim=619 vwap=172 ms=168 filled=145 WR=63.8 Σtp1=24.3 Σnat=23.94
+DOGE tf8 2024: lim=349 vwap=116 ms=116 filled=110 WR=74.2 Σtp1=18.72 Σnat=37.8
+DOGE tf7 2025: lim=632 vwap=208 ms=205 filled=190 WR=56.1 Σtp1=-0.69 Σnat=0.41
+DOGE tf8 2025: lim=379 vwap=122 ms=122 filled=114 WR=74.6 Σtp1=27.58 Σnat=37.14
+KAS tf7 2024: lim=591 vwap=153 ms=150 filled=131 WR=69.0 Σtp1=33.83 Σnat=55.46
+KAS tf8 2024: lim=365 vwap=124 ms=124 filled=119 WR=80.3 Σtp1=35.56 Σnat=40.82
+KAS tf7 2025: lim=578 vwap=194 ms=190 filled=172 WR=62.7 Σtp1=26.73 Σnat=56.12
+KAS tf8 2025: lim=344 vwap=115 ms=115 filled=112 WR=76.9 Σtp1=30.43 Σnat=37.67
+ADA tf7 2024: lim=661 vwap=173 ms=169 filled=161 WR=65.8 Σtp1=29.98 Σnat=21.43
+ADA tf8 2024: lim=394 vwap=119 ms=119 filled=116 WR=78.1 Σtp1=32.15 Σnat=42.12
+ADA tf7 2025: lim=713 vwap=239 ms=238 filled=207 WR=56.2 Σtp1=-1.92 Σnat=3.1
+ADA tf8 2025: lim=372 vwap=126 ms=126 filled=120 WR=76.0 Σtp1=31.23 Σnat=40.57
+BNB tf7 2024: lim=603 vwap=166 ms=151 filled=135 WR=58.1 Σtp1=-3.69 Σnat=-9.13
+BNB tf8 2024: lim=365 vwap=126 ms=126 filled=122 WR=74.7 Σtp1=28.01 Σnat=39.4
+BNB tf7 2025: lim=621 vwap=197 ms=159 filled=140 WR=61.8 Σtp1=7.53 Σnat=30.28
+BNB tf8 2025: lim=359 vwap=109 ms=103 filled=102 WR=82.0 Σtp1=26.67 Σnat=31.89
+LINK tf7 2024: lim=687 vwap=178 ms=172 filled=163 WR=53.4 Σtp1=-12.15 Σnat=-20.98
+LINK tf8 2024: lim=375 vwap=96 ms=96 filled=93 WR=57.9 Σtp1=0.72 Σnat=2.74
+LINK tf7 2025: lim=684 vwap=202 ms=196 filled=180 WR=58.8 Σtp1=9.62 Σnat=1.8
+LINK tf8 2025: lim=384 vwap=121 ms=121 filled=116 WR=78.3 Σtp1=28.19 Σnat=61.42
+LTC tf7 2024: lim=656 vwap=190 ms=172 filled=153 WR=67.8 Σtp1=32.15 Σnat=41.7
+LTC tf8 2024: lim=381 vwap=121 ms=119 filled=116 WR=77.0 Σtp1=35.23 Σnat=28.99
+LTC tf7 2025: lim=618 vwap=176 ms=167 filled=149 WR=58.6 Σtp1=4.85 Σnat=-2.58
+LTC tf8 2025: lim=394 vwap=127 ms=127 filled=123 WR=76.0 Σtp1=26.5 Σnat=25.64
+XRP tf7 2024: lim=634 vwap=148 ms=142 filled=129 WR=60.2 Σtp1=10.26 Σnat=-13.58
+XRP tf8 2024: lim=358 vwap=110 ms=110 filled=108 WR=65.7 Σtp1=6.37 Σnat=37.9
+XRP tf7 2025: lim=631 vwap=186 ms=174 filled=155 WR=56.3 Σtp1=-3.24 Σnat=3.55
+XRP tf8 2025: lim=353 vwap=115 ms=115 filled=110 WR=59.7 Σtp1=4.11 Σnat=10.74
+SOL tf7 2024: lim=663 vwap=172 ms=170 filled=158 WR=63.2 Σtp1=25.04 Σnat=46.7
+SOL tf8 2024: lim=380 vwap=124 ms=124 filled=122 WR=84.0 Σtp1=46.88 Σnat=49.6
+SOL tf7 2025: lim=662 vwap=200 ms=192 filled=174 WR=57.3 Σtp1=1.21 Σnat=-0.4
+SOL tf8 2025: lim=360 vwap=106 ms=106 filled=104 WR=79.7 Σtp1=30.3 Σnat=33.46
+ИТОГО: n=5379 Σr(TP1R)=695.0
+saved: D:/PYTHON/cisdbotbybit/RUNS/temp/stream_off_v1_p24v3.pkl
+EXIT=0

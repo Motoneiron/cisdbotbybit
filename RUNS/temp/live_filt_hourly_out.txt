@@ -1,0 +1,120 @@
+OK KAS 2023 n=34 sec=18
+  SOL 2023-02-21 trades=34 sec=21
+  ADA 2023-02-21 trades=27 sec=22
+  LINK 2023-02-21 trades=29 sec=22
+  DOGE 2023-02-21 trades=41 sec=22
+  LTC 2023-02-21 trades=30 sec=22
+  KAS 2024-02-21 trades=28 sec=21
+  SOL 2023-05-15 trades=91 sec=55
+  ADA 2023-05-15 trades=67 sec=56
+  LINK 2023-05-15 trades=76 sec=57
+  LTC 2023-05-15 trades=80 sec=58
+  DOGE 2023-05-15 trades=87 sec=58
+  KAS 2024-05-14 trades=91 sec=57
+  SOL 2023-08-07 trades=146 sec=91
+  LINK 2023-08-07 trades=121 sec=92
+  ADA 2023-08-07 trades=115 sec=93
+  DOGE 2023-08-07 trades=120 sec=95
+  LTC 2023-08-07 trades=128 sec=96
+  KAS 2024-08-06 trades=133 sec=94
+  SOL 2023-10-29 trades=203 sec=129
+  LINK 2023-10-29 trades=167 sec=129
+  ADA 2023-10-29 trades=140 sec=131
+  DOGE 2023-10-29 trades=140 sec=131
+  LTC 2023-10-29 trades=164 sec=131
+  KAS 2024-10-28 trades=176 sec=138
+OK SOL 2023 n=248 sec=169
+OK LINK 2023 n=208 sec=169
+OK DOGE 2023 n=174 sec=171
+OK ADA 2023 n=177 sec=172
+OK LTC 2023 n=193 sec=175
+OK KAS 2024 n=216 sec=179
+  SOL 2024-02-21 trades=34 sec=32
+  LINK 2024-02-21 trades=28 sec=34
+  ADA 2024-02-21 trades=23 sec=32
+  DOGE 2024-02-21 trades=22 sec=34
+  LTC 2024-02-21 trades=21 sec=36
+  KAS 2025-02-21 trades=32 sec=32
+  SOL 2024-05-14 trades=97 sec=85
+  DOGE 2024-05-14 trades=78 sec=87
+  LINK 2024-05-14 trades=82 sec=91
+  ADA 2024-05-14 trades=73 sec=88
+  LTC 2024-05-14 trades=65 sec=93
+  KAS 2025-05-15 trades=81 sec=85
+  SOL 2024-08-06 trades=142 sec=140
+  ADA 2024-08-06 trades=122 sec=142
+  DOGE 2024-08-06 trades=121 sec=145
+  LINK 2024-08-06 trades=134 sec=149
+  LTC 2024-08-06 trades=90 sec=150
+  KAS 2025-08-07 trades=136 sec=139
+  SOL 2024-10-28 trades=186 sec=192
+  DOGE 2024-10-28 trades=160 sec=193
+  ADA 2024-10-28 trades=165 sec=193
+  LINK 2024-10-28 trades=185 sec=201
+  LTC 2024-10-28 trades=131 sec=203
+  KAS 2025-10-29 trades=185 sec=191
+OK SOL 2024 n=224 sec=234
+OK ADA 2024 n=208 sec=235
+OK DOGE 2024 n=193 sec=238
+OK LINK 2024 n=241 sec=242
+OK LTC 2024 n=173 sec=244
+OK KAS 2025 n=220 sec=230
+  SOL 2025-02-21 trades=28 sec=32
+  DOGE 2025-02-21 trades=30 sec=30
+  ADA 2025-02-21 trades=40 sec=33
+  LINK 2025-02-21 trades=41 sec=35
+  LTC 2025-02-21 trades=41 sec=33
+  KAS 2026-02-21 trades=23 sec=32
+  SOL 2025-05-15 trades=78 sec=82
+  DOGE 2025-05-15 trades=94 sec=83
+  ADA 2025-05-15 trades=99 sec=86
+  LTC 2025-05-15 trades=85 sec=82
+  LINK 2025-05-15 trades=100 sec=92
+  KAS 2026-05-15 trades=68 sec=83
+OK KAS 2026 n=86 sec=106
+OK KAS 2023 n=34 sec=18 | OK KAS 2024 n=216 sec=179 | OK KAS 2025 n=220 sec=230 | OK KAS 2026 n=86 sec=106
+  SOL 2025-08-07 trades=127 sec=132
+  DOGE 2025-08-07 trades=137 sec=134
+  ADA 2025-08-07 trades=150 sec=137
+  LTC 2025-08-07 trades=125 sec=133
+  LINK 2025-08-07 trades=150 sec=145
+  SOL 2025-10-29 trades=164 sec=182
+  DOGE 2025-10-29 trades=187 sec=182
+  ADA 2025-10-29 trades=195 sec=189
+  LTC 2025-10-29 trades=168 sec=184
+  LINK 2025-10-29 trades=202 sec=199
+OK SOL 2025 n=204 sec=226
+OK DOGE 2025 n=230 sec=224
+OK ADA 2025 n=257 sec=231
+OK LTC 2025 n=210 sec=227
+OK LINK 2025 n=245 sec=240
+  SOL 2026-02-21 trades=17 sec=29
+  DOGE 2026-02-21 trades=26 sec=29
+  ADA 2026-02-21 trades=38 sec=32
+  LTC 2026-02-21 trades=29 sec=30
+  LINK 2026-02-21 trades=23 sec=33
+  SOL 2026-05-15 trades=60 sec=78
+  DOGE 2026-05-15 trades=74 sec=77
+  ADA 2026-05-15 trades=86 sec=76
+  LTC 2026-05-15 trades=57 sec=78
+OK SOL 2026 n=73 sec=102
+OK SOL 2023 n=248 sec=169 | OK SOL 2024 n=224 sec=234 | OK SOL 2025 n=204 sec=226 | OK SOL 2026 n=73 sec=102
+  LINK 2026-05-15 trades=67 sec=79
+OK DOGE 2026 n=95 sec=101
+OK DOGE 2023 n=174 sec=171 | OK DOGE 2024 n=193 sec=238 | OK DOGE 2025 n=230 sec=224 | OK DOGE 2026 n=95 sec=101
+OK ADA 2026 n=106 sec=101
+OK ADA 2023 n=177 sec=172 | OK ADA 2024 n=208 sec=235 | OK ADA 2025 n=257 sec=231 | OK ADA 2026 n=106 sec=101
+OK LTC 2026 n=67 sec=102
+OK LTC 2023 n=193 sec=175 | OK LTC 2024 n=173 sec=244 | OK LTC 2025 n=210 sec=227 | OK LTC 2026 n=67 sec=102
+OK LINK 2026 n=78 sec=101
+OK LINK 2023 n=208 sec=169 | OK LINK 2024 n=241 sec=242 | OK LINK 2025 n=245 sec=240 | OK LINK 2026 n=78 sec=101
+ALL 4160
+
+== 2024-26
+all, ATR+vol off       n= 3126 avg=-0.189 sum=-591 t=-10.37 tp=1394 sl=1626
+kept by both           n= 1817 avg=-0.152 sum=-276 t=-6.32 tp=849 sl=918
+
+== 2023
+all, ATR+vol off       n= 1034 avg=-0.200 sum=-207 t=-6.43 tp=437 sl=526
+kept by both           n=  501 avg=-0.173 sum=-87 t=-3.79 tp=226 sl=254
+EXIT=0

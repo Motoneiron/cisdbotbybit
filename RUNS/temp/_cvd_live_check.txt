@@ -1,0 +1,33 @@
+tape из кэша: {'ADA': 5000, 'BNB': 82000, 'DOGE': 30000, 'ETH': 98000, 'KAS': 22165, 'LINK': 27000, 'LTC': 13000, 'SOL': 35000, 'XRP': 32000}
+KAS ts были в секундах — перекачиваю Bybit
+[KAS/bybit] rows=22165 sample=[(1789257601804, 1600.0, 1600.0), (1789257601804, 290.0, 290.0)]
+
+sym dir   tf  status          pnl |   of_1h_s   of_4h_s | A(>=0) B10  B20
+LTC SHORT tf7 closed_sl     -1.47 |   +0.1959   +0.0259 | True   True  True
+KAS SHORT tf8 closed_sl     -1.14 |   +0.1909   +0.0856 | True   True  True
+KAS SHORT tf7 closed_tp     +0.91 |   +0.1762   -0.1122 | True   True  True
+LTC SHORT tf8 closed_time   -0.74 |   +0.0377   -0.0576 | True   True  True
+BNB LONG  tf7 closed_tp     +0.62 |   -0.1400   -0.0686 | False  False False
+KAS SHORT tf8 closed_tp     +0.89 |   -0.0880   -0.0102 | False  False False
+DOGESHORT tf8 closed_tp     +0.90 |   +0.2936   +0.1187 | True   True  True
+LINKSHORT tf8 closed_time   -0.56 |   +0.1837   -0.0086 | True   True  True
+DOGELONG  tf7 closed_tp     +0.85 |   -0.1148   -0.1411 | False  False False
+SOL LONG  tf7 closed_tp     +0.81 |   -0.1587   -0.1407 | False  False False
+XRP LONG  tf7 closed_tp     +0.95 |   +0.0046   -0.0746 | True   True  True
+ADA LONG  tf8 closed_time   -0.20 |   +0.1565   +0.0084 | True   True  True
+BNB LONG  tf7 closed_tp     +0.68 |   -0.1122   -0.0330 | False  False False
+BNB SHORT tf7 closed_tp     +0.85 |   +0.5409   +0.1611 | True   True  True
+ETH LONG  tf7 closed_sl     -1.51 |   +0.1123   +0.0535 | True   True  True
+LINKSHORT tf7 open           open |   +0.2659   +0.0596 | True   True  True
+
+=== агрегаты (закрытые сделки; pnl в $ при риске ~$1) ===
+A of_1h_s>=0: KEEP n=10 Σpnl=-2.01 WR=40% | CUT n=5 Σpnl=+3.85 WR=100%
+   CUT: [('BNB', 'LONG', 'closed_tp', 0.62, -0.14), ('KAS', 'SHORT', 'closed_tp', 0.89, -0.088), ('DOGE', 'LONG', 'closed_tp', 0.85, -0.115), ('SOL', 'LONG', 'closed_tp', 0.81, -0.159), ('BNB', 'LONG', 'closed_tp', 0.68, -0.112)]
+   KEEP-минусы: [('LTC', 'SHORT', 'closed_sl', -1.47, 0.196), ('KAS', 'SHORT', 'closed_sl', -1.14, 0.191), ('LTC', 'SHORT', 'closed_time', -0.74, 0.038), ('LINK', 'SHORT', 'closed_time', -0.56, 0.184), ('ADA', 'LONG', 'closed_time', -0.2, 0.157), ('ETH', 'LONG', 'closed_sl', -1.51, 0.112)]
+B10 (нижние ~10%): KEEP n=10 Σpnl=-2.01 WR=40% | CUT n=5 Σpnl=+3.85 WR=100%
+   CUT: [('BNB', 'LONG', 'closed_tp', 0.62, -0.14), ('KAS', 'SHORT', 'closed_tp', 0.89, -0.088), ('DOGE', 'LONG', 'closed_tp', 0.85, -0.115), ('SOL', 'LONG', 'closed_tp', 0.81, -0.159), ('BNB', 'LONG', 'closed_tp', 0.68, -0.112)]
+   KEEP-минусы: [('LTC', 'SHORT', 'closed_sl', -1.47, 0.196), ('KAS', 'SHORT', 'closed_sl', -1.14, 0.191), ('LTC', 'SHORT', 'closed_time', -0.74, 0.038), ('LINK', 'SHORT', 'closed_time', -0.56, 0.184), ('ADA', 'LONG', 'closed_time', -0.2, 0.157), ('ETH', 'LONG', 'closed_sl', -1.51, 0.112)]
+B20 (нижние ~20%): KEEP n=10 Σpnl=-2.01 WR=40% | CUT n=5 Σpnl=+3.85 WR=100%
+   CUT: [('BNB', 'LONG', 'closed_tp', 0.62, -0.14), ('KAS', 'SHORT', 'closed_tp', 0.89, -0.088), ('DOGE', 'LONG', 'closed_tp', 0.85, -0.115), ('SOL', 'LONG', 'closed_tp', 0.81, -0.159), ('BNB', 'LONG', 'closed_tp', 0.68, -0.112)]
+   KEEP-минусы: [('LTC', 'SHORT', 'closed_sl', -1.47, 0.196), ('KAS', 'SHORT', 'closed_sl', -1.14, 0.191), ('LTC', 'SHORT', 'closed_time', -0.74, 0.038), ('LINK', 'SHORT', 'closed_time', -0.56, 0.184), ('ADA', 'LONG', 'closed_time', -0.2, 0.157), ('ETH', 'LONG', 'closed_sl', -1.51, 0.112)]
+saved _cvd_live_check.pkl

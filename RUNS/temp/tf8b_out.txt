@@ -1,0 +1,55 @@
+===== MODE=tf8 profile=tf8 min_stop=1.0 sl_gate=None smoke=False =====
+  [tf8] DOGE 2024-06-11 trades=40 skip_gate=0 sec=1020
+  [tf8] KAS 2024-06-11 trades=48 skip_gate=0 sec=1032
+  [tf8] SOL 2024-06-11 trades=31 skip_gate=0 sec=1038
+  [tf8] ADA 2024-06-11 trades=37 skip_gate=0 sec=1047
+  [tf8] LINK 2024-06-11 trades=26 skip_gate=0 sec=1049
+  [tf8] LTC 2024-06-11 trades=35 skip_gate=0 sec=1105
+  [tf8] DOGE 2024-11-25 trades=78 skip_gate=0 sec=1982
+  [tf8] LINK 2024-11-25 trades=62 skip_gate=0 sec=2016
+  [tf8] KAS 2024-11-25 trades=82 skip_gate=0 sec=2039
+  [tf8] ADA 2024-11-25 trades=81 skip_gate=0 sec=2036
+  [tf8] SOL 2024-11-25 trades=68 skip_gate=0 sec=2091
+  [tf8] LTC 2024-11-25 trades=57 skip_gate=0 sec=2135
+OK DOGE 2024 n=84 sec=2205
+OK LINK 2024 n=78 sec=2249
+OK ADA 2024 n=89 sec=2258
+OK KAS 2024 n=94 sec=2271
+OK SOL 2024 n=76 sec=2320
+OK LTC 2024 n=69 sec=2382
+  [tf8] DOGE 2025-06-12 trades=47 skip_gate=0 sec=796
+  [tf8] KAS 2025-06-12 trades=40 skip_gate=0 sec=775
+  [tf8] ADA 2025-06-12 trades=42 skip_gate=0 sec=826
+  [tf8] SOL 2025-06-12 trades=46 skip_gate=0 sec=766
+  [tf8] LINK 2025-06-12 trades=60 skip_gate=0 sec=856
+  [tf8] LTC 2025-06-12 trades=37 skip_gate=0 sec=805
+  [tf8] KAS 2025-11-26 trades=69 skip_gate=0 sec=1504
+  [tf8] DOGE 2025-11-26 trades=94 skip_gate=0 sec=1570
+  [tf8] SOL 2025-11-26 trades=76 skip_gate=0 sec=1501
+  [tf8] ADA 2025-11-26 trades=86 skip_gate=0 sec=1597
+  [tf8] LINK 2025-11-26 trades=115 skip_gate=0 sec=1607
+OK DOGE 2025 n=99 sec=1709
+OK KAS 2025 n=76 sec=1668
+  [tf8] LTC 2025-11-26 trades=73 skip_gate=0 sec=1559
+OK SOL 2025 n=84 sec=1652
+OK ADA 2025 n=94 sec=1739
+OK LINK 2025 n=122 sec=1760
+OK LTC 2025 n=80 sec=1716
+  [tf8] DOGE 2026-06-12 trades=28 skip_gate=0 sec=706
+  [tf8] SOL 2026-06-12 trades=28 skip_gate=0 sec=678
+  [tf8] KAS 2026-06-12 trades=33 skip_gate=0 sec=721
+  [tf8] LINK 2026-06-12 trades=31 skip_gate=0 sec=673
+  [tf8] ADA 2026-06-12 trades=29 skip_gate=0 sec=722
+  [tf8] LTC 2026-06-12 trades=26 skip_gate=0 sec=747
+OK DOGE 2026 n=31 sec=983
+OK DOGE 2024 n=84 sec=2205 | OK DOGE 2025 n=99 sec=1709 | OK DOGE 2026 n=31 sec=983
+OK KAS 2026 n=39 sec=996
+OK KAS 2024 n=94 sec=2271 | OK KAS 2025 n=76 sec=1668 | OK KAS 2026 n=39 sec=996
+OK SOL 2026 n=35 sec=989
+OK SOL 2024 n=76 sec=2320 | OK SOL 2025 n=84 sec=1652 | OK SOL 2026 n=35 sec=989
+OK ADA 2026 n=46 sec=1052
+OK ADA 2024 n=89 sec=2258 | OK ADA 2025 n=94 sec=1739 | OK ADA 2026 n=46 sec=1052
+OK LINK 2026 n=49 sec=1049
+OK LINK 2024 n=78 sec=2249 | OK LINK 2025 n=122 sec=1760 | OK LINK 2026 n=49 sec=1049
+OK LTC 2026 n=34 sec=1063
+OK LTC 2024 n=69 sec=2382 | OK LTC 2025 n=80 sec=1716 | OK LTC 2026 n=34 sec=1063

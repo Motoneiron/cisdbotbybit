@@ -1,0 +1,52 @@
+  [fix-tp] скорректировано gross: +0.250R в среднем на 685 tp
+
+=== live_final/ms1.0_tp1.25
+  2024: n= 748 SR=  +31.8 avg=+0.0425 tp/sl/time=339/346/63 trades/day=2.04
+  2025: n= 687 SR=  -96.4 avg=-0.1403 tp/sl/time=257/375/55 trades/day=1.88
+  2026: n= 222 SR=   +7.3 avg=+0.0327 tp/sl/time=89/92/41 trades/day=0.91
+  ALL: n=1657 SR=  -57.4 avg=-0.0346 tp/sl/time=685/813/159 trades/day=1.70
+  [fix-tp] скорректировано gross: +0.500R в среднем на 575 tp
+
+=== live_final/ms1.0_tp1.5
+  2024: n= 741 SR=  +31.1 avg=+0.0420 tp/sl/time=288/366/87 trades/day=2.02
+  2025: n= 680 SR= -105.1 avg=-0.1546 tp/sl/time=216/395/69 trades/day=1.86
+  2026: n= 220 SR=   +3.7 avg=+0.0167 tp/sl/time=71/97/52 trades/day=0.91
+  ALL: n=1641 SR=  -70.3 avg=-0.0429 tp/sl/time=575/858/208 trades/day=1.68
+  [fix-tp] скорректировано gross: +0.250R в среднем на 601 tp
+
+=== live_final/ms1.0_tp1.25_a0.8
+  2024: n= 665 SR=  +38.3 avg=+0.0576 tp/sl/time=303/300/62 trades/day=1.82
+  2025: n= 615 SR= -107.1 avg=-0.1741 tp/sl/time=220/344/51 trades/day=1.68
+  2026: n= 196 SR=  +10.3 avg=+0.0526 tp/sl/time=78/78/40 trades/day=0.81
+  ALL: n=1476 SR=  -58.4 avg=-0.0396 tp/sl/time=601/722/153 trades/day=1.52
+
+=== live_final/ms1.0_hold6
+  2024: n= 756 SR=  +23.9 avg=+0.0316 tp/sl/time=359/286/111 trades/day=2.07
+  2025: n= 694 SR=  -70.3 avg=-0.1014 tp/sl/time=287/314/93 trades/day=1.90
+  2026: n= 223 SR=   -2.4 avg=-0.0107 tp/sl/time=92/74/57 trades/day=0.92
+  ALL: n=1673 SR=  -48.8 avg=-0.0292 tp/sl/time=738/674/261 trades/day=1.72
+
+=== live_final/ms1.0_hold24
+  2024: n= 747 SR=  +26.4 avg=+0.0353 tp/sl/time=407/332/8 trades/day=2.04
+  2025: n= 686 SR=  -80.6 avg=-0.1176 tp/sl/time=324/353/9 trades/day=1.88
+  2026: n= 222 SR=   -0.4 avg=-0.0018 tp/sl/time=114/98/10 trades/day=0.91
+  ALL: n=1655 SR=  -54.6 avg=-0.0330 tp/sl/time=845/783/27 trades/day=1.70
+
+=== live_final/ms1.0_wait5
+  2024: n= 629 SR=   +5.5 avg=+0.0087 tp/sl/time=324/274/31 trades/day=1.72
+  2025: n= 595 SR=  -59.6 avg=-0.1001 tp/sl/time=270/290/35 trades/day=1.63
+  2026: n= 184 SR=   +6.1 avg=+0.0329 tp/sl/time=90/70/24 trades/day=0.76
+  ALL: n=1408 SR=  -48.1 avg=-0.0341 tp/sl/time=684/634/90 trades/day=1.45
+
+=== live_final/ms1.5_tp1.25
+  2024: n= 359 SR=  +21.7 avg=+0.0604 tp/sl/time=152/156/51 trades/day=0.98
+  2025: n= 299 SR=  -53.0 avg=-0.1772 tp/sl/time=93/158/48 trades/day=0.82
+  ALL: n= 658 SR=  -31.3 avg=-0.0476 tp/sl/time=245/314/99 trades/day=0.68
+
+=== live_final/ms1.0_wait30
+  2024: n= 909 SR=  +13.9 avg=+0.0153 tp/sl/time=471/394/44 trades/day=2.48
+  ALL: n= 909 SR=  +13.9 avg=+0.0153 tp/sl/time=471/394/44 trades/day=0.93
+
+=== live_final/ms1.0_hold48
+  2024: n= 745 SR=  +27.6 avg=+0.0371 tp/sl/time=410/333/2 trades/day=2.04
+  ALL: n= 745 SR=  +27.6 avg=+0.0371 tp/sl/time=410/333/2 trades/day=0.76

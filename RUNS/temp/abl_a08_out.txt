@@ -1,0 +1,229 @@
+===== MODE=a08 conf={'atr_enabled': True, 'vol_enabled': True, 'd_enabled': True} atr_th=0.8 min_stop=0.5% =====
+  [a08] SOL 2024-01-24 trades=21 sec=265
+  [a08] DOGE 2024-01-24 trades=8 sec=275
+  [a08] ADA 2024-01-24 trades=10 sec=282
+  [a08] KAS 2024-01-24 trades=19 sec=290
+  [a08] LINK 2024-01-24 trades=14 sec=293
+  [a08] LTC 2024-01-24 trades=15 sec=302
+  [a08] SOL 2024-02-21 trades=35 sec=671
+  [a08] ADA 2024-02-21 trades=25 sec=671
+  [a08] KAS 2024-02-21 trades=28 sec=680
+  [a08] DOGE 2024-02-21 trades=13 sec=715
+  [a08] LINK 2024-02-21 trades=24 sec=718
+  [a08] LTC 2024-02-21 trades=20 sec=751
+  [a08] SOL 2024-03-20 trades=58 sec=1063
+  [a08] ADA 2024-03-20 trades=42 sec=1072
+  [a08] KAS 2024-03-20 trades=55 sec=1081
+  [a08] DOGE 2024-03-20 trades=31 sec=1098
+  [a08] LINK 2024-03-20 trades=46 sec=1130
+  [a08] LTC 2024-03-20 trades=34 sec=1139
+  [a08] SOL 2024-04-17 trades=76 sec=1382
+  [a08] KAS 2024-04-17 trades=74 sec=1396
+  [a08] ADA 2024-04-17 trades=61 sec=1423
+  [a08] DOGE 2024-04-17 trades=48 sec=1453
+  [a08] LINK 2024-04-17 trades=60 sec=1475
+  [a08] LTC 2024-04-17 trades=54 sec=1495
+  [a08] SOL 2024-05-14 trades=92 sec=1698
+  [a08] KAS 2024-05-14 trades=99 sec=1706
+  [a08] DOGE 2024-05-14 trades=68 sec=1728
+  [a08] ADA 2024-05-14 trades=85 sec=1735
+  [a08] LINK 2024-05-14 trades=84 sec=1770
+  [a08] LTC 2024-05-14 trades=67 sec=1775
+  [a08] SOL 2024-06-11 trades=108 sec=1940
+  [a08] KAS 2024-06-11 trades=108 sec=1953
+  [a08] DOGE 2024-06-11 trades=79 sec=1991
+  [a08] ADA 2024-06-11 trades=97 sec=2030
+  [a08] LINK 2024-06-11 trades=97 sec=2101
+  [a08] LTC 2024-06-11 trades=75 sec=2114
+  [a08] SOL 2024-07-09 trades=134 sec=2233
+  [a08] KAS 2024-07-09 trades=125 sec=2260
+  [a08] DOGE 2024-07-09 trades=96 sec=2312
+  [a08] ADA 2024-07-09 trades=111 sec=2327
+  [a08] LTC 2024-07-09 trades=83 sec=2397
+  [a08] LINK 2024-07-09 trades=112 sec=2416
+  [a08] SOL 2024-08-06 trades=160 sec=2569
+  [a08] KAS 2024-08-06 trades=135 sec=2586
+  [a08] ADA 2024-08-06 trades=127 sec=2628
+  [a08] DOGE 2024-08-06 trades=118 sec=2651
+  [a08] LTC 2024-08-06 trades=97 sec=2729
+  [a08] LINK 2024-08-06 trades=131 sec=2744
+  [a08] SOL 2024-09-03 trades=180 sec=2873
+  [a08] KAS 2024-09-03 trades=147 sec=2899
+  [a08] DOGE 2024-09-03 trades=129 sec=2935
+  [a08] ADA 2024-09-03 trades=148 sec=2946
+  [a08] LINK 2024-09-03 trades=148 sec=3049
+  [a08] LTC 2024-09-03 trades=114 sec=3062
+  [a08] SOL 2024-09-30 trades=200 sec=3165
+  [a08] KAS 2024-09-30 trades=159 sec=3190
+  [a08] DOGE 2024-09-30 trades=146 sec=3213
+  [a08] ADA 2024-09-30 trades=167 sec=3232
+  [a08] LTC 2024-09-30 trades=125 sec=3343
+  [a08] LINK 2024-09-30 trades=168 sec=3370
+  [a08] KAS 2024-10-28 trades=174 sec=3470
+  [a08] SOL 2024-10-28 trades=209 sec=3477
+  [a08] DOGE 2024-10-28 trades=159 sec=3503
+  [a08] ADA 2024-10-28 trades=187 sec=3530
+  [a08] LTC 2024-10-28 trades=141 sec=3643
+  [a08] LINK 2024-10-28 trades=187 sec=3654
+  [a08] KAS 2024-11-25 trades=207 sec=3786
+  [a08] SOL 2024-11-25 trades=231 sec=3791
+  [a08] DOGE 2024-11-25 trades=181 sec=3815
+  [a08] ADA 2024-11-25 trades=206 sec=3817
+  [a08] LTC 2024-11-25 trades=159 sec=3932
+  [a08] LINK 2024-11-25 trades=210 sec=3957
+  [a08] KAS 2024-12-23 trades=229 sec=4070
+  [a08] SOL 2024-12-23 trades=251 sec=4089
+  [a08] ADA 2024-12-23 trades=227 sec=4118
+  [a08] DOGE 2024-12-23 trades=200 sec=4120
+OK KAS 2024 n=235 sec=4154
+OK SOL 2024 n=256 sec=4192
+  [a08] LTC 2024-12-23 trades=186 sec=4193
+OK DOGE 2024 n=204 sec=4217
+OK ADA 2024 n=231 sec=4218
+  [a08] LINK 2024-12-23 trades=238 sec=4245
+OK LTC 2024 n=192 sec=4310
+OK LINK 2024 n=247 sec=4355
+  [a08] KAS 2025-01-24 trades=13 sec=246
+  [a08] SOL 2025-01-24 trades=19 sec=250
+  [a08] DOGE 2025-01-24 trades=12 sec=247
+  [a08] ADA 2025-01-24 trades=24 sec=254
+  [a08] LTC 2025-01-24 trades=28 sec=253
+  [a08] LINK 2025-01-24 trades=25 sec=268
+  [a08] KAS 2025-02-21 trades=31 sec=538
+  [a08] DOGE 2025-02-21 trades=27 sec=525
+  [a08] SOL 2025-02-21 trades=39 sec=555
+  [a08] ADA 2025-02-21 trades=39 sec=547
+  [a08] LTC 2025-02-21 trades=48 sec=545
+  [a08] LINK 2025-02-21 trades=50 sec=587
+  [a08] KAS 2025-03-21 trades=50 sec=846
+  [a08] DOGE 2025-03-21 trades=51 sec=828
+  [a08] SOL 2025-03-21 trades=57 sec=865
+  [a08] ADA 2025-03-21 trades=55 sec=862
+  [a08] LTC 2025-03-21 trades=67 sec=857
+  [a08] LINK 2025-03-21 trades=84 sec=913
+  [a08] KAS 2025-04-18 trades=68 sec=1160
+  [a08] SOL 2025-04-18 trades=77 sec=1144
+  [a08] DOGE 2025-04-18 trades=67 sec=1124
+  [a08] ADA 2025-04-18 trades=68 sec=1154
+  [a08] LTC 2025-04-18 trades=80 sec=1158
+  [a08] LINK 2025-04-18 trades=104 sec=1223
+  [a08] KAS 2025-05-15 trades=81 sec=1427
+  [a08] SOL 2025-05-15 trades=93 sec=1426
+  [a08] DOGE 2025-05-15 trades=84 sec=1419
+  [a08] ADA 2025-05-15 trades=86 sec=1475
+  [a08] LTC 2025-05-15 trades=93 sec=1438
+  [a08] LINK 2025-05-15 trades=131 sec=1521
+  [a08] KAS 2025-06-12 trades=100 sec=1728
+  [a08] SOL 2025-06-12 trades=111 sec=1721
+  [a08] DOGE 2025-06-12 trades=96 sec=1702
+  [a08] ADA 2025-06-12 trades=102 sec=1756
+  [a08] LTC 2025-06-12 trades=102 sec=1733
+  [a08] LINK 2025-06-12 trades=149 sec=1832
+  [a08] KAS 2025-07-10 trades=111 sec=2042
+  [a08] DOGE 2025-07-10 trades=107 sec=1987
+  [a08] SOL 2025-07-10 trades=126 sec=2017
+  [a08] ADA 2025-07-10 trades=115 sec=2063
+  [a08] LTC 2025-07-10 trades=109 sec=2029
+  [a08] KAS 2025-08-07 trades=123 sec=2337
+  [a08] LINK 2025-07-10 trades=160 sec=2137
+  [a08] SOL 2025-08-07 trades=139 sec=2307
+  [a08] DOGE 2025-08-07 trades=123 sec=2290
+  [a08] ADA 2025-08-07 trades=141 sec=2367
+  [a08] LTC 2025-08-07 trades=133 sec=2332
+  [a08] SOL 2025-09-04 trades=157 sec=2605
+  [a08] KAS 2025-09-04 trades=137 sec=2650
+  [a08] LINK 2025-08-07 trades=185 sec=2447
+  [a08] DOGE 2025-09-04 trades=139 sec=2586
+  [a08] ADA 2025-09-04 trades=156 sec=2693
+  [a08] LTC 2025-09-04 trades=145 sec=2635
+  [a08] DOGE 2025-10-01 trades=153 sec=2833
+  [a08] SOL 2025-10-01 trades=168 sec=2881
+  [a08] KAS 2025-10-01 trades=147 sec=2932
+  [a08] LINK 2025-09-04 trades=203 sec=2776
+  [a08] ADA 2025-10-01 trades=168 sec=2970
+  [a08] LTC 2025-10-01 trades=155 sec=2947
+  [a08] DOGE 2025-10-29 trades=171 sec=3139
+  [a08] SOL 2025-10-29 trades=185 sec=3184
+  [a08] KAS 2025-10-29 trades=161 sec=3246
+  [a08] LINK 2025-10-01 trades=221 sec=3065
+  [a08] ADA 2025-10-29 trades=189 sec=3300
+  [a08] LTC 2025-10-29 trades=167 sec=3256
+  [a08] DOGE 2025-11-26 trades=191 sec=3465
+  [a08] KAS 2025-11-26 trades=177 sec=3531
+  [a08] SOL 2025-11-26 trades=209 sec=3494
+  [a08] LINK 2025-10-29 trades=239 sec=3394
+  [a08] ADA 2025-11-26 trades=214 sec=3628
+  [a08] LTC 2025-11-26 trades=189 sec=3553
+  [a08] DOGE 2025-12-24 trades=197 sec=3731
+  [a08] KAS 2025-12-24 trades=189 sec=3810
+  [a08] SOL 2025-12-24 trades=222 sec=3807
+OK DOGE 2025 n=199 sec=3817
+OK KAS 2025 n=190 sec=3899
+OK SOL 2025 n=226 sec=3889
+  [a08] LINK 2025-11-26 trades=266 sec=3723
+  [a08] ADA 2025-12-24 trades=229 sec=3917
+  [a08] LTC 2025-12-24 trades=205 sec=3876
+OK ADA 2025 n=230 sec=3996
+  [a08] DOGE 2026-01-24 trades=8 sec=235
+OK LTC 2025 n=206 sec=3976
+  [a08] KAS 2026-01-24 trades=8 sec=257
+  [a08] SOL 2026-01-24 trades=5 sec=251
+  [a08] LINK 2025-12-24 trades=287 sec=4022
+OK LINK 2025 n=288 sec=4112
+  [a08] ADA 2026-01-24 trades=13 sec=272
+  [a08] LTC 2026-01-24 trades=14 sec=276
+  [a08] DOGE 2026-02-21 trades=24 sec=535
+  [a08] KAS 2026-02-21 trades=19 sec=554
+  [a08] SOL 2026-02-21 trades=23 sec=549
+  [a08] LINK 2026-01-24 trades=12 sec=267
+  [a08] ADA 2026-02-21 trades=28 sec=580
+  [a08] LTC 2026-02-21 trades=26 sec=568
+  [a08] DOGE 2026-03-21 trades=41 sec=840
+  [a08] KAS 2026-03-21 trades=32 sec=851
+  [a08] SOL 2026-03-21 trades=43 sec=832
+  [a08] LINK 2026-02-21 trades=31 sec=587
+  [a08] ADA 2026-03-21 trades=45 sec=865
+  [a08] DOGE 2026-04-18 trades=45 sec=1124
+  [a08] LTC 2026-03-21 trades=44 sec=884
+  [a08] KAS 2026-04-18 trades=46 sec=1154
+  [a08] SOL 2026-04-18 trades=53 sec=1142
+  [a08] ADA 2026-04-18 trades=57 sec=1135
+  [a08] LINK 2026-03-21 trades=45 sec=892
+  [a08] DOGE 2026-05-15 trades=54 sec=1391
+  [a08] LTC 2026-04-18 trades=49 sec=1183
+  [a08] KAS 2026-05-15 trades=62 sec=1424
+  [a08] SOL 2026-05-15 trades=60 sec=1428
+  [a08] ADA 2026-05-15 trades=66 sec=1392
+  [a08] LINK 2026-04-18 trades=53 sec=1181
+  [a08] DOGE 2026-06-12 trades=67 sec=1684
+  [a08] LTC 2026-05-15 trades=53 sec=1438
+  [a08] KAS 2026-06-12 trades=78 sec=1739
+  [a08] SOL 2026-06-12 trades=66 sec=1724
+  [a08] ADA 2026-06-12 trades=77 sec=1681
+  [a08] LINK 2026-05-15 trades=58 sec=1445
+  [a08] DOGE 2026-07-10 trades=79 sec=1973
+  [a08] LTC 2026-06-12 trades=63 sec=1730
+  [a08] SOL 2026-07-10 trades=77 sec=2002
+  [a08] KAS 2026-07-10 trades=92 sec=2046
+  [a08] ADA 2026-07-10 trades=93 sec=1979
+  [a08] LINK 2026-06-12 trades=72 sec=1743
+  [a08] LTC 2026-07-10 trades=79 sec=2026
+  [a08] DOGE 2026-08-07 trades=87 sec=2281
+OK DOGE 2026 n=87 sec=2296
+OK DOGE 2024 n=204 sec=4217 | OK DOGE 2025 n=199 sec=3817 | OK DOGE 2026 n=87 sec=2296
+  [a08] KAS 2026-08-07 trades=97 sec=2323
+OK KAS 2026 n=97 sec=2331
+OK KAS 2024 n=235 sec=4154 | OK KAS 2025 n=190 sec=3899 | OK KAS 2026 n=97 sec=2331
+  [a08] SOL 2026-08-07 trades=82 sec=2305
+  [a08] ADA 2026-08-07 trades=107 sec=2255
+  [a08] LINK 2026-07-10 trades=80 sec=2054
+OK SOL 2026 n=85 sec=2456
+OK SOL 2024 n=256 sec=4192 | OK SOL 2025 n=226 sec=3889 | OK SOL 2026 n=85 sec=2456
+  [a08] LTC 2026-08-07 trades=84 sec=2319
+OK ADA 2026 n=122 sec=2499
+OK ADA 2024 n=231 sec=4218 | OK ADA 2025 n=230 sec=3996 | OK ADA 2026 n=122 sec=2499
+  [a08] LINK 2026-08-07 trades=93 sec=2302
+OK LTC 2026 n=91 sec=2537
+OK LTC 2024 n=192 sec=4310 | OK LTC 2025 n=206 sec=3976 | OK LTC 2026 n=91 sec=2537
+OK LINK 2026 n=100 sec=2518
+OK LINK 2024 n=247 sec=4355 | OK LINK 2025 n=288 sec=4112 | OK LINK 2026 n=100 sec=2518

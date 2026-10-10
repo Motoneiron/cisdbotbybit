@@ -1,0 +1,48 @@
+
+=== БАЗА: n=10754 avg=+0.0504 SR=+542 ===
+Якорь: created_ts (закрытые 5m-бары). Забракованные трендовые: ER / Chop / ADX / DI / Aroon / linreg.
+
+=== КЛЕТКИ (sort по passavg) ===
+            ER10 > 0.2 skip= 41.3% skipavg=  -0.113 passavg=  +0.165 d= +0.1148 yneg=6/7
+            ER10 > 0.3 skip= 58.7% skipavg=  -0.073 passavg=  +0.226 d= +0.1754 yneg=5/7
+            ER10 > 0.5 skip= 82.9% skipavg=  -0.006 passavg=  +0.325 d= +0.2747 yneg=4/7
+            ER20 > 0.2 skip= 71.1% skipavg=  +0.010 passavg=  +0.150 d= +0.0991 yneg=3/7
+            ER20 > 0.3 skip= 87.1% skipavg=  +0.030 passavg=  +0.190 d= +0.1394 yneg=2/7
+            ER20 > 0.5 skip= 98.3% skipavg=  +0.046 passavg=  +0.292 d= +0.2417 yneg=2/7
+         Chop14 < 38.2 skip= 91.8% skipavg=  +0.017 passavg=  +0.423 d= +0.3729 yneg=3/7
+         Chop14 < 50.0 skip= 52.6% skipavg=  -0.056 passavg=  +0.169 d= +0.1183 yneg=6/7
+         Chop14 < 61.8 skip=  8.3% skipavg=  -0.187 passavg=  +0.072 d= +0.0216 yneg=7/7
+          ADX14 > 20.0 skip= 39.9% skipavg=  -0.008 passavg=  +0.089 d= +0.0388 yneg=4/7
+          ADX14 > 25.0 skip= 65.0% skipavg=  +0.038 passavg=  +0.073 d= +0.0229 yneg=2/7
+        DI направление skip= 45.6% skipavg=  -0.153 passavg=  +0.221 d= +0.1707 yneg=6/7
+     DI напр. + ADX>20 skip= 71.5% skipavg=  -0.055 passavg=  +0.315 d= +0.2648 yneg=6/7
+           Aroon Up/Dn skip= 27.9% skipavg=  -0.123 passavg=  +0.118 d= +0.0672 yneg=6/7
+    Aroon + уровень 70 skip= 43.9% skipavg=  -0.128 passavg=  +0.190 d= +0.1397 yneg=6/7
+ linreg13 |slope|>0.0% skip= 25.0% skipavg=  -0.237 passavg=  +0.146 d= +0.0958 yneg=7/7
+linreg13 |slope|>0.02% skip= 45.1% skipavg=  -0.191 passavg=  +0.249 d= +0.1984 yneg=7/7
+linreg13 |slope|>0.05% skip= 69.6% skipavg=  -0.087 passavg=  +0.365 d= +0.3145 yneg=6/7
+ linreg21 |slope|>0.0% skip= 42.1% skipavg=  -0.086 passavg=  +0.150 d= +0.0993 yneg=6/7
+linreg21 |slope|>0.02% skip= 67.8% skipavg=  -0.055 passavg=  +0.273 d= +0.2224 yneg=6/7
+linreg21 |slope|>0.05% skip= 87.2% skipavg=  +0.000 passavg=  +0.391 d= +0.3407 yneg=3/7
+
+=== ТОП по чистоте отсечения (skipavg, только skip>=10%) ===
+ linreg13 |slope|>0.0% skip= 25.0% skipavg=  -0.237 passavg=  +0.146 yneg=7/7
+linreg13 |slope|>0.02% skip= 45.1% skipavg=  -0.191 passavg=  +0.249 yneg=7/7
+        DI направление skip= 45.6% skipavg=  -0.153 passavg=  +0.221 yneg=6/7
+    Aroon + уровень 70 skip= 43.9% skipavg=  -0.128 passavg=  +0.190 yneg=6/7
+           Aroon Up/Dn skip= 27.9% skipavg=  -0.123 passavg=  +0.118 yneg=6/7
+            ER10 > 0.2 skip= 41.3% skipavg=  -0.113 passavg=  +0.165 yneg=6/7
+linreg13 |slope|>0.05% skip= 69.6% skipavg=  -0.087 passavg=  +0.365 yneg=6/7
+ linreg21 |slope|>0.0% skip= 42.1% skipavg=  -0.086 passavg=  +0.150 yneg=6/7
+            ER10 > 0.3 skip= 58.7% skipavg=  -0.073 passavg=  +0.226 yneg=5/7
+         Chop14 < 50.0 skip= 52.6% skipavg=  -0.056 passavg=  +0.169 yneg=6/7
+     DI напр. + ADX>20 skip= 71.5% skipavg=  -0.055 passavg=  +0.315 yneg=6/7
+linreg21 |slope|>0.02% skip= 67.8% skipavg=  -0.055 passavg=  +0.273 yneg=6/7
+          ADX14 > 20.0 skip= 39.9% skipavg=  -0.008 passavg=  +0.089 yneg=4/7
+            ER10 > 0.5 skip= 82.9% skipavg=  -0.006 passavg=  +0.325 yneg=4/7
+linreg21 |slope|>0.05% skip= 87.2% skipavg=  +0.000 passavg=  +0.391 yneg=3/7
+            ER20 > 0.2 skip= 71.1% skipavg=  +0.010 passavg=  +0.150 yneg=3/7
+         Chop14 < 38.2 skip= 91.8% skipavg=  +0.017 passavg=  +0.423 yneg=3/7
+            ER20 > 0.3 skip= 87.1% skipavg=  +0.030 passavg=  +0.190 yneg=2/7
+          ADX14 > 25.0 skip= 65.0% skipavg=  +0.038 passavg=  +0.073 yneg=2/7
+            ER20 > 0.5 skip= 98.3% skipavg=  +0.046 passavg=  +0.292 yneg=2/7

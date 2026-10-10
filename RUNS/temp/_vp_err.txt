@@ -1,0 +1,2 @@
+D:\PYTHON\cisdbotbybit\RUNS\temp\vol_profile_honest.py:86: RuntimeWarning: invalid value encountered in log
+  lo_p, hi_p = (min(le, np.log(tp1)), max(le, np.log(tp1)))

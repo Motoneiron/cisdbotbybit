@@ -1,0 +1,31 @@
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: ADA | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 4 bar | pos 192 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: ADAUSDT-1m-merged.csv -> 105120 x 5m bars
+Confirm 1m: ADAUSDT-1m-merged.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%
+Сигналов принято в pending: 957 | Сделок: 807 | fib2-cancel: 68
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 807 | TP: 288 | SL: 456 | TIME: 63
+tf7: WR: 35.7% | AvgR: +0.031 | SumR: +25.3 | PF: 1.04
+  2023: 807 sd | WR 36% | SumR +25.3 | PF 1.04
+Entry kinds: {'LIMIT': 646, 'MARKET': 161}
+keys: ['signals', 'trades', 'tdf', 'profile', 'symbol']
+trades: 807 signals: 957 sec: 306.5
+has prior_touches: True | quality_score: True | detect_filters: {'atr': False, 'vol': False, 'd': False}
+sample trade: {'hash': 'fb3c592f8c9c9a59', 'entry_kind': 'MARKET', 'direction': 'SHORT', 'entry_px': '0.245731176', 'stop': '0.2462'}
+
+real	5m8,222s
+user	0m0,000s
+sys	0m0,000s

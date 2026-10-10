@@ -1,0 +1,27 @@
+saved: RUNS/temp/stream_off_v1_p24v3_v2_el.pkl | theta=1.5
+ALL (с пивотами)                   n= 5332 WR= 64.8% ΣR=   684.5 AvgR= 0.128
+-- last_dir x dir --
+last=up LONG                       n= 1179 WR= 48.4% ΣR=  -212.1 AvgR=-0.180
+last=up SHORT                      n= 1747 WR= 76.6% ΣR=   580.1 AvgR= 0.332
+last=down LONG                     n=  101 WR= 42.0% ΣR=   -35.2 AvgR=-0.348
+last=down SHORT                    n= 2305 WR= 67.6% ΣR=   351.6 AvgR= 0.153
+-- frac-зоны (направление вдоль last_dir) --
+with frac [0.000,0.236)            n=  438 WR= 48.9% ΣR=   -65.3 AvgR=-0.149
+with frac [0.236,0.500)            n=  366 WR= 70.3% ΣR=    80.0 AvgR= 0.218
+with frac [0.500,0.786)            n=  751 WR= 63.0% ΣR=    66.8 AvgR= 0.089
+with frac [0.786,1.000)            n=  534 WR= 60.1% ΣR=    25.1 AvgR= 0.047
+with frac [1.000,99.000)           n= 1395 WR= 58.8% ΣR=    33.0 AvgR= 0.024
+-- против last_dir  --
+against ALL                        n= 1848 WR= 74.3% ΣR=   545.0 AvgR= 0.295
+-- zz_with маска --
+zz_with=True                       n= 1117 WR= 65.3% ΣR=   146.7 AvgR= 0.131
+zz_with=False                      n= 4215 WR= 64.7% ΣR=   537.8 AvgR= 0.128
+-- zz_trend --
+trend=-1                           n= 1635 WR= 65.9% ΣR=   239.4 AvgR= 0.146
+trend=0                            n= 1931 WR= 64.7% ΣR=   246.6 AvgR= 0.128
+trend=1                            n= 1728 WR= 63.6% ΣR=   182.0 AvgR= 0.105
+-- корреляции (анти-алиас чек) --
+  corr(zz_frac, vd) = -0.104
+  corr(zz_frac, sweep_atr) = -0.023
+  corr(zz_frac, quality_score) = 0.052
+EL_EXIT=0

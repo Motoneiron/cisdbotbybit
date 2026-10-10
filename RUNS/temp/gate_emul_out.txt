@@ -1,0 +1,32 @@
+== load SOL
+   rows: 1840320
+== load DOGE
+   rows: 1840320
+== load KAS
+   rows: 1369320
+== load ADA
+   rows: 1840320
+== load LINK
+   rows: 1840320
+== load LTC
+   rows: 1840320
+saved rows: 4467
+
+=== ВСЕ сделки ядра ===
+  ok2=TRUE  (закрылось за уровнем): n=3295 | tp 72% sl 25% | avg +0.3303 t=+21.12 | Sum +1088.3
+  ok2=FALSE (НЕ за уровнем)      : n=1172 | tp 33% sl 66% | avg -0.5295 t=-18.38 | Sum -620.5
+
+=== APPL (гейт применим: created>=закрытие окна) ===
+  все APPL          : n=486 | tp 52% sl 42% | avg -0.0142 t=-0.31 | Sum -6.9
+  APPL & ok2=TRUE   : n=399 | tp 55% sl 40% | avg +0.0312 t=+0.62 | Sum +12.5
+  APPL & ok2=FALSE  (ГЕЙТ РЕЖЕТ): n=87 | tp 40% sl 51% | avg -0.2223 t=-2.08 | Sum -19.3
+
+=== PRE (создано до закрытия окна) ===
+  PRE & ok2=TRUE   : n=2896 | tp 75% sl 23% | avg +0.3715 t=+22.84 | Sum +1075.9
+  PRE & ok2=FALSE  : n=1085 | tp 33% sl 67% | avg -0.5541 t=-18.60 | Sum -601.2
+
+=== только 2024-26 ===
+  ВСЕ 24-26        : n=3384 | tp 63% sl 35% | avg +0.1265 t=+7.43 | Sum +427.9
+  ok2=TRUE         : n=2490 | tp 73% sl 24% | avg +0.3428 t=+19.10 | Sum +853.5
+  ok2=FALSE        : n=894 | tp 35% sl 64% | avg -0.4760 t=-14.32 | Sum -425.5
+  APPL&ok2=FALSE   (ГЕЙТ РЕЖЕТ): n=66 | tp 39% sl 52% | avg -0.2230 t=-1.81 | Sum -14.7

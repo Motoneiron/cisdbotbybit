@@ -1,0 +1,8 @@
+===== MODE=tf2 profile=tf2 min_stop=1.0 sl_gate=None smoke=False =====
+skip SOL 2024 | skip SOL 2025 | skip SOL 2026
+skip DOGE 2024 | skip DOGE 2025 | skip DOGE 2026
+skip KAS 2024 | skip KAS 2025 | skip KAS 2026
+skip ADA 2024 | skip ADA 2025 | skip ADA 2026
+skip LINK 2024 | skip LINK 2025 | skip LINK 2026
+OK LTC 2026 n=30 sec=333
+skip LTC 2024 | skip LTC 2025 | OK LTC 2026 n=30 sec=333

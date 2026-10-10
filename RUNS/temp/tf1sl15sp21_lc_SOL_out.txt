@@ -1,0 +1,15 @@
+===== tf1sl15sp21_lc pair=SOL anchor=lc =====
+  [tf1sl15sp21_lc] SOL 2024-03-20 trades=9 skip_gate=74 sec=402
+  [tf1sl15sp21_lc] SOL 2024-06-11 trades=15 skip_gate=181 sec=823
+  [tf1sl15sp21_lc] SOL 2024-09-03 trades=21 skip_gate=301 sec=1251
+  [tf1sl15sp21_lc] SOL 2024-11-25 trades=26 skip_gate=407 sec=1685
+OK SOL 2024 n=33 sec=1868
+  [tf1sl15sp21_lc] SOL 2025-03-21 trades=5 skip_gate=100 sec=400
+  [tf1sl15sp21_lc] SOL 2025-06-12 trades=13 skip_gate=200 sec=797
+  [tf1sl15sp21_lc] SOL 2025-09-04 trades=18 skip_gate=308 sec=1210
+  [tf1sl15sp21_lc] SOL 2025-11-26 trades=24 skip_gate=432 sec=1629
+OK SOL 2025 n=27 sec=1815
+  [tf1sl15sp21_lc] SOL 2026-03-21 trades=3 skip_gate=101 sec=371
+  [tf1sl15sp21_lc] SOL 2026-06-12 trades=5 skip_gate=192 sec=781
+OK SOL 2026 n=5 sec=1004
+OK SOL 2024 n=33 sec=1868 | OK SOL 2025 n=27 sec=1815 | OK SOL 2026 n=5 sec=1004

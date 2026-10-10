@@ -1,0 +1,552 @@
+задач: 35 | воркеров: 6
+[1/35] +114s OK C1_oldfill_all_fib 2020: 141 сделок sec=114
+[2/35] +263s OK C1_oldfill_all_fib 2026: 175 сделок sec=149
+[3/35] +376s OK C2_causal_all_fib 2020: 141 сделок sec=113
+[4/35] +533s OK C1_oldfill_all_fib 2022: 403 сделок sec=533
+[5/35] +547s OK C1_oldfill_all_fib 2021: 475 сделок sec=546
+[6/35] +585s OK C1_oldfill_all_fib 2023: 382 сделок sec=585
+[7/35] +596s OK C1_oldfill_all_fib 2025: 450 сделок sec=596
+[8/35] +618s OK C1_oldfill_all_fib 2024: 464 сделок sec=617
+[9/35] +806s OK C2_causal_all_fib 2026: 175 сделок sec=188
+[10/35] +920s OK C3_causal_all_scanclose 2020: 135 сделок sec=114
+[11/35] +969s OK C2_causal_all_fib 2021: 475 сделок sec=593
+[12/35] +1127s OK C2_causal_all_fib 2023: 382 сделок sec=581
+[13/35] +1141s OK C2_causal_all_fib 2022: 403 сделок sec=608
+[14/35] +1174s OK C2_causal_all_fib 2024: 464 сделок sec=589
+[15/35] +1183s OK C2_causal_all_fib 2025: 450 сделок sec=587
+[16/35] +1368s OK C3_causal_all_scanclose 2026: 165 сделок sec=185
+[17/35] +1475s OK C4_causal_limit_fib 2020: 90 сделок sec=107
+[18/35] +1527s OK C3_causal_all_scanclose 2021: 448 сделок sec=607
+[19/35] +1534s OK C3_causal_all_scanclose 2022: 381 сделок sec=565
+[20/35] +1691s OK C3_causal_all_scanclose 2023: 365 сделок sec=564
+[21/35] +1715s OK C3_causal_all_scanclose 2025: 414 сделок sec=541
+[22/35] +1751s OK C3_causal_all_scanclose 2024: 432 сделок sec=611
+[23/35] +1947s OK C4_causal_limit_fib 2026: 114 сделок sec=196
+[24/35] +2031s OK C4_causal_limit_fib 2021: 302 сделок sec=556
+[25/35] +2055s OK C5_causal_limit_1r 2020: 90 сделок sec=107
+[26/35] +2090s OK C4_causal_limit_fib 2023: 260 сделок sec=556
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2020-09-14 -> 2020-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 31212 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 156540 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 31212 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 180 | Сделок: 141 | fib2-cancel: 18
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 141 | TP: 72 | SL: 54 | TIME: 15
+tf7: WR: 51.1% | AvgR: +0.638 | SumR: +90.0 | PF: 2.45
+  2020: 141 sd | WR 51% | SumR +90.0 | PF 2.45
+Entry kinds: {'LIMIT': 82, 'MARKET': 59}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-06-23
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 50112 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 250560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 50112 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 213 | Сделок: 175 | fib2-cancel: 9
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 175 | TP: 76 | SL: 81 | TIME: 18
+tf7: WR: 43.4% | AvgR: +0.244 | SumR: +42.6 | PF: 1.40
+  2026: 175 sd | WR 43% | SumR +42.6 | PF 1.40
+Entry kinds: {'LIMIT': 104, 'MARKET': 71}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2020-09-14 -> 2020-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 31212 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 156540 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 31212 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 180 | Сделок: 141 | fib2-cancel: 18
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 141 | TP: 72 | SL: 54 | TIME: 15
+tf7: WR: 51.1% | AvgR: +0.638 | SumR: +90.0 | PF: 2.45
+  2020: 141 sd | WR 51% | SumR +90.0 | PF 2.45
+Entry kinds: {'LIMIT': 82, 'MARKET': 59}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 104765 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 104765 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 586 | Сделок: 475 | fib2-cancel: 52
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 475 | TP: 243 | SL: 196 | TIME: 36
+tf7: WR: 51.2% | AvgR: +0.629 | SumR: +298.7 | PF: 2.33
+  2021: 475 sd | WR 51% | SumR +298.7 | PF 2.33
+Entry kinds: {'LIMIT': 278, 'MARKET': 197}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+MARKET fill mode: scan_close
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 104901 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 104901 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 462 | Сделок: 381 | fib2-cancel: 27
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 381 | TP: 183 | SL: 167 | TIME: 31
+tf7: WR: 48.0% | AvgR: +0.267 | SumR: +101.7 | PF: 1.52
+  2022: 381 sd | WR 48% | SumR +101.7 | PF 1.52
+Entry kinds: {'LIMIT': 265, 'MARKET': 116}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%
+Сигналов принято в pending: 326 | Сделок: 260
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 260 | TP: 93 | SL: 140 | TIME: 27
+tf7: WR: 35.8% | AvgR: +0.154 | SumR: +40.1 | PF: 1.24
+  2023: 260 sd | WR 36% | SumR +40.1 | PF 1.24
+Entry kinds: {'LIMIT': 260}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5[27/35] +2113s OK C4_causal_limit_fib 2022: 277 сделок sec=585
+[28/35] +2258s OK C4_causal_limit_fib 2024: 301 сделок sec=567
+[29/35] +2266s OK C4_causal_limit_fib 2025: 280 сделок sec=552
+[30/35] +2455s OK C5_causal_limit_1r 2026: 117 сделок sec=189
+[31/35] +2581s OK C5_causal_limit_1r 2021: 316 сделок sec=551
+[32/35] +2595s OK C5_causal_limit_1r 2022: 285 сделок sec=540
+[33/35] +2628s OK C5_causal_limit_1r 2023: 264 сделок sec=537
+[34/35] +2654s OK C5_causal_limit_1r 2024: 314 сделок sec=541
+[35/35] +2702s OK C5_causal_limit_1r 2025: 288 сделок sec=444
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%
+Сигналов принято в pending: 450 | Сделок: 382 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 382 | TP: 170 | SL: 178 | TIME: 34
+tf7: WR: 44.5% | AvgR: +0.356 | SumR: +136.0 | PF: 1.63
+  2023: 382 sd | WR 45% | SumR +136.0 | PF 1.63
+Entry kinds: {'LIMIT': 249, 'MARKET': 133}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105408 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 539 | Сделок: 464 | fib2-cancel: 19
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 464 | TP: 214 | SL: 215 | TIME: 35
+tf7: WR: 46.1% | AvgR: +0.404 | SumR: +187.2 | PF: 1.72
+  2024: 464 sd | WR 46% | SumR +187.2 | PF 1.72
+Entry kinds: {'LIMIT': 286, 'MARKET': 178}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+MARKET fill mode: scan_close
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%
+Сигналов принято в pending: 517 | Сделок: 414 | fib2-cancel: 26
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 414 | TP: 183 | SL: 207 | TIME: 24
+tf7: WR: 44.2% | AvgR: +0.043 | SumR: +17.6 | PF: 1.07
+  2025: 414 sd | WR 44% | SumR +17.6 | PF 1.07
+Entry kinds: {'LIMIT': 269, 'MARKET': 145}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%
+Сигналов принято в pending: 380 | Сделок: 280
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 280 | TP: 99 | SL: 163 | TIME: 18
+tf7: WR: 35.4% | AvgR: +0.092 | SumR: +25.7 | PF: 1.13
+  2025: 280 sd | WR 35% | SumR +25.7 | PF 1.13
+Entry kinds: {'LIMIT': 280}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-06-23
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 50112 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 250560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 50112 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 159 | Сделок: 117
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 117 | TP: 77 | SL: 39 | TIME: 1
+tf7: WR: 65.8% | AvgR: +0.050 | SumR: +5.9 | PF: 1.12
+  2026: 117 sd | WR 66% | SumR +5.9 | PF 1.12
+Entry kinds: {'LIMIT': 117}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 104901 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 104901 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 484 | Сделок: 403 | fib2-cancel: 27
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 403 | TP: 207 | SL: 166 | TIME: 30
+tf7: WR: 51.4% | AvgR: +0.574 | SumR: +231.5 | PF: 2.18
+  2022: 403 sd | WR 51% | SumR +231.5 | PF 2.18
+Entry kinds: {'LIMIT': 263, 'MARKET': 140}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 104901 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 104901 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 484 | Сделок: 403 | fib2-cancel: 27
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 403 | TP: 207 | SL: 166 | TIME: 30
+tf7: WR: 51.4% | AvgR: +0.574 | SumR: +231.5 | PF: 2.18
+  2022: 403 sd | WR 51% | SumR +231.5 | PF 2.18
+Entry kinds: {'LIMIT': 263, 'MARKET': 140}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+MARKET fill mode: scan_close
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105408 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 509 | Сделок: 432 | fib2-cancel: 20
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 432 | TP: 183 | SL: 214 | TIME: 35
+tf7: WR: 42.4% | AvgR: +0.084 | SumR: +36.5 | PF: 1.14
+  2024: 432 sd | WR 42% | SumR +36.5 | PF 1.14
+Entry kinds: {'LIMIT': 286, 'MARKET': 146}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2026-01-01 -> 2026-06-23
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 50112 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 250560 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 50112 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 154 | Сделок: 114
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 114 | TP: 46 | SL: 58 | TIME: 10
+tf7: WR: 40.4% | AvgR: +0.184 | SumR: +20.9 | PF: 1.28
+  2026: 114 sd | WR 40% | SumR +20.9 | PF 1.28
+Entry kinds: {'LIMIT': 114}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2020-09-14 -> 2020-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 31212 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 156540 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 31212 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 127 | Сделок: 90
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 90 | TP: 59 | SL: 27 | TIME: 4
+tf7: WR: 65.6% | AvgR: +0.233 | SumR: +21.0 | PF: 1.68
+  2020: 90 sd | WR 66% | SumR +21.0 | PF 1.68
+Entry kinds: {'LIMIT': 90}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2022-01-01 -> 2022-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 104901 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 104901 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 363 | Сделок: 285
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 285 | TP: 194 | SL: 85 | TIME: 6
+tf7: WR: 68.1% | AvgR: +0.238 | SumR: +67.9 | PF: 1.69
+  2022: 285 sd | WR 68% | SumR +67.9 | PF 1.69
+Entry kinds: {'LIMIT': 285}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2021-01-01 -> 2021-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 104765 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 104765 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 586 | Сделок: 475 | fib2-cancel: 52
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 475 | TP: 243 | SL: 196 | TIME: 36
+tf7: WR: 51.2% | AvgR: +0.629 | SumR: +298.7 | PF: 2.33
+  2021: 475 sd | WR 51% | SumR +298.7 | PF 2.33
+Entry kinds: {'LIMIT': 278, 'MARKET': 197}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%
+Сигналов принято в pending: 450 | Сделок: 382 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 382 | TP: 170 | SL: 178 | TIME: 34
+tf7: WR: 44.5% | AvgR: +0.356 | SumR: +136.0 | PF: 1.63
+  2023: 382 sd | WR 45% | SumR +136.0 | PF 1.63
+Entry kinds: {'LIMIT': 249, 'MARKET': 133}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2023-01-01 -> 2023-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+MARKET fill mode: scan_close
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%
+Сигналов принято в pending: 433 | Сделок: 365 | fib2-cancel: 15
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 365 | TP: 154 | SL: 177 | TIME: 34
+tf7: WR: 42.2% | AvgR: +0.094 | SumR: +34.4 | PF: 1.16
+  2023: 365 sd | WR 42% | SumR +34.4 | PF 1.16
+Entry kinds: {'LIMIT': 249, 'MARKET': 116}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2024-01-01 -> 2024-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105408 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 527040 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105408 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 370 | Сделок: 301
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 301 | TP: 113 | SL: 158 | TIME: 30
+tf7: WR: 37.5% | AvgR: +0.221 | SumR: +66.6 | PF: 1.35
+  2024: 301 sd | WR 38% | SumR +66.6 | PF 1.35
+Entry kinds: {'LIMIT': 301}
+============================================================
+Bot-aligned BT | tf7 5m -> 4H | 2025-01-01 -> 2025-12-31
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 105120 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 525600 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 1m
+Симуляция 105120 баров (warmup=100, detect_step=12)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%
+Сигналов принято в pending: 389 | Сделок: 288
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7: Сделок: 288 | TP: 180 | SL: 103 | TIME: 5
+tf7: WR: 62.5% | AvgR: +0.070 | SumR: +20.2 | PF: 1.16
+  2025: 288 sd | WR 62% | SumR +20.2 | PF 1.16
+Entry kinds: {'LIMIT': 288}
+DONE 2702s

@@ -1,0 +1,16 @@
+===== MODE=tf7e8_002 profile=tf7 min_stop=1.0 sl_gate=(8, 0.0002, None) smoke=False =====
+skip SOL 2024 | skip SOL 2025 | skip SOL 2026
+skip DOGE 2024 | skip DOGE 2025 | skip DOGE 2026
+skip KAS 2024 | skip KAS 2025 | skip KAS 2026
+skip LINK 2024 | skip LINK 2025 | skip LINK 2026
+skip ADA 2024 | skip ADA 2025 | skip ADA 2026
+  [tf7e8_002] LTC 2026-01-24 trades=7 skip_gate=18 sec=270
+  [tf7e8_002] LTC 2026-02-21 trades=11 skip_gate=30 sec=549
+  [tf7e8_002] LTC 2026-03-21 trades=13 skip_gate=47 sec=857
+  [tf7e8_002] LTC 2026-04-18 trades=14 skip_gate=67 sec=1475
+  [tf7e8_002] LTC 2026-05-15 trades=14 skip_gate=89 sec=1998
+  [tf7e8_002] LTC 2026-06-12 trades=17 skip_gate=106 sec=2589
+  [tf7e8_002] LTC 2026-07-10 trades=19 skip_gate=119 sec=3158
+  [tf7e8_002] LTC 2026-08-07 trades=20 skip_gate=146 sec=3665
+OK LTC 2026 n=24 sec=4030
+skip LTC 2024 | skip LTC 2025 | OK LTC 2026 n=24 sec=4030

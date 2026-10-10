@@ -1,0 +1,26 @@
+disc n=12031 | oos n=8520 | всего=20551
+
+======== SHORT (disc n=7575, oos n=5428) ========
+  OOS baseline: WR=70.8 ΣR=1148.6
+  tau=q0.10(-0.0397): DISC kept n=6817/7575 ΣR=1804 (cut ΣR=13, cutWR=59%) || OOS kept n=4744 (87%) WR=71.7 ΣR=1090.9 (cut ΣR=57.7, cutWR=64%)
+  tau=q0.20(-0.0038): DISC kept n=6060/7575 ΣR=1699 (cut ΣR=118, cutWR=62%) || OOS kept n=4175 (77%) WR=72.9 ΣR=1048.4 (cut ΣR=100.2, cutWR=63%)
+  tau=q0.25(+0.0068): DISC kept n=5681/7575 ΣR=1647 (cut ΣR=170, cutWR=63%) || OOS kept n=3956 (73%) WR=73.0 ΣR=1001.6 (cut ΣR=147.0, cutWR=64%)
+  tau=q0.33(+0.0239): DISC kept n=5075/7575 ΣR=1540 (cut ΣR=277, cutWR=64%) || OOS kept n=3547 (65%) WR=73.5 ΣR=931.2 (cut ΣR=217.4, cutWR=65%)
+  tau=q0.50(+0.0548): DISC kept n=3788/7575 ΣR=1202 (cut ΣR=615, cutWR=67%) || OOS kept n=2713 (50%) WR=74.2 ΣR=743.5 (cut ΣR=405.1, cutWR=67%)
+
+======== LONG (disc n=4456, oos n=3092) ========
+  OOS baseline: WR=65.7 ΣR=437.8
+  tau=q0.10(-0.0882): DISC kept n=4010/4456 ΣR=919 (cut ΣR=30, cutWR=63%) || OOS kept n=2762 (89%) WR=67.0 ΣR=465.9 (cut ΣR=-28.0, cutWR=54%)
+  tau=q0.20(-0.0511): DISC kept n=3565/4456 ΣR=872 (cut ΣR=77, cutWR=63%) || OOS kept n=2468 (80%) WR=67.5 ΣR=439.1 (cut ΣR=-1.3, cutWR=58%)
+  tau=q0.25(-0.0377): DISC kept n=3342/4456 ΣR=849 (cut ΣR=101, cutWR=63%) || OOS kept n=2314 (75%) WR=67.6 ΣR=419.6 (cut ΣR=18.2, cutWR=60%)
+  tau=q0.33(-0.0202): DISC kept n=2985/4456 ΣR=780 (cut ΣR=169, cutWR=64%) || OOS kept n=2100 (68%) WR=68.5 ΣR=414.5 (cut ΣR=23.3, cutWR=59%)
+  tau=q0.50(+0.0102): DISC kept n=2228/4456 ΣR=608 (cut ΣR=341, cutWR=66%) || OOS kept n=1660 (54%) WR=69.5 ΣR=350.4 (cut ΣR=87.4, cutWR=61%)
+
+======== правило of_1h_s >= 0 (универсальное, без подбора) ========
+  2020: keep n=1700/2458 (69%) WR=75.4 ΣR=512 | cut n=758 WR=65 ΣR=104
+  2021: keep n=2280/3205 (71%) WR=73.7 ΣR=713 | cut n=925 WR=62 ΣR=109
+  2022: keep n=2244/3295 (68%) WR=72.5 ΣR=588 | cut n=1051 WR=66 ΣR=154
+  2023: keep n=2213/3073 (72%) WR=74.0 ΣR=549 | cut n=860 WR=62 ΣR=37
+  2024: keep n=2291/3286 (70%) WR=74.0 ΣR=632 | cut n=995 WR=62 ΣR=86
+  2025: keep n=2222/3206 (69%) WR=70.4 ΣR=492 | cut n=984 WR=65 ΣR=120
+  2026: keep n=1425/2028 (70%) WR=70.2 ΣR=281 | cut n=603 WR=58 ΣR=-23

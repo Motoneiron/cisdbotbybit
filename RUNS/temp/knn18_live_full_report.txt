@@ -1,0 +1,18 @@
+stream: RUNS/temp/knn18_live_full_input.pkl | time_col=from_ts | n=25230
+
+### live_full
+ALL                            n=25230 WR= 70.3% ΣR=  5429.2 AvgR= 0.215
+KEEP (p>=0.45)                 n=24980 WR= 70.4% ΣR=  5391.5 AvgR= 0.216
+SKIP (p<0.45)                  n=  250 WR= 63.5% ΣR=    37.7 AvgR= 0.151
+2020 KEEP                      n= 3077 WR= 71.9% ΣR=   744.1 AvgR= 0.242
+2020 SKIP                      n=   38 WR= 90.3% ΣR=    22.4 AvgR= 0.590
+2021 KEEP                      n= 3868 WR= 71.0% ΣR=  1021.2 AvgR= 0.264
+2021 SKIP                      n=   26 WR= 72.7% ΣR=     9.5 AvgR= 0.366
+2022 KEEP                      n= 3907 WR= 70.5% ΣR=   872.6 AvgR= 0.223
+2022 SKIP                      n=   31 WR= 75.9% ΣR=    12.1 AvgR= 0.392
+2023 KEEP                      n= 3742 WR= 71.8% ΣR=   768.6 AvgR= 0.205
+2023 SKIP                      n=   30 WR= 45.8% ΣR=    -4.0 AvgR=-0.133
+2024 KEEP                      n= 4106 WR= 70.3% ΣR=   885.3 AvgR= 0.216
+2024 SKIP                      n=   41 WR= 61.8% ΣR=     5.9 AvgR= 0.145
+2025 KEEP                      n= 3879 WR= 69.0% ΣR=   752.7 AvgR= 0.194
+2025 SKIP                      n=   52 WR= 47.4% ΣR=    -6.1 AvgR=-0.117

@@ -1,0 +1,1 @@
+===== MODE=tf1cb15_foff_h6 profile=tf1 min_stop=1.5 sl_gate=(21, 0.0002, '15m', 'cb') di_gate=None anchor=None smoke=False =====

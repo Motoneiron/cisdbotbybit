@@ -1,0 +1,86 @@
+[CONTROL] вне прогона, бар 2024-01-01 11:20:00, на чистом state: 0 сигналов
+============================================================
+Bot-aligned BT | tf7_main 5m -> 4H main-mss | 2024-01-01 -> 2024-01-03
+Symbol: SOL | Fees: mexc maker 0.0600% taker 0.0800%
+Entry: detect_signals + bot entry kinds
+Entry kind mode: limit_only
+limit 2 bar | pos 144 bar | detect_step 12 | max_pos 5
+Slope filter: off (как на сервере)
+============================================================
+Data: SOLUSDT_5m_full_hdr.csv -> 864 x 5m bars
+Fill 1m: SOLUSDT_1m_full_hdr.csv -> 4320 bars
+LTF pending/position fill: 1m (1m bars inside 5m)
+MSS detect: 5m | LIMIT fill: 1m
+Симуляция 864 баров (warmup=100, detect_step=12)...
+  ... 0%[CALL] win_end=2024-01-01 08:20:00 bars=101 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 09:20:00 bars=113 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 10:20:00 bars=125 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 11:20:00 bars=137 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 5%[CALL] win_end=2024-01-01 12:20:00 bars=149 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 13:20:00 bars=161 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 14:20:00 bars=173 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 10%[CALL] win_end=2024-01-01 15:20:00 bars=185 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 16:20:00 bars=197 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 17:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 15%[CALL] win_end=2024-01-01 18:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 19:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 20:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 20%[CALL] win_end=2024-01-01 21:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 22:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-01 23:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 25%[CALL] win_end=2024-01-02 00:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 01:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 02:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 30%[CALL] win_end=2024-01-02 03:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 04:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 05:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 06:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 35%[CALL] win_end=2024-01-02 07:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 08:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 09:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 40%[CALL] win_end=2024-01-02 10:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 11:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 12:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 45%[CALL] win_end=2024-01-02 13:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 14:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 15:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 50%[CALL] win_end=2024-01-02 16:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 17:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 18:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 55%[CALL] win_end=2024-01-02 19:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 20:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 21:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 60%[CALL] win_end=2024-01-02 22:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-02 23:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 00:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 01:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 65%[CALL] win_end=2024-01-03 02:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 03:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 04:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 70%[CALL] win_end=2024-01-03 05:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 06:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 07:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 75%[CALL] win_end=2024-01-03 08:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 09:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 10:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 80%[CALL] win_end=2024-01-03 11:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 12:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 13:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 85%[CALL] win_end=2024-01-03 14:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 15:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 16:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 90%[CALL] win_end=2024-01-03 17:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 18:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 19:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 20:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 95%[CALL] win_end=2024-01-03 21:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 22:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+[CALL] win_end=2024-01-03 23:20:00 bars=200 seen=0 sw_cand=0 pos=0 pend=0 -> 0
+  ... 99%
+Сигналов принято в pending: 0 | Сделок: 0
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf7_main: нет сделок
+=== TRADES: 0

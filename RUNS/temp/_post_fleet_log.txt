@@ -1,0 +1,356 @@
+[chain] ждём DONE во флите... 00:49:13
+[chain] флит завершён: 01:47:16
+BTC tf7 2020: lim=600 vwap=111 ms=101 filled=96 WR=52.7 Σtp1=-10.23 Σnat=-22.67
+BTC tf8 2020: lim=348 vwap=102 ms=102 filled=98 WR=83.9 Σtp1=34.21 Σnat=14.69
+BTC tf7 2021: lim=675 vwap=194 ms=192 filled=185 WR=60.3 Σtp1=15.08 Σnat=17.89
+BTC tf8 2021: lim=364 vwap=108 ms=108 filled=105 WR=70.8 Σtp1=17.79 Σnat=20.6
+BTC tf7 2022: lim=618 vwap=171 ms=159 filled=149 WR=67.4 Σtp1=27.31 Σnat=19.56
+BTC tf8 2022: lim=366 vwap=124 ms=122 filled=118 WR=81.2 Σtp1=25.78 Σnat=25.12
+BTC tf7 2023: lim=597 vwap=164 ms=135 filled=130 WR=67.0 Σtp1=17.41 Σnat=1.61
+BTC tf8 2023: lim=344 vwap=116 ms=111 filled=106 WR=82.4 Σtp1=16.8 Σnat=13.83
+BTC tf7 2024: lim=606 vwap=159 ms=139 filled=133 WR=65.4 Σtp1=21.12 Σnat=-12.93
+BTC tf8 2024: lim=378 vwap=130 ms=129 filled=123 WR=69.7 Σtp1=9.99 Σnat=24.82
+BTC tf7 2025: lim=584 vwap=166 ms=121 filled=110 WR=59.3 Σtp1=-0.43 Σnat=-5.29
+BTC tf8 2025: lim=371 vwap=122 ms=115 filled=111 WR=73.4 Σtp1=11.82 Σnat=21.68
+BTC tf7 2026: lim=218 vwap=61 ms=51 filled=46 WR=60.0 Σtp1=-1.04 Σnat=1.05
+BTC tf8 2026: lim=136 vwap=46 ms=45 filled=44 WR=75.9 Σtp1=9.1 Σnat=12.35
+ETH tf7 2020: lim=584 vwap=151 ms=147 filled=140 WR=65.0 Σtp1=24.16 Σnat=25.74
+ETH tf8 2020: lim=372 vwap=106 ms=106 filled=104 WR=76.7 Σtp1=25.14 Σnat=22.41
+ETH tf7 2021: lim=666 vwap=168 ms=168 filled=161 WR=65.0 Σtp1=33.26 Σnat=18.43
+ETH tf8 2021: lim=379 vwap=129 ms=129 filled=120 WR=74.0 Σtp1=33.32 Σnat=17.13
+ETH tf7 2022: lim=631 vwap=176 ms=173 filled=163 WR=56.6 Σtp1=3.38 Σnat=-7.67
+ETH tf8 2022: lim=346 vwap=114 ms=114 filled=110 WR=73.3 Σtp1=18.99 Σnat=21.21
+ETH tf7 2023: lim=659 vwap=170 ms=145 filled=135 WR=58.9 Σtp1=-1.19 Σnat=6.2
+ETH tf8 2023: lim=366 vwap=118 ms=115 filled=112 WR=80.3 Σtp1=22.63 Σnat=19.19
+ETH tf7 2024: lim=638 vwap=177 ms=164 filled=155 WR=60.1 Σtp1=8.71 Σnat=1.04
+ETH tf8 2024: lim=369 vwap=128 ms=128 filled=122 WR=76.0 Σtp1=25.73 Σnat=17.84
+ETH tf7 2025: lim=620 vwap=183 ms=172 filled=163 WR=56.5 Σtp1=-1.56 Σnat=2.17
+ETH tf8 2025: lim=371 vwap=122 ms=122 filled=116 WR=76.1 Σtp1=25.19 Σnat=27.88
+ETH tf7 2026: lim=349 vwap=107 ms=106 filled=98 WR=50.6 Σtp1=-15.13 Σnat=-22.3
+ETH tf8 2026: lim=215 vwap=79 ms=77 filled=74 WR=78.7 Σtp1=20.13 Σnat=13.9
+DOGE tf7 2020: lim=310 vwap=78 ms=75 filled=69 WR=41.8 Σtp1=-20.62 Σnat=-20.48
+DOGE tf8 2020: lim=167 vwap=52 ms=52 filled=51 WR=50.0 Σtp1=-3.81 Σnat=-6.15
+DOGE tf7 2021: lim=584 vwap=170 ms=170 filled=163 WR=63.2 Σtp1=26.58 Σnat=38.49
+DOGE tf8 2021: lim=329 vwap=118 ms=118 filled=116 WR=73.7 Σtp1=22.37 Σnat=22.98
+DOGE tf7 2022: lim=613 vwap=209 ms=209 filled=198 WR=64.2 Σtp1=31.64 Σnat=5.45
+DOGE tf8 2022: lim=339 vwap=124 ms=124 filled=119 WR=73.2 Σtp1=25.37 Σnat=23.47
+DOGE tf7 2023: lim=630 vwap=162 ms=143 filled=137 WR=54.5 Σtp1=-8.09 Σnat=-10.9
+DOGE tf8 2023: lim=354 vwap=121 ms=120 filled=116 WR=72.6 Σtp1=16.53 Σnat=-1.17
+DOGE tf7 2024: lim=598 vwap=163 ms=159 filled=145 WR=63.1 Σtp1=22.08 Σnat=20.33
+DOGE tf8 2024: lim=349 vwap=116 ms=116 filled=110 WR=74.2 Σtp1=18.72 Σnat=37.8
+DOGE tf7 2025: lim=621 vwap=202 ms=199 filled=191 WR=56.4 Σtp1=0.27 Σnat=2.06
+DOGE tf8 2025: lim=379 vwap=122 ms=122 filled=114 WR=74.6 Σtp1=27.58 Σnat=37.14
+DOGE tf7 2026: lim=353 vwap=108 ms=105 filled=100 WR=64.3 Σtp1=12.32 Σnat=26.02
+DOGE tf8 2026: lim=223 vwap=73 ms=72 filled=70 WR=73.5 Σtp1=10.99 Σnat=3.68
+KAS tf7 2023: lim=78 vwap=30 ms=30 filled=29 WR=65.5 Σtp1=6.31 Σnat=-7.0
+KAS tf8 2023: lim=47 vwap=21 ms=21 filled=21 WR=87.5 Σtp1=6.24 Σnat=7.54
+KAS tf7 2024: lim=581 vwap=147 ms=144 filled=132 WR=68.5 Σtp1=32.58 Σnat=54.39
+KAS tf8 2024: lim=365 vwap=124 ms=124 filled=119 WR=80.3 Σtp1=35.56 Σnat=40.82
+KAS tf7 2025: lim=564 vwap=187 ms=184 filled=173 WR=62.4 Σtp1=25.61 Σnat=55.28
+KAS tf8 2025: lim=344 vwap=115 ms=115 filled=112 WR=76.9 Σtp1=30.43 Σnat=37.67
+KAS tf7 2026: lim=329 vwap=121 ms=118 filled=111 WR=53.3 Σtp1=-9.03 Σnat=-6.49
+KAS tf8 2026: lim=220 vwap=76 ms=76 filled=74 WR=77.8 Σtp1=19.63 Σnat=9.25
+ADA tf7 2020: lim=561 vwap=151 ms=149 filled=142 WR=63.7 Σtp1=23.62 Σnat=42.43
+ADA tf8 2020: lim=315 vwap=88 ms=88 filled=82 WR=81.4 Σtp1=20.43 Σnat=25.84
+ADA tf7 2021: lim=635 vwap=166 ms=165 filled=157 WR=59.0 Σtp1=13.01 Σnat=14.69
+ADA tf8 2021: lim=379 vwap=113 ms=113 filled=109 WR=75.8 Σtp1=28.28 Σnat=29.53
+ADA tf7 2022: lim=616 vwap=196 ms=190 filled=182 WR=64.6 Σtp1=32.42 Σnat=40.86
+ADA tf8 2022: lim=365 vwap=121 ms=120 filled=117 WR=79.5 Σtp1=36.14 Σnat=43.25
+ADA tf7 2023: lim=646 vwap=188 ms=179 filled=168 WR=67.5 Σtp1=29.28 Σnat=25.01
+ADA tf8 2023: lim=360 vwap=115 ms=115 filled=112 WR=74.6 Σtp1=20.61 Σnat=15.27
+ADA tf7 2024: lim=645 vwap=173 ms=169 filled=161 WR=66.5 Σtp1=32.08 Σnat=24.7
+ADA tf8 2024: lim=394 vwap=119 ms=119 filled=116 WR=78.1 Σtp1=32.15 Σnat=42.12
+ADA tf7 2025: lim=688 vwap=227 ms=226 filled=208 WR=55.9 Σtp1=-2.98 Σnat=1.67
+ADA tf8 2025: lim=372 vwap=126 ms=126 filled=120 WR=76.0 Σtp1=31.23 Σnat=40.57
+ADA tf7 2026: lim=421 vwap=124 ms=118 filled=117 WR=54.4 Σtp1=-6.68 Σnat=-11.81
+ADA tf8 2026: lim=250 vwap=81 ms=81 filled=77 WR=74.4 Σtp1=11.6 Σnat=14.45
+BNB tf7 2020: lim=520 vwap=140 ms=135 filled=131 WR=60.6 Σtp1=12.15 Σnat=3.15
+BNB tf8 2020: lim=350 vwap=112 ms=111 filled=108 WR=82.5 Σtp1=35.38 Σnat=32.07
+BNB tf7 2021: lim=612 vwap=147 ms=146 filled=143 WR=63.8 Σtp1=24.23 Σnat=48.12
+BNB tf8 2021: lim=361 vwap=119 ms=119 filled=119 WR=77.1 Σtp1=39.63 Σnat=42.5
+BNB tf7 2022: lim=650 vwap=159 ms=147 filled=143 WR=61.2 Σtp1=11.6 Σnat=2.22
+BNB tf8 2022: lim=358 vwap=130 ms=130 filled=126 WR=76.5 Σtp1=34.15 Σnat=44.42
+BNB tf7 2023: lim=600 vwap=186 ms=144 filled=131 WR=58.5 Σtp1=-4.43 Σnat=24.37
+BNB tf8 2023: lim=395 vwap=135 ms=131 filled=124 WR=85.7 Σtp1=40.66 Σnat=27.49
+BNB tf7 2024: lim=582 vwap=157 ms=145 filled=136 WR=56.9 Σtp1=-6.84 Σnat=-9.55
+BNB tf8 2024: lim=365 vwap=126 ms=126 filled=122 WR=74.7 Σtp1=28.01 Σnat=39.4
+BNB tf7 2025: lim=603 vwap=188 ms=151 filled=140 WR=61.8 Σtp1=7.53 Σnat=30.66
+BNB tf8 2025: lim=359 vwap=109 ms=103 filled=102 WR=82.0 Σtp1=26.67 Σnat=31.89
+BNB tf7 2026: lim=394 vwap=129 ms=108 filled=99 WR=53.1 Σtp1=-13.65 Σnat=-1.65
+BNB tf8 2026: lim=245 vwap=88 ms=85 filled=82 WR=71.9 Σtp1=14.55 Σnat=17.51
+LINK tf7 2020: lim=540 vwap=130 ms=130 filled=125 WR=63.6 Σtp1=22.41 Σnat=25.88
+LINK tf8 2020: lim=316 vwap=106 ms=106 filled=101 WR=78.6 Σtp1=24.07 Σnat=23.73
+LINK tf7 2021: lim=646 vwap=183 ms=183 filled=174 WR=64.3 Σtp1=35.63 Σnat=50.77
+LINK tf8 2021: lim=399 vwap=113 ms=113 filled=108 WR=73.0 Σtp1=26.68 Σnat=40.6
+LINK tf7 2022: lim=663 vwap=189 ms=186 filled=175 WR=57.4 Σtp1=5.51 Σnat=-14.17
+LINK tf8 2022: lim=409 vwap=138 ms=138 filled=135 WR=66.2 Σtp1=15.51 Σnat=17.93
+LINK tf7 2023: lim=653 vwap=179 ms=167 filled=157 WR=57.2 Σtp1=1.18 Σnat=5.41
+LINK tf8 2023: lim=378 vwap=117 ms=117 filled=114 WR=79.5 Σtp1=30.31 Σnat=34.1
+LINK tf7 2024: lim=669 vwap=174 ms=168 filled=165 WR=53.4 Σtp1=-12.45 Σnat=-20.46
+LINK tf8 2024: lim=375 vwap=96 ms=96 filled=93 WR=57.9 Σtp1=0.72 Σnat=2.74
+LINK tf7 2025: lim=671 vwap=197 ms=191 filled=180 WR=58.2 Σtp1=7.43 Σnat=-1.71
+LINK tf8 2025: lim=384 vwap=121 ms=121 filled=116 WR=78.3 Σtp1=28.19 Σnat=61.42
+LINK tf7 2026: lim=417 vwap=119 ms=113 filled=111 WR=55.1 Σtp1=-7.18 Σnat=-29.14
+LINK tf8 2026: lim=252 vwap=87 ms=87 filled=82 WR=72.5 Σtp1=15.76 Σnat=2.9
+LTC tf7 2020: lim=614 vwap=172 ms=167 filled=155 WR=63.7 Σtp1=22.31 Σnat=49.72
+LTC tf8 2020: lim=339 vwap=114 ms=114 filled=112 WR=82.9 Σtp1=42.92 Σnat=35.8
+LTC tf7 2021: lim=679 vwap=202 ms=201 filled=192 WR=60.2 Σtp1=23.07 Σnat=-15.52
+LTC tf8 2021: lim=397 vwap=129 ms=129 filled=127 WR=75.3 Σtp1=30.06 Σnat=16.11
+LTC tf7 2022: lim=656 vwap=184 ms=181 filled=175 WR=60.2 Σtp1=14.59 Σnat=23.27
+LTC tf8 2022: lim=363 vwap=120 ms=120 filled=117 WR=78.0 Σtp1=35.2 Σnat=35.37
+LTC tf7 2023: lim=618 vwap=211 ms=191 filled=181 WR=60.6 Σtp1=9.04 Σnat=26.24
+LTC tf8 2023: lim=366 vwap=125 ms=125 filled=121 WR=77.9 Σtp1=31.72 Σnat=24.48
+LTC tf7 2024: lim=638 vwap=185 ms=167 filled=153 WR=67.8 Σtp1=32.17 Σnat=41.73
+LTC tf8 2024: lim=381 vwap=121 ms=119 filled=116 WR=77.0 Σtp1=35.23 Σnat=28.99
+LTC tf7 2025: lim=595 vwap=169 ms=160 filled=149 WR=58.6 Σtp1=4.85 Σnat=0.91
+LTC tf8 2025: lim=394 vwap=127 ms=127 filled=123 WR=76.0 Σtp1=26.5 Σnat=25.64
+LTC tf7 2026: lim=432 vwap=141 ms=124 filled=114 WR=53.1 Σtp1=-14.04 Σnat=-9.71
+LTC tf8 2026: lim=275 vwap=90 ms=89 filled=87 WR=72.1 Σtp1=15.3 Σnat=10.68
+XRP tf7 2020: lim=580 vwap=164 ms=156 filled=150 WR=68.5 Σtp1=35.53 Σnat=20.81
+XRP tf8 2020: lim=352 vwap=118 ms=118 filled=114 WR=75.0 Σtp1=22.97 Σnat=9.76
+XRP tf7 2021: lim=635 vwap=179 ms=178 filled=173 WR=56.4 Σtp1=5.18 Σnat=9.12
+XRP tf8 2021: lim=385 vwap=128 ms=128 filled=122 WR=74.6 Σtp1=31.37 Σnat=33.61
+XRP tf7 2022: lim=599 vwap=176 ms=171 filled=157 WR=58.2 Σtp1=2.87 Σnat=9.64
+XRP tf8 2022: lim=364 vwap=148 ms=148 filled=142 WR=79.5 Σtp1=37.92 Σnat=44.87
+XRP tf7 2023: lim=609 vwap=161 ms=148 filled=142 WR=67.9 Σtp1=27.23 Σnat=22.52
+XRP tf8 2023: lim=343 vwap=112 ms=111 filled=110 WR=75.3 Σtp1=28.92 Σnat=16.87
+XRP tf7 2024: lim=615 vwap=141 ms=136 filled=131 WR=60.8 Σtp1=12.06 Σnat=-13.01
+XRP tf8 2024: lim=358 vwap=110 ms=110 filled=108 WR=65.7 Σtp1=6.37 Σnat=37.9
+XRP tf7 2025: lim=617 vwap=181 ms=169 filled=156 WR=55.9 Σtp1=-4.76 Σnat=2.04
+XRP tf8 2025: lim=353 vwap=115 ms=115 filled=110 WR=59.7 Σtp1=4.11 Σnat=10.74
+XRP tf7 2026: lim=419 vwap=141 ms=120 filled=115 WR=54.4 Σtp1=-10.55 Σnat=-15.82
+XRP tf8 2026: lim=245 vwap=68 ms=68 filled=65 WR=86.1 Σtp1=18.26 Σnat=36.22
+SOL tf7 2020: lim=166 vwap=50 ms=49 filled=47 WR=56.5 Σtp1=0.72 Σnat=7.5
+SOL tf8 2020: lim=90 vwap=27 ms=27 filled=27 WR=83.3 Σtp1=9.83 Σnat=15.38
+SOL tf7 2021: lim=595 vwap=138 ms=137 filled=130 WR=62.6 Σtp1=22.75 Σnat=42.65
+SOL tf8 2021: lim=343 vwap=108 ms=108 filled=107 WR=75.8 Σtp1=24.22 Σnat=38.14
+SOL tf7 2022: lim=595 vwap=162 ms=160 filled=149 WR=63.3 Σtp1=26.42 Σnat=46.16
+SOL tf8 2022: lim=367 vwap=117 ms=117 filled=116 WR=70.7 Σtp1=19.41 Σnat=36.32
+SOL tf7 2023: lim=648 vwap=188 ms=184 filled=175 WR=64.1 Σtp1=30.32 Σnat=33.26
+SOL tf8 2023: lim=358 vwap=125 ms=125 filled=122 WR=71.6 Σtp1=20.88 Σnat=21.82
+SOL tf7 2024: lim=651 vwap=170 ms=168 filled=159 WR=63.5 Σtp1=25.85 Σnat=42.21
+SOL tf8 2024: lim=380 vwap=124 ms=124 filled=122 WR=84.0 Σtp1=46.88 Σnat=49.6
+SOL tf7 2025: lim=637 vwap=190 ms=183 filled=175 WR=57.6 Σtp1=2.14 Σnat=2.05
+SOL tf8 2025: lim=360 vwap=106 ms=106 filled=104 WR=79.7 Σtp1=30.3 Σnat=33.46
+SOL tf7 2026: lim=282 vwap=88 ms=81 filled=77 WR=52.6 Σtp1=-9.75 Σnat=-20.12
+SOL tf8 2026: lim=161 vwap=57 ms=57 filled=53 WR=81.2 Σtp1=14.36 Σnat=20.22
+ИТОГО: n=16487 Σr(TP1R)=2282.0
+saved: D:/PYTHON/cisdbotbybit/RUNS/temp/stream_off_v1.pkl
+SNAP_EXIT=0
+saved: RUNS/temp/stream_off_v1_v2.pkl | rows: 16487 | groups: 134
+  stoch_k: notna=16487/16487
+  macd_hist: notna=16487/16487
+  ema_distance_atr: notna=16487/16487
+  atr_percentile: notna=16487/16487
+  vol_ratio_scan: notna=16487/16487
+VEC_EXIT=0
+stream rows: 16487 | funding pairs: {'ADA': 6017, 'BNB': 5708, 'BTC': 7090, 'DOGE': 5788, 'ETH': 6461, 'KAS': 5230, 'LINK': 6461, 'LTC': 6461, 'SOL': 6068, 'XRP': 5848}
+saved: RUNS/temp/stream_off_v1_v2_funded.pkl
+
+=== SHORT: фандинг на входе (Q1=самый negative, Q5=самый positive) ===
+       n   WR%   SumR   AvgR  fund_med
+qs                                    
+Q1  2262  69.0  430.7  0.190 -0.000048
+Q2  2261  71.9  492.0  0.218  0.000050
+Q3  2262  72.0  499.3  0.221  0.000100
+Q4  2261  71.2  505.0  0.223  0.000100
+Q5  2262  72.6  607.7  0.269  0.000248
+
+=== LONG: фандинг на входе (Q1=самый negative, Q5=самый positive) ===
+      n   WR%   SumR   AvgR  fund_med
+qs                                   
+Q1  627  51.1  -87.3 -0.139 -0.000062
+Q2  626  47.3 -135.9 -0.217  0.000039
+Q3  627  45.5 -141.9 -0.226  0.000100
+Q4  626  46.2 -135.4 -0.216  0.000100
+Q5  627  45.7 -123.9 -0.198  0.000136
+
+=== Фандинг-издержка (в R, знак: + = платим) ===
+всего по сделкам: ΣcostR = -130.6 | медиана/сд: -0.0016
+year
+2020    -8.9
+2021   -59.7
+2022    -5.3
+2023   -17.8
+2024   -23.7
+2025   -10.0
+2026    -5.1
+FUND_EXIT=0
+n rows: 16487 | вектор: ['sweep_size_atr', 'volume_ratio', 'quality_score', 'vwap_deviation_atr', 'stoch_k', 'macd_hist', 'ema_distance_atr', 'atr_percentile']
+ALL                          n=16487 WR= 65.2% ΣR=  2282.0 AvgR= 0.138
+KEEP (p>=0.45)               n=14729 WR= 68.1% ΣR=  2708.4 AvgR= 0.184
+SKIP (p<0.45)                n= 1758 WR= 44.1% ΣR=  -426.4 AvgR=-0.243
+INSUFFICIENT ONLY            n=   26 WR= 90.0% ΣR=    14.3 AvgR= 0.549
+KEEP без insufficient        n=14729 WR= 68.1% ΣR=  2708.4 AvgR= 0.184
+2020 KEEP                    n= 1709 WR= 67.7% ΣR=   322.7 AvgR= 0.189
+2020 SKIP                    n=  143 WR= 55.9% ΣR=    -1.5 AvgR=-0.011
+2021 KEEP                    n= 2254 WR= 67.9% ΣR=   491.2 AvgR= 0.218
+2021 SKIP                    n=  257 WR= 47.1% ΣR=   -38.6 AvgR=-0.150
+2022 KEEP                    n= 2318 WR= 68.5% ΣR=   451.8 AvgR= 0.195
+2022 SKIP                    n=  273 WR= 47.5% ΣR=   -47.6 AvgR=-0.174
+2023 KEEP                    n= 2213 WR= 69.4% ΣR=   389.5 AvgR= 0.176
+2023 SKIP                    n=  230 WR= 47.1% ΣR=   -47.1 AvgR=-0.205
+2024 KEEP                    n= 2334 WR= 70.1% ΣR=   501.5 AvgR= 0.215
+2024 SKIP                    n=  287 WR= 38.8% ΣR=   -94.8 AvgR=-0.330
+2025 KEEP                    n= 2413 WR= 67.2% ΣR=   397.1 AvgR= 0.165
+2025 SKIP                    n=  360 WR= 39.8% ΣR=  -116.9 AvgR=-0.325
+2026 KEEP                    n= 1488 WR= 64.9% ΣR=   154.7 AvgR= 0.104
+2026 SKIP                    n=  208 WR= 38.7% ΣR=   -79.8 AvgR=-0.384
+tf7 KEEP                     n= 8003 WR= 63.7% ΣR=  1119.7 AvgR= 0.140
+tf7 SKIP                     n= 1509 WR= 43.0% ΣR=  -417.3 AvgR=-0.277
+tf8 KEEP                     n= 6726 WR= 76.5% ΣR=  1588.8 AvgR= 0.236
+tf8 SKIP                     n=  249 WR= 54.9% ΣR=    -9.1 AvgR=-0.037
+LONG KEEP                    n= 2323 WR= 50.5% ΣR=  -302.0 AvgR=-0.130
+LONG SKIP                    n= 1161 WR= 40.3% ΣR=  -381.6 AvgR=-0.329
+SHORT KEEP                   n=12406 WR= 72.3% ΣR=  3010.5 AvgR= 0.243
+SHORT SKIP                   n=  597 WR= 53.0% ΣR=   -44.9 AvgR=-0.075
+th=0.400 keep_n=15780 (95.9%) WR= 66.5% ΣR=  2503.2
+th=0.425 keep_n=15337 (93.2%) WR= 67.2% ΣR=  2604.8
+th=0.450 keep_n=14729 (89.5%) WR= 68.1% ΣR=  2708.4
+th=0.475 keep_n=14729 (89.5%) WR= 68.1% ΣR=  2708.4
+th=0.500 keep_n=13967 (84.8%) WR= 69.2% ΣR=  2787.9
+th=0.550 keep_n=13019 (79.1%) WR= 70.5% ΣR=  2871.9
+saved: D:/PYTHON/cisdbotbybit/RUNS/temp/knn18_full.pkl | D:/PYTHON/cisdbotbybit/RUNS/temp/knn18_full_report.txt
+KNN_EXIT=0
+stream: RUNS/temp/stream_off_v1_v2_funded.pkl | n=16487 | ΣR=2282.0
+
+=== ОБЩАЯ ТАБЛИЦА (sorted by kept_SumR) ===
+              rule  ret%  kept_n  kept_WR  kept_SumR  kept_AvgR  cut_WR  cut_SumR   dWR   dSumR
+             SHORT  78.9   13003     71.4     2965.6      0.228    47.1    -683.6  24.3  3649.2
+         sp>=0.004  92.5   15254     65.0     2193.3      0.144    68.2      88.7  -3.2  2104.6
+        touches<=8  94.2   15528     65.3     2163.6      0.139    64.2     118.5   1.1  2045.1
+        touches<=6  89.8   14800     65.4     2069.6      0.140    64.2     212.5   1.2  1857.1
+         sp>=0.006  80.5   13280     64.9     1987.1      0.150    66.4     294.9  -1.5  1692.2
+        touches<=5  86.1   14201     65.3     1986.2      0.140    64.7     295.8   0.6  1690.4
+        touches<=4  80.3   13236     65.5     1899.3      0.143    64.2     382.7   1.3  1516.6
+          psl_q>=3  87.4   14412     64.5     1824.9      0.127    69.8     457.2  -5.3  1367.7
+        touches>=2  67.1   11064     66.0     1681.2      0.152    63.6     600.8   2.4  1080.4
+         sp>=0.008  67.8   11172     64.8     1677.8      0.150    65.9     604.3  -1.1  1073.5
+        touches<=3  71.6   11803     65.2     1623.0      0.138    65.4     659.0  -0.2   964.0
+               tf8  42.3    6975     75.8     1579.7      0.226    60.4     702.4  15.4   877.3
+  score>=2.56(q50)  50.0    8244     67.8     1510.1      0.183    62.3     771.9   5.5   738.2
+    sweep_atr>=0.5  72.0   11867     64.1     1405.9      0.118    67.9     876.1  -3.8   529.8
+      not_soft_dow  58.3    9612     65.6     1343.9      0.140    64.8     938.1   0.8   405.8
+  score>=3.29(q60)  40.0    6595     68.6     1302.8      0.198    62.7     979.3   5.9   323.5
+        touches<=2  57.6    9489     64.6     1208.1      0.127    66.1    1074.0  -1.5   134.1
+    vol_ratio<=1.5  34.2    5641     69.5     1155.3      0.205    63.0    1126.7   6.5    28.6
+        touches>=3  42.4    6998     66.1     1074.0      0.153    64.6    1208.1   1.5  -134.1
+          psl_q==4  59.4    9788     62.7      984.8      0.101    68.3    1297.2  -5.6  -312.4
+  score>=4.08(q70)  30.0    4946     68.7      971.6      0.196    63.6    1310.4   5.1  -338.8
+          soft_dow  41.7    6875     64.8      938.1      0.136    65.6    1343.9  -0.8  -405.8
+    sweep_atr>=1.0  47.3    7791     63.1      806.1      0.103    66.9    1476.0  -3.8  -669.9
+        score<=q50  50.0    8244     62.3      771.6      0.094    67.8    1510.4  -5.5  -738.8
+           rr>=2.5  18.7    3088     71.1      744.7      0.241    63.8    1537.4   7.3  -792.7
+               tf7  57.7    9512     60.4      702.4      0.074    75.8    1579.7 -15.4  -877.3
+        touches>=4  28.4    4684     65.4      659.0      0.141    65.2    1623.0   0.2  -964.0
+      vol_ratio>=2  46.2    7615     61.7      643.5      0.085    68.2    1638.5  -6.5  -995.0
+  score>=4.85(q80)  20.0    3298     68.0      603.7      0.183    64.4    1678.3   3.6 -1074.6
+          psl_q<=2  12.6    2075     69.8      457.2      0.220    64.5    1824.9   5.3 -1367.7
+      vol_ratio<=1  11.8    1952     69.6      402.7      0.206    64.6    1879.3   5.0 -1476.6
+        touches>=5  19.7    3251     64.2      382.7      0.118    65.5    1899.3  -1.3 -1516.6
+        touches>=6  13.9    2286     64.7      295.8      0.129    65.3    1986.2  -0.6 -1690.4
+        touches>=8   7.7    1276     63.5      142.4      0.112    65.4    2139.6  -1.9 -1997.2
+  confirm_on_sweep   5.9     971     59.5       23.0      0.024    65.7    2259.0  -6.2 -2236.0
+one_bar_sweep_cisd   6.1    1013     58.1        6.1      0.006    65.7    2276.0  -7.6 -2269.9
+              LONG  21.1    3484     47.1     -683.6     -0.196    71.4    2965.6 -24.3 -3649.2
+
+=== ПО ГОДАМ (ΣR kept) ===
+              rule  k2020  k2021  k2022  k2023  k2024  k2025  k2026
+             SHORT  393.6  526.7  482.3  414.4  486.3  452.3  210.0
+         sp>=0.004  304.8  446.5  392.0  345.2  378.0  267.5   59.3
+        touches<=8  304.7  436.1  391.6  336.1  381.6  254.7   58.7
+        touches<=6  283.6  424.3  384.1  315.6  382.9  232.5   46.6
+         sp>=0.006  288.3  416.6  324.7  292.7  355.2  262.3   47.3
+        touches<=5  277.3  422.3  363.2  298.3  355.8  229.9   39.4
+        touches<=4  259.5  399.6  348.3  292.0  334.5  230.0   35.4
+          psl_q>=3  245.0  367.8  317.7  297.7  334.6  214.5   47.6
+        touches>=2  227.6  321.7  317.2  241.6  296.1  210.4   66.6
+         sp>=0.008  252.7  394.4  253.8  231.3  279.6  225.7   40.4
+        touches<=3  241.4  326.3  300.2  244.8  292.2  190.6   27.6
+               tf8  211.1  253.7  248.5  235.3  239.4  242.0  149.7
+  score>=2.56(q50)  178.7  293.5  293.7  212.2  272.0  200.3   59.7
+    sweep_atr>=0.5  220.3  287.5  257.8  251.4  243.2  113.4   32.4
+      not_soft_dow  216.6  286.3  231.8  155.4  221.2  189.2   43.5
+  score>=3.29(q60)  153.3  263.5  241.3  180.9  237.2  182.0   44.5
+        touches<=2  185.1  243.6  230.5  182.6  210.8  143.5   11.9
+    vol_ratio<=1.5  149.1  208.2  178.3  138.1  182.2  189.8  109.6
+        touches>=3  136.1  208.9  173.7  159.7  195.9  136.6   63.0
+          psl_q==4  139.1  228.4  168.7  144.0  172.5  117.2   14.9
+  score>=4.08(q70)  118.5  191.1  181.5  135.1  196.8  106.1   42.6
+          soft_dow  104.6  166.2  172.4  187.0  185.5   91.0   31.5
+    sweep_atr>=1.0  141.1  151.7  149.2  143.5  114.9   90.1   15.5
+        score<=q50  142.2  159.0  110.5  130.2  134.8   79.8   15.2
+           rr>=2.5   76.2  132.4  149.7   86.4  143.2  106.6   50.1
+               tf7  110.0  198.8  155.7  107.1  167.4   38.1  -74.7
+        touches>=4   79.7  126.2  104.0   97.5  114.6   89.6   47.4
+      vol_ratio>=2  103.3  136.6  142.1  140.4   98.7   80.6  -58.2
+  score>=4.85(q80)   80.6  127.7  103.6   89.4  130.6   49.4   22.5
+          psl_q<=2   76.2   84.7   86.5   44.7   72.2   65.6   27.4
+      vol_ratio<=1   68.0   61.6   58.5   50.5   35.7   81.2   47.2
+        touches>=5   61.7   52.9   55.9   50.4   72.3   50.1   39.5
+        touches>=6   43.8   30.2   41.0   44.0   50.9   50.2   35.5
+        touches>=8   22.9   18.2   16.1   11.1   19.3   31.2   23.6
+  confirm_on_sweep   -1.2   10.8   40.5    6.3    6.8  -24.7  -15.6
+one_bar_sweep_cisd   18.3   -9.0    5.0   -0.8   -4.3   -7.1    3.9
+              LONG  -72.5  -74.2  -78.1  -72.1  -79.6 -172.2 -135.0
+saved: RUNS/temp/stream_off_v1_v2_funded_eval.txt
+EVAL_EXIT=0
+saved: RUNS/temp/stream_off_v1_v2_el.pkl | theta=1.5
+ALL (с пивотами)                   n=16330 WR= 65.2% ΣR=  2244.1 AvgR= 0.137
+-- last_dir x dir --
+last=up LONG                       n= 3166 WR= 46.7% ΣR=  -632.5 AvgR=-0.200
+last=up SHORT                      n= 5793 WR= 77.3% ΣR=  1950.8 AvgR= 0.337
+last=down LONG                     n=  306 WR= 50.3% ΣR=   -51.3 AvgR=-0.168
+last=down SHORT                    n= 7065 WR= 66.0% ΣR=   977.1 AvgR= 0.138
+-- frac-зоны (направление вдоль last_dir) --
+with frac [0.000,0.236)            n= 1349 WR= 44.3% ΣR=  -298.9 AvgR=-0.222
+with frac [0.236,0.500)            n= 1012 WR= 69.9% ΣR=   215.7 AvgR= 0.213
+with frac [0.500,0.786)            n= 2208 WR= 64.8% ΣR=   270.5 AvgR= 0.123
+with frac [0.786,1.000)            n= 1625 WR= 60.5% ΣR=    96.3 AvgR= 0.059
+with frac [1.000,99.000)           n= 4037 WR= 57.4% ΣR=    61.0 AvgR= 0.015
+-- против last_dir  --
+against ALL                        n= 6099 WR= 75.7% ΣR=  1899.5 AvgR= 0.311
+-- zz_with маска --
+zz_with=True                       n= 3220 WR= 66.4% ΣR=   486.2 AvgR= 0.151
+zz_with=False                      n=13110 WR= 64.9% ΣR=  1757.8 AvgR= 0.134
+-- zz_trend --
+trend=-1                           n= 5008 WR= 65.5% ΣR=   724.3 AvgR= 0.145
+trend=0                            n= 5788 WR= 64.9% ΣR=   767.6 AvgR= 0.133
+trend=1                            n= 5427 WR= 65.0% ΣR=   710.8 AvgR= 0.131
+-- корреляции (анти-алиас чек) --
+  corr(zz_frac, vd) = -0.089
+  corr(zz_frac, sweep_atr) = -0.005
+  corr(zz_frac, quality_score) = 0.031
+EL_EXIT=0
+win=±2.0h | saved: RUNS/temp/stream_off_v1_v2_clu.pkl
+ALL                          n=16487 WR= 65.2% ΣR=  2282.0 AvgR= 0.138
+conc_same 0                  n= 3972 WR= 59.1% ΣR=   114.0 AvgR= 0.029
+conc_same 1                  n= 3882 WR= 65.7% ΣR=   562.4 AvgR= 0.145
+conc_same 2-3                n= 5102 WR= 67.4% ΣR=   849.3 AvgR= 0.166
+conc_same 4-9                n= 3420 WR= 69.6% ΣR=   773.5 AvgR= 0.226
+conc_same 10+                n=  111 WR= 45.5% ΣR=   -17.2 AvgR=-0.155
+SHORT ALL                    n=13003 WR= 71.4% ΣR=  2965.6 AvgR= 0.228
+  SHORT conc 0               n= 2815 WR= 66.5% ΣR=   411.6 AvgR= 0.146
+  SHORT conc 1               n= 2991 WR= 71.1% ΣR=   671.4 AvgR= 0.224
+  SHORT conc 2+              n= 7197 WR= 73.4% ΣR=  1882.6 AvgR= 0.262
+LONG ALL                     n= 3484 WR= 47.1% ΣR=  -683.6 AvgR=-0.196
+  LONG conc 0                n= 1157 WR= 45.0% ΣR=  -297.7 AvgR=-0.257
+  LONG conc 1                n=  891 WR= 51.0% ΣR=  -109.0 AvgR=-0.122
+  LONG conc 2+               n= 1436 WR= 46.4% ΣR=  -276.9 AvgR=-0.193
+-- по годам: conc_same>=1 vs 0 --
+2020 conc>=1                 n= 1269 WR= 69.8% ΣR=   287.2 AvgR= 0.226
+2020 conc=0                  n=  583 WR= 60.1% ΣR=    34.0 AvgR= 0.058
+2021 conc>=1                 n= 1968 WR= 65.9% ΣR=   372.6 AvgR= 0.189
+2021 conc=0                  n=  543 WR= 63.9% ΣR=    79.9 AvgR= 0.147
+2022 conc>=1                 n= 2053 WR= 66.7% ΣR=   350.6 AvgR= 0.171
+2022 conc=0                  n=  538 WR= 63.1% ΣR=    53.6 AvgR= 0.100
+2023 conc>=1                 n= 1816 WR= 70.1% ΣR=   340.6 AvgR= 0.188
+2023 conc=0                  n=  627 WR= 58.4% ΣR=     1.7 AvgR= 0.003
+2024 conc>=1                 n= 1995 WR= 69.3% ΣR=   403.6 AvgR= 0.202
+2024 conc=0                  n=  626 WR= 57.4% ΣR=     3.1 AvgR= 0.005
+2025 conc>=1                 n= 2174 WR= 65.3% ΣR=   301.2 AvgR= 0.139
+2025 conc=0                  n=  599 WR= 55.9% ΣR=   -21.1 AvgR=-0.035
+2026 conc>=1                 n= 1240 WR= 63.6% ΣR=   112.2 AvgR= 0.090
+2026 conc=0                  n=  456 WR= 55.4% ΣR=   -37.2 AvgR=-0.082
+CLU_EXIT=0
+CHAIN_DONE 02:30:47

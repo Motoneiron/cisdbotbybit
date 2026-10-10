@@ -1,0 +1,7 @@
+saved: RUNS/temp/stream_off_v1_p24v3_v2.pkl | rows: 5379 | groups: 40
+  stoch_k: notna=5379/5379
+  macd_hist: notna=5379/5379
+  ema_distance_atr: notna=5379/5379
+  atr_percentile: notna=5379/5379
+  vol_ratio_scan: notna=5379/5379
+VEC_EXIT=0

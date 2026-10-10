@@ -1,0 +1,3 @@
+STREAM v1.2 (D:/PYTHON/CISDBOT/RUNS/2026-09-11/bot_aligned) | filled n=280 | Σr(TP1R)=71.9 | WR=70.0%
+{'sym': 'SOL', 'prof': 'tf7', 'year': 2024, 'lim': 663, 'vwap_kept': 172, 'minstop': 170, 'n': 158, 'wr': 63.2, 'sumr': 25.04, 'sumr_native': 46.7}
+{'sym': 'SOL', 'prof': 'tf8', 'year': 2024, 'lim': 380, 'vwap_kept': 124, 'minstop': 124, 'n': 122, 'wr': 84.0, 'sumr': 46.88, 'sumr_native': 49.6}

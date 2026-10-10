@@ -1,0 +1,25 @@
+============================================================
+Bot-aligned BT | tf8 30m -> 8H | 2024-01-01 -> 2024-12-31
+Symbol: ETH | Fees: bybit maker 0.0360% taker 0.1000%
+Entry: detect_signals + bot entry kinds
+limit 1 bar | pos 12 bar | detect_step 2 | max_pos 5
+Slope filter: off (как на сервере)
+Pending cancel: fib2/TP touched before fill
+============================================================
+Data: ETHUSDT_1m_full_hdr.csv -> 17568 x 30m bars
+Confirm 5m: ETHUSDT_1m_full_hdr.csv -> 105408 bars
+LTF pending/position fill: 5m (5m bars inside 30m)
+MSS detect: 5m
+Симуляция 17568 баров (warmup=100, detect_step=2)...
+  ... 0%  ... 5%  ... 10%  ... 15%  ... 20%  ... 25%  ... 30%  ... 35%  ... 40%  ... 45%  ... 50%  ... 55%  ... 60%  ... 65%  ... 70%  ... 75%  ... 80%  ... 85%  ... 90%  ... 95%  ... 100%
+Сигналов принято в pending: 466 | Сделок: 428 | fib2-cancel: 14
+
+------------------------------------------------------------
+РЕЗУЛЬТАТЫ (bot-aligned)
+------------------------------------------------------------
+tf8: Сделок: 428 | TP: 45 | SL: 130 | TIME: 253
+tf8: WR: 10.5% | AvgR: -0.006 | SumR: -2.6 | PF: 0.99
+  2024: 428 sd | WR 11% | SumR -2.6 | PF 0.99
+Entry kinds: {'LIMIT': 369, 'MARKET': 59}
+Saved: D:\PYTHON\CISDBOT\RUNS\2026-09-13\bot_aligned\ETH_tf8_2024-01-01_2024-12-31.pkl
+ETH tf8 2024 (ceil5): trades=428 LIMIT=369 sumR=-2.6 sumR_lim=-12.6
