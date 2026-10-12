@@ -37,6 +37,7 @@ trades_stats_epoch.txt
 bot.log
 bot.log.*
 *.log
+server_logs/
 
 # Backups (local snapshots)
 .backup/
